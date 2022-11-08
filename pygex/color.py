@@ -7,18 +7,18 @@ colorValue = pygame_color.Color | int | str | Sequence
 
 def has_alpha(color: int):
     """
+    Checking if color has alpha channel
 
-    :param color: alpha format `#ff000000` or `#000000`
-    :return:
+    :param color: alpha format `#ff000000` or `#000000` (AHEX or HEX)
     """
     return color > 0xffffff
 
 
 def to_pygame_alpha_color(color: colorValue):
     """
+    Converting color from AHEX or HEX to HEXA
 
-    :param color: alpha format `#ff000000` or `#000000`
-    :return:
+    :param color: alpha format `#ff000000` or `#000000` (AHEX or HEX)
     """
     if isinstance(color, int):
         if has_alpha(color):
