@@ -14,8 +14,8 @@ def pygame_to_pillow_image(img: SurfaceType):
     return PillowImage.frombytes('RGBA', img.get_size(), pg_image_tostring(img, 'RGBA'))
 
 
-def set_blur(img: SurfaceType, radius: int):
-    return pillow_to_pygame_image(pygame_to_pillow_image(img).filter(PillowImageFilter.GaussianBlur(radius)))
+def set_blur(img: SurfaceType, intensity: int):
+    return pillow_to_pygame_image(pygame_to_pillow_image(img).filter(PillowImageFilter.GaussianBlur(intensity)))
 
 
 def set_round_corners(img: SurfaceType, radius: int | tuple[int, int, int, int] | Sequence):
