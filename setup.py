@@ -4,8 +4,8 @@ except ImportError:
     from distutils.core import setup
 
 setup(
-    name='pygex',
-    version='0.1',
+    name='PyGex',
+    version='0.0.1',
     packages=['pygex'],
     url='https://github.com/teacondemns/pygex',
     install_requires=['Pillow>=9.0', 'pygame>=2.0'],

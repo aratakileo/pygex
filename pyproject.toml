@@ -1,0 +1,24 @@
+[project]
+name = 'PyGex'
+version='0.0.1'
+authors=[{ name='Tea Condemns', email='tea.condemns@gmail.com' }]
+description='Extended library for pygame users.'
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+readme='README.md'
+keywords = ['pygame']
+packages = [
+    { include = "pygex"},
+]
+
+[build-system]
+requires=['Pillow>=9.0', 'pygame>=2.0']
+
+[project.urls]
+homepage = "https://github.com/teacondemns/pygex"
+repository = "https://github.com/teacondemns/pygex"
+"Bug Tracker" = "https://github.com/teacondemns/pygex/issues"
