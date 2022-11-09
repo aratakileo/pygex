@@ -1,5 +1,5 @@
+from pygex.color import colorValue, to_pygame_alpha_color
 from pygame.font import FontType, get_init, init, Font
-from color import colorValue, to_pygame_alpha_color
 
 _buffered_font: FontType | None = None
 _buffered_font_size = -1
