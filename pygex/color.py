@@ -26,6 +26,8 @@ def set_alpha(color: int, alpha: int):
     """
     Checking if color has alpha channel (works only for AHEX or HEX)
 
+    :param alpha: value from 0x00 to 0xff
+
     :param color: alpha format AHEX or HEX
     """
     return (alpha & 0xff) << 24 | color
