@@ -26,13 +26,14 @@ class Mouse:
     def right_btn(self):
         return self.button_statuses[2]
 
-    def event(self, e: Event):
+    def prerender(self):
         for i in range(len(self.button_statuses)):
             if self.button_statuses[i] == Mouse.BUTTON_DOWN:
                 self.button_statuses[i] = Mouse.BUTTON_HOLD
             elif self.button_statuses[i] == Mouse.BUTTON_UP:
                 self.button_statuses[i] = Mouse.BUTTON_NOT_PRESSED
 
+    def process_event(self, e: Event):
         event_types = (MOUSEBUTTONDOWN, MOUSEBUTTONUP)
         statuses = (Mouse.BUTTON_DOWN, Mouse.BUTTON_UP)
 
