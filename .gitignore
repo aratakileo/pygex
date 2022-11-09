@@ -1,3 +1,6 @@
 __pycache__/
 .idea/
-pyproject.toml
+PyGex.egg-info/
+build/
+
+failed_pyproject.toml
