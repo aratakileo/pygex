@@ -1,8 +1,5 @@
 from pygame.font import FontType, get_init, init, Font
 from color import colorValue, to_pygame_alpha_color
-from pygame.surface import SurfaceType
-from typing import Sequence
-
 
 _buffered_font: FontType | None = None
 _buffered_font_size = -1
@@ -32,17 +29,6 @@ def render_text(
     return font.render(text.__str__(), antialias, to_pygame_alpha_color(alpha_color))
 
 
-def render_text_at(
-        surface: SurfaceType,
-        text: any,
-        alpha_color: colorValue,
-        pos: Sequence,
-        font_or_size: FontType | int = None,
-        antialias=True
-):
-    surface.blit(render_text(text, alpha_color, font_or_size, antialias), pos)
-
-
 def bufferize_font(size: int):
     if not get_init():
         init()
@@ -58,4 +44,4 @@ def get_buffered_font():
     return _buffered_font
 
 
-__all__ = 'render_text', 'render_text_at', 'bufferize_font', 'get_buffered_font'
+__all__ = 'render_text', 'bufferize_font', 'get_buffered_font'
