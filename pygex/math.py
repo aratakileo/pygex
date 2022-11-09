@@ -16,7 +16,7 @@ def get_curve_point(vertexes: Sequence, r: int, i: int, t: float):
     )
 
 
-def get_curve_points(vertexes: Sequence, density=100, fixed_ends=False):
+def get_curve_points(vertexes: Sequence, density: int, fixed_ends=False):
     if len(vertexes) <= 1:
         return []
 
