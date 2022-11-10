@@ -1,29 +1,27 @@
 from typing import Sequence
 
 
-def interpolate_two_curve_points(point1: Sequence, point2: Sequence, t: float):
-    return tuple((1 - t) * point1[i] + t * point2[i] for i in range(2))
-
-
-def get_curve_point(vertexes: Sequence, r: int, i: int, t: float):
-    if r == 0:
-        return vertexes[i]
-
-    return interpolate_two_curve_points(
-        get_curve_point(vertexes, r - 1, i, t),
-        get_curve_point(vertexes, r - 1, i + 1, t),
-        t
-    )
-
-
 def get_curve_points(vertexes: Sequence, density: int, fixed_ends=False):
-    if len(vertexes) <= 1:
-        return []
-
-    if len(vertexes) == 2:
+    if len(vertexes) <= 2:
         return *vertexes,
 
-    points = tuple(get_curve_point(vertexes, len(vertexes) - 1, 0, i / density) for i in range(density))
+    points = ()
+
+    for i in range(density):
+        t = i / density
+        prepoints = *vertexes,
+
+        while len(prepoints) > 1:
+            new_prepoints = ()
+
+            for k in range(len(prepoints) - 1):
+                new_prepoints = *new_prepoints, tuple(
+                    prepoints[k][j] * (1 - t) + prepoints[k + 1][j] * t for j in range(2)
+                )
+
+            prepoints = new_prepoints
+
+        points = *points, *prepoints
 
     if fixed_ends:
         if points[0] != vertexes[0]:
@@ -35,4 +33,4 @@ def get_curve_points(vertexes: Sequence, density: int, fixed_ends=False):
     return points
 
 
-__all__ = 'interpolate_two_curve_points', 'get_curve_point', 'get_curve_points'
+__all__ = 'get_curve_points',
