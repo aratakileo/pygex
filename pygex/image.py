@@ -13,8 +13,8 @@ def pygame_to_pillow(source: SurfaceType):
     return PillowImage.frombytes('RGBA', source.get_size(), pg_image_tostring(source, 'RGBA'))
 
 
-def get_blurred(source: SurfaceType, intensity: int):
-    return pillow_to_pygame(pygame_to_pillow(source).filter(PillowImageFilter.GaussianBlur(intensity)))
+def get_blurred(source: SurfaceType, radius: int):
+    return pillow_to_pygame(pygame_to_pillow(source).filter(PillowImageFilter.GaussianBlur(radius)))
 
 
 def get_cutout_by_mask(source: SurfaceType, mask: SurfaceType):
