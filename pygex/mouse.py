@@ -15,18 +15,54 @@ class Mouse:
         self.get_rel = get_rel
 
     @property
-    def left_btn(self):
-        return self.button_statuses[0]
+    def left_is_not_pressed(self):
+        return self.button_statuses[0] == Mouse.BUTTON_NOT_PRESSED
 
     @property
-    def middle_btn(self):
-        return self.button_statuses[1]
+    def left_is_down(self):
+        return self.button_statuses[0] == Mouse.BUTTON_DOWN
 
     @property
-    def right_btn(self):
-        return self.button_statuses[2]
+    def left_is_hold(self):
+        return self.button_statuses[0] == Mouse.BUTTON_HOLD
 
-    def prerender(self):
+    @property
+    def left_is_up(self):
+        return self.button_statuses[0] == Mouse.BUTTON_UP
+
+    @property
+    def middle_is_not_pressed(self):
+        return self.button_statuses[1] == Mouse.BUTTON_NOT_PRESSED
+
+    @property
+    def middle_is_down(self):
+        return self.button_statuses[1] == Mouse.BUTTON_DOWN
+
+    @property
+    def middle_is_hold(self):
+        return self.button_statuses[1] == Mouse.BUTTON_HOLD
+
+    @property
+    def middle_is_up(self):
+        return self.button_statuses[1] == Mouse.BUTTON_UP
+
+    @property
+    def right_is_not_pressed(self):
+        return self.button_statuses[2] == Mouse.BUTTON_NOT_PRESSED
+
+    @property
+    def right_is_down(self):
+        return self.button_statuses[2] == Mouse.BUTTON_DOWN
+
+    @property
+    def right_is_hold(self):
+        return self.button_statuses[2] == Mouse.BUTTON_HOLD
+
+    @property
+    def right_is_up(self):
+        return self.button_statuses[2] == Mouse.BUTTON_UP
+
+    def flip(self):
         for i in range(len(self.button_statuses)):
             if self.button_statuses[i] == Mouse.BUTTON_DOWN:
                 self.button_statuses[i] = Mouse.BUTTON_HOLD

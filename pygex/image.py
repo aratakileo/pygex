@@ -13,11 +13,11 @@ def pygame_to_pillow(source: SurfaceType):
     return PillowImage.frombytes('RGBA', source.get_size(), pg_image_tostring(source, 'RGBA'))
 
 
-def get_blurred(source: SurfaceType, radius: int):
+def blur(source: SurfaceType, radius: int):
     return pillow_to_pygame(pygame_to_pillow(source).filter(PillowImageFilter.GaussianBlur(radius)))
 
 
-def get_cutout_by_mask(source: SurfaceType, mask: SurfaceType):
+def cutout_by_mask(source: SurfaceType, mask: SurfaceType):
     """
     The cutout color on the mask is black (#000000)
 
@@ -35,7 +35,7 @@ def get_cutout_by_mask(source: SurfaceType, mask: SurfaceType):
     return new_source
 
 
-def get_rounded_corners(source: SurfaceType, radius: int | tuple[int, int, int, int] | Sequence):
+def round_corners(source: SurfaceType, radius: int | tuple[int, int, int, int] | Sequence):
     """
     Rounding the borders of image (Surface)
 
@@ -48,7 +48,7 @@ def get_rounded_corners(source: SurfaceType, radius: int | tuple[int, int, int, 
 
     pg_draw_rect(mask, 0xffffff, (0, 0, *source.get_size()), 0, *radius)
 
-    return get_cutout_by_mask(source, mask)
+    return cutout_by_mask(source, mask)
 
 
-__all__ = 'pillow_to_pygame', 'pygame_to_pillow', 'get_blurred', 'get_cutout_by_mask', 'get_rounded_corners'
+__all__ = 'pillow_to_pygame', 'pygame_to_pillow', 'blur', 'cutout_by_mask', 'round_corners'

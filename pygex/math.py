@@ -1,7 +1,7 @@
 from typing import Sequence
 
 
-def get_curve_points(vertexes: Sequence, density: int, fixed_ends=False):
+def generate_curve(vertexes: Sequence, density: int, fixed_ends=False):
     if len(vertexes) <= 2:
         return *vertexes,
 
@@ -33,4 +33,4 @@ def get_curve_points(vertexes: Sequence, density: int, fixed_ends=False):
     return points
 
 
-__all__ = 'get_curve_points',
+__all__ = 'generate_curve',
