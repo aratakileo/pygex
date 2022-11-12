@@ -1,4 +1,6 @@
-from pygame import KEYDOWN, KEYUP, K_LCTRL, K_RCTRL, K_LALT, K_RALT
+from pygame import (
+    KEYDOWN, KEYUP, K_LCTRL, K_RCTRL, K_LALT, K_RALT, K_RETURN, K_KP_ENTER, K_KP_PERIOD, K_PERIOD, K_LSHIFT, K_RSHIFT
+)
 from pygame.event import Event
 
 
@@ -19,28 +21,17 @@ class Input:
     K_STOP = 1073742084
     K_VOLUME_UP = 1073741952
     K_VOLUME_DOWN = 1073741953
-    K_NUMPAD_SLASH = 1073741908
-    K_NUMPAD_ASTERISK = 1073741909
-    K_NUMPAD_MINUS = 1073741910
-    K_NUMPAD_PLUS = 1073741911
-    K_NUMPAD_ENTER = 1073741912
-    K_NUMPAD_0 = 1073741913
-    K_NUMPAD_1 = 1073741914
-    K_NUMPAD_2 = 1073741915
-    K_NUMPAD_3 = 1073741916
-    K_NUMPAD_4 = 1073741917
-    K_NUMPAD_5 = 1073741918
-    K_NUMPAD_6 = 1073741919
-    K_NUMPAD_7 = 1073741920
-    K_NUMPAD_8 = 1073741921
-    K_NUMPAD_9 = 1073741922
-    K_NUMPAD_DOT = 1073741923
+    K_KP_RETURN = K_KP_ENTER
+    K_KP_DOT = K_KP_PERIOD
     K_TILDA = 126
     K_PIPE = 124
+    K_DOT = K_PERIOD
 
     # Generalizing keys
     K_CTRL = -1
     K_ALT = -2
+    K_SHIFT = -3
+    K_ENTER = K_RETURN = -4
 
     def __init__(self):
         global _active_input
@@ -67,6 +58,18 @@ class Input:
 
             if K_RALT not in self.key_data:
                 self.key_data[K_RALT] = Input.NOT_PRESSED
+        elif key == Input.K_SHIFT:
+            if K_LSHIFT not in self.key_data:
+                self.key_data[K_LSHIFT] = Input.NOT_PRESSED
+
+            if K_RSHIFT not in self.key_data:
+                self.key_data[K_RSHIFT] = Input.NOT_PRESSED
+        elif key == Input.K_RETURN:
+            if K_RETURN not in self.key_data:
+                self.key_data[K_RETURN] = Input.NOT_PRESSED
+
+            if K_KP_ENTER not in self.key_data:
+                self.key_data[K_KP_ENTER] = Input.NOT_PRESSED
 
     def get_status(self, key: int):
         self.try_start_observing(key)
@@ -79,6 +82,12 @@ class Input:
 
         if key == Input.K_ALT:
             return max(self.key_data[K_LALT], self.key_data[K_RALT])
+
+        if key == Input.K_SHIFT:
+            return max(self.key_data[K_LSHIFT], self.key_data[K_RSHIFT])
+
+        if key == Input.K_RETURN:
+            return max(self.key_data[K_RETURN], self.key_data[K_KP_ENTER])
 
     def is_not_pressed(self, key: int):
         return self.get_status(key) == Input.NOT_PRESSED
