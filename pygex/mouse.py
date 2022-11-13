@@ -71,10 +71,10 @@ class Mouse:
 
     @property
     def is_moved(self):
-        return self.relative != (0, 0)
-    
+        return self.rel != (0, 0)
+
     @property
-    def relative(self):
+    def rel(self):
         return get_rel()
 
     def process_event(self, e: Event):
