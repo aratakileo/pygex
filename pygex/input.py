@@ -1,5 +1,3 @@
-from typing import Sequence
-
 from pygame import (
     KEYDOWN, KEYUP, K_LCTRL, K_RCTRL, K_LALT, K_RALT, K_RETURN, K_KP_ENTER, K_KP_PERIOD, K_PERIOD, K_LSHIFT, K_RSHIFT
 )
@@ -47,16 +45,23 @@ class Input:
         self._keys_data = {}
         self._generalized_keys = {}
 
-        self.generalize_keys(Input.GK_CTRL, (K_LCTRL, K_RCTRL))
-        self.generalize_keys(Input.GK_ALT, (K_LALT, K_RALT))
-        self.generalize_keys(Input.GK_SHIFT, (K_LSHIFT, K_RSHIFT))
-        self.generalize_keys(Input.GK_ENTER, (K_RETURN, K_KP_ENTER))
+        self.generalize_keys(Input.GK_CTRL, K_LCTRL, K_RCTRL)
+        self.generalize_keys(Input.GK_ALT, K_LALT, K_RALT)
+        self.generalize_keys(Input.GK_SHIFT, K_LSHIFT, K_RSHIFT)
+        self.generalize_keys(Input.GK_ENTER, K_RETURN, K_KP_ENTER)
 
     def reset(self, key: int):
         self._keys_data[key] = [Input.NOT_PRESSED, -1, True]
 
-    def generalize_keys(self, name: str, keys: Sequence[int]):
-        self._generalized_keys[name] = keys
+    def generalize_keys(self, name: str, *keys: int | str):
+        self._generalized_keys[name] = ()
+
+        for key in keys:
+            if isinstance(key, int):
+                self._generalized_keys[name] = *self._generalized_keys[name], key
+                continue
+
+            self._generalized_keys[name] = *self._generalized_keys[name], self._generalized_keys[key]
 
     def try_start_observing(self, key: int | str):
         if isinstance(key, int):
