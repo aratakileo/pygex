@@ -12,7 +12,6 @@ class Mouse:
         self.button_statuses = [Input.NOT_PRESSED] * 3
         self.mouse_wheel = (0, 0)
         self.get_pos = get_pos
-        self.get_rel = get_rel
 
     @property
     def left_is_not_pressed(self):
@@ -69,6 +68,14 @@ class Mouse:
     @property
     def is_wheel_down(self):
         return self.mouse_wheel[0] < 0
+
+    @property
+    def is_moved(self):
+        return self.relative != (0, 0)
+    
+    @property
+    def relative(self):
+        return get_rel()
 
     def process_event(self, e: Event):
         if e.type == MOUSEWHEEL:
