@@ -4,7 +4,7 @@ except ImportError:
     from distutils.core import setup
 
 setup(
-    name='PyGex',
+    name='pygex',
     version='0.1',
     packages=['pygex'],
     url='https://github.com/teacondemns/pygex',

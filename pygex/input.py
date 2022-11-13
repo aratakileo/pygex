@@ -1,7 +1,10 @@
+from typing import Sequence
+
 from pygame import (
     KEYDOWN, KEYUP, K_LCTRL, K_RCTRL, K_LALT, K_RALT, K_RETURN, K_KP_ENTER, K_KP_PERIOD, K_PERIOD, K_LSHIFT, K_RSHIFT
 )
 from pygame.event import Event
+from time import time
 
 
 class Input:
@@ -28,119 +31,149 @@ class Input:
     K_DOT = K_PERIOD
 
     # Generalizing keys
-    K_CTRL = -1
-    K_ALT = -2
-    K_SHIFT = -3
-    K_ENTER = K_RETURN = -4
+    GK_CTRL = 'CTRL'
+    GK_ALT = 'ALT'
+    GK_SHIFT = 'SHIFT'
+    GK_ENTER = 'ENTER'
+
+    # Hold duration
+    FIRST_HOLD_DURATION = 0.5
+    HOLD_DURATION = 0.1
 
     def __init__(self):
         global _active_input
         _active_input = self
 
-        self.key_data = {}
+        self._keys_data = {}
+        self._generalized_keys = {}
 
-    def try_start_observing(self, key: int):
-        if key >= 0:
-            if key not in self.key_data:
-                self.key_data[key] = Input.NOT_PRESSED
+        self.generalize_keys(Input.GK_CTRL, (K_LCTRL, K_RCTRL))
+        self.generalize_keys(Input.GK_ALT, (K_LALT, K_RALT))
+        self.generalize_keys(Input.GK_SHIFT, (K_LSHIFT, K_RSHIFT))
+        self.generalize_keys(Input.GK_ENTER, (K_RETURN, K_KP_ENTER))
+
+    def reset(self, key: int):
+        self._keys_data[key] = [Input.NOT_PRESSED, -1, True]
+
+    def generalize_keys(self, name: str, keys: Sequence[int]):
+        self._generalized_keys[name] = keys
+
+    def try_start_observing(self, key: int | str):
+        if isinstance(key, int):
+            if key not in self._keys_data:
+                self.reset(key)
 
             return
 
-        if key == Input.K_CTRL:
-            if K_LCTRL not in self.key_data:
-                self.key_data[K_LCTRL] = Input.NOT_PRESSED
+        for _key in self._generalized_keys[key]:
+            if _key not in self._keys_data:
+                self.reset(_key)
 
-            if K_RCTRL not in self.key_data:
-                self.key_data[K_RCTRL] = Input.NOT_PRESSED
-        elif key == Input.K_ALT:
-            if K_LALT not in self.key_data:
-                self.key_data[K_LALT] = Input.NOT_PRESSED
-
-            if K_RALT not in self.key_data:
-                self.key_data[K_RALT] = Input.NOT_PRESSED
-        elif key == Input.K_SHIFT:
-            if K_LSHIFT not in self.key_data:
-                self.key_data[K_LSHIFT] = Input.NOT_PRESSED
-
-            if K_RSHIFT not in self.key_data:
-                self.key_data[K_RSHIFT] = Input.NOT_PRESSED
-        elif key == Input.K_RETURN:
-            if K_RETURN not in self.key_data:
-                self.key_data[K_RETURN] = Input.NOT_PRESSED
-
-            if K_KP_ENTER not in self.key_data:
-                self.key_data[K_KP_ENTER] = Input.NOT_PRESSED
-
-    def get_status(self, key: int):
+    def get_status(self, key: int | str):
         self.try_start_observing(key)
 
-        if key >= 0:
-            return self.key_data[key]
+        if isinstance(key, int):
+            return self._keys_data[key][0]
 
-        if key == Input.K_CTRL:
-            return max(self.key_data[K_LCTRL], self.key_data[K_RCTRL])
+        return max(tuple(self._keys_data[_key][0] for _key in self._generalized_keys[key]))
 
-        if key == Input.K_ALT:
-            return max(self.key_data[K_LALT], self.key_data[K_RALT])
+    def __get_time(self, key: int | str):
+        if isinstance(key, int):
+            return self._keys_data[key][1]
 
-        if key == Input.K_SHIFT:
-            return max(self.key_data[K_LSHIFT], self.key_data[K_RSHIFT])
+        return max(tuple(self._keys_data[_key][1] for _key in self._generalized_keys[key]))
 
-        if key == Input.K_RETURN:
-            return max(self.key_data[K_RETURN], self.key_data[K_KP_ENTER])
+    def __is_hold_first_time(self, key: int | str):
+        if isinstance(key, int):
+            return self._keys_data[key][2]
 
-    def is_not_pressed(self, key: int):
+        return bool(sum(tuple(self._keys_data[_key][2] for _key in self._generalized_keys[key])))
+
+    def is_not_pressed(self, key: int | str):
         return self.get_status(key) == Input.NOT_PRESSED
 
-    def is_down(self, key: int):
+    def is_down(self, key: int | str):
         return self.get_status(key) == Input.DOWN
 
-    def is_hold(self, key: int):
+    def is_hold(self, key: int | str):
         return self.get_status(key) == Input.HOLD
 
-    def is_up(self, key: int):
+    def is_up(self, key: int | str):
         return self.get_status(key) == Input.UP
 
-    def any_is_not_pressed(self, *keys: int):
+    def is_applying(self, key: int | str, no_reset=False):
+        self.try_start_observing(key)
+
+        current_time = time()
+        dt = current_time - self.__get_time(key)
+        is_hold_first_time = self.__is_hold_first_time(key)
+        hold_duration = Input.FIRST_HOLD_DURATION if is_hold_first_time else Input.HOLD_DURATION
+
+        if self.is_up(key) and dt < hold_duration and is_hold_first_time:
+            return True
+
+        if self.is_hold(key) and dt >= hold_duration:
+            if isinstance(key, int):
+                if not no_reset:
+                    self._keys_data[key][1:] = [current_time, False]
+
+                return True
+
+            for _key in self._generalized_keys[key]:
+                if not no_reset:
+                    self._keys_data[_key][1:] = [current_time, False]
+
+            return True
+
+        return False
+
+    def any_is_not_pressed(self, *keys: int | str):
         for key in keys:
             if self.get_status(key) == Input.NOT_PRESSED:
                 return True
 
         return False
 
-    def any_is_down(self, *keys: int):
+    def any_is_down(self, *keys: int | str):
         for key in keys:
             if self.get_status(key) == Input.DOWN:
                 return True
 
         return False
 
-    def any_is_hold(self, *keys: int):
+    def any_is_hold(self, *keys: int | str):
         for key in keys:
             if self.get_status(key) == Input.HOLD:
                 return True
 
         return False
 
-    def any_is_up(self, *keys: int):
+    def any_is_up(self, *keys: int | str):
         for key in keys:
             if self.get_status(key) == Input.UP:
                 return True
 
         return False
 
+    def any_is_applying(self, *keys: int | str, no_reset=False):
+        for key in keys:
+            if self.is_applying(key, no_reset):
+                return True
+
+        return False
+
     def process_event(self, e: Event):
-        if e.type == KEYDOWN and e.key in self.key_data:
-            self.key_data[e.key] = Input.DOWN
-        elif e.type == KEYUP and e.key in self.key_data:
-            self.key_data[e.key] = Input.UP
-    
+        if e.type == KEYDOWN and e.key in self._keys_data:
+            self._keys_data[e.key][0] = Input.DOWN
+        elif e.type == KEYUP and e.key in self._keys_data:
+            self._keys_data[e.key][0] = Input.UP
+
     def flip(self):
-        for key in self.key_data:
-            if self.key_data[key] == Input.DOWN:
-                self.key_data[key] = Input.HOLD
-            elif self.key_data[key] == Input.UP:
-                self.key_data[key] = Input.NOT_PRESSED
+        for key in self._keys_data:
+            if self._keys_data[key][0] == Input.DOWN:
+                self._keys_data[key][:-1] = [Input.HOLD, time()]
+            elif self._keys_data[key][0] == Input.UP:
+                self.reset(key)
 
 
 _active_input: Input | None = None
