@@ -1,5 +1,5 @@
 from pygame import MOUSEBUTTONDOWN, MOUSEBUTTONUP, MOUSEWHEEL
-from pygame.mouse import get_pos, get_rel
+from pygame import mouse as pg_mouse
 from pygame.event import Event
 from pygex.input import Input
 
@@ -9,9 +9,10 @@ class Mouse:
         global _active_mouse
         _active_mouse = self
 
+        self._last_pos = pg_mouse.get_pos()
+
         self.button_statuses = [Input.NOT_PRESSED] * 3
         self.mouse_wheel = (0, 0)
-        self.get_pos = get_pos
 
     @property
     def left_is_not_pressed(self):
@@ -74,8 +75,18 @@ class Mouse:
         return self.rel != (0, 0)
 
     @property
+    def relx(self):
+        return self._last_pos[0] - pg_mouse.get_pos()[0]
+
+    @property
+    def rely(self):
+        return self._last_pos[1] - pg_mouse.get_pos()[1]
+
+    @property
     def rel(self):
-        return get_rel()
+        return self.relx, self.rely
+
+    get_pos = pg_mouse.get_pos
 
     def process_event(self, e: Event):
         if e.type == MOUSEWHEEL:
@@ -98,6 +109,7 @@ class Mouse:
                 self.button_statuses[i] = Input.NOT_PRESSED
 
         self.mouse_wheel = (0, 0)
+        self._last_pos = pg_mouse.get_pos()
 
 
 _active_mouse: Mouse | None = None
