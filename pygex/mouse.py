@@ -12,7 +12,7 @@ class Mouse:
         self._last_pos = pg_mouse.get_pos()
 
         self.button_statuses = [Input.NOT_PRESSED] * 3
-        self.mouse_wheel = (0, 0)
+        self.wheel = (0, 0)
 
     @property
     def left_is_not_pressed(self):
@@ -64,11 +64,15 @@ class Mouse:
 
     @property
     def is_wheel_up(self):
-        return self.mouse_wheel[0] > 0
+        return self.wheel[0] > 0
 
     @property
     def is_wheel_down(self):
-        return self.mouse_wheel[0] < 0
+        return self.wheel[0] < 0
+
+    @property
+    def is_wheel(self):
+        return self.wheel != (0, 0)
 
     @property
     def is_moved(self):
@@ -90,7 +94,7 @@ class Mouse:
 
     def process_event(self, e: Event):
         if e.type == MOUSEWHEEL:
-            self.mouse_wheel = (e.x, e.y)
+            self.wheel = (e.x, e.y)
 
         event_types = (MOUSEBUTTONDOWN, MOUSEBUTTONUP)
         statuses = (Input.DOWN, Input.UP)
@@ -108,7 +112,7 @@ class Mouse:
             elif self.button_statuses[i] == Input.UP:
                 self.button_statuses[i] = Input.NOT_PRESSED
 
-        self.mouse_wheel = (0, 0)
+        self.wheel = (0, 0)
         self._last_pos = pg_mouse.get_pos()
 
 
