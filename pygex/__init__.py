@@ -23,7 +23,7 @@ def process_event(e: Event, default_quit=True):
         exit()
 
     _mouse.process_event(e)
-    _mouse.process_event(e)
+    _input.process_event(e)
 
 
 def flip(bg_color: colorValue | None = None, fps_limit: float | None = None):
