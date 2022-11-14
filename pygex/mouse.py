@@ -113,7 +113,7 @@ class Mouse:
                 self.button_statuses[i] = Input.NOT_PRESSED
 
         self.wheel = (0, 0)
-        self._last_pos = pg_mouse.get_pos()
+        self._last_pos = pg_mouse_get_pos()
 
 
 _active_mouse: Mouse | None = None

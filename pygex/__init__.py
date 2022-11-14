@@ -1,4 +1,4 @@
-from pygame.display import flip as pg_flip, get_surface as get_display_surface
+from pygame.display import flip as pg_flip, get_surface as get_display_surface, init as display_init
 from pygex.mouse import Mouse, get_mouse
 from pygex.input import Input, get_input
 from pygex.color import colorValue
@@ -6,6 +6,8 @@ from pygame.constants import QUIT
 from pygame.event import Event
 from pygame.time import Clock
 
+
+display_init()
 
 _mouse = Mouse()
 _input = Input()
