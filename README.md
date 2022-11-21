@@ -1,4 +1,4 @@
-# PygEx
+# PygEx (Pygame Extended)
 Extended library for pygame users
 
 ### Requirements
