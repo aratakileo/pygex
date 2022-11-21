@@ -1,6 +1,24 @@
 # PygEx (Pygame Extended)
 Extended library for pygame users
 
+##### Navigation
+- [Preview](#preview)
+- [Requirements](#requirements)
+- [How to install](#how-to-install-pygex)
+
+### Preview
+This module include:
+- More advanced mouse controller (`mouse.py`: each button can be in one of four pressing statuses: not pressed, button down, held, button up)
+- More advanced keys input controller (`input.py`: each key can be in one of four pressing statuses: not pressed, key down, held, key up)
+- Extensive functionality for manipulating color (by default, all color values of this module are accepted as an argument of functions that are not included in the submodule `color.py `, are expected only in HEX or AHEX format, and not as in pygame - HEXA)
+- Function for calculating the Bezier curve (`math.py`)
+- Functions for Gaussian blur, mask cutting, and corner rounding for pygame Surface (`image.py`)
+- Function for more convenient text rendering, with the ability to buffer the font by size, as well as render text by font size (`text.py`)
+
+Use examples:
+- [Drawing application](https://github.com/teacondemns/upaint)
+- [Bezier curve editor](https://github.com/teacondemns/bezier-curve)
+
 ### Requirements
 - `python >= 3.10`
 
@@ -27,7 +45,7 @@ python3 -m pip install git+https://github.com/teacondemns/pygex.git
 ```
 </details>
 
-### If `pygame` installation failed for `python3.11`
+##### If `pygame` installation failed for `python3.11`
 ```
 pip install pygame --pre
 ```
