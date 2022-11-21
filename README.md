@@ -23,6 +23,7 @@ Use examples:
 - `python >= 3.10`
 
 ### How to install `pygex`
+Just use this command
 ```
 pip install git+https://github.com/teacondemns/pygex.git
 ```
@@ -45,7 +46,7 @@ python3 -m pip install git+https://github.com/teacondemns/pygex.git
 ```
 </details>
 
-##### If `pygame` installation failed for `python3.11`
+If `pygame` installation failed for `python3.11`, just use this command to fix it
 ```
 pip install pygame --pre
 ```
