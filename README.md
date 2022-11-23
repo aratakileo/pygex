@@ -21,6 +21,7 @@ Use examples:
 
 ### Requirements
 - `python >= 3.10`
+- `pygame >= 2.0`
 
 ### How to install `pygex`
 Just use this command
