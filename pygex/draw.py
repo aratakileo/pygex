@@ -4,17 +4,18 @@ from pygex.color import colorValue
 from pygex.text import render_text
 from pygame.rect import RectType
 from typing import Sequence
+from math import ceil
 
 
 def grid(
         surface: SurfaceType,
         color: colorValue,
-        scale_interval: int,
+        scale_interval: float | int,
         bounds: Sequence | RectType,
         offset: Sequence = (0, 0),
         width: int = 1
 ):
-    for ix in range(1, bounds[2] // scale_interval + 2):
+    for ix in range(1, ceil(bounds[2] / scale_interval + 1)):
         x = bounds[0] + ix * (scale_interval + width) - offset[0] % (scale_interval + width)
 
         if x > bounds[0] + bounds[2] or x < bounds[0]:
@@ -22,7 +23,7 @@ def grid(
 
         draw_line(surface, color, (x, bounds[1]), (x, bounds[1] + bounds[3]), width)
 
-    for iy in range(1, bounds[3] // scale_interval + 2):
+    for iy in range(1, ceil(bounds[3] / scale_interval + 1)):
         y = bounds[1] + iy * (scale_interval + width) - offset[1] % (scale_interval + width)
 
         if y > bounds[1] + bounds[3] or y < bounds[1]:
