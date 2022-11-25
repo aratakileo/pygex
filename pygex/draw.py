@@ -62,6 +62,6 @@ def hint(
         elif box_y < bounds_in[1]:
             box_y = bounds_in[1]
 
-    draw_rect(surface, 0, (box_x, box_y, textw + padding * 2, texth + padding * 2), 0, 5)
+    draw_rect(surface, 0, (box_x, box_y, boxw, boxh), 0, 5)
 
     surface.blit(text_surface, (box_x + padding, box_y + padding))
