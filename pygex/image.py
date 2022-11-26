@@ -1,8 +1,12 @@
-from pygame.image import frombuffer as pg_image_frombuffer, tostring as pg_image_tostring
+from pygame.image import frombuffer as pg_image_frombuffer, tostring as pg_image_tostring, save as pg_save_image
 from PIL import Image as PillowImage, ImageFilter as PillowImageFilter
+from pygame.display import get_surface, get_caption
 from pygame.surface import Surface, SurfaceType
 from pygame.draw import rect as pg_draw_rect
+from datetime import datetime
 from typing import Sequence
+from os.path import isdir
+from os import makedirs
 
 
 def pillow_to_pygame(source: PillowImage):
@@ -22,7 +26,6 @@ def cutout_by_mask(source: SurfaceType, mask: SurfaceType):
     The cutout color on the mask is black (#000000)
 
     :param source: original Surface
-
     :param mask: mask for cutout
     """
     new_source = source.copy()
@@ -51,4 +54,15 @@ def round_corners(source: SurfaceType, radius: int | tuple[int, int, int, int] |
     return cutout_by_mask(source, mask)
 
 
-__all__ = 'pillow_to_pygame', 'pygame_to_pillow', 'blur', 'cutout_by_mask', 'round_corners'
+def take_screenshot(directory='./screenshots'):
+    if not isdir(directory):
+        makedirs(directory)
+
+    pg_save_image(
+        get_surface(),
+        directory + '/' +
+        f'screenshot_{datetime.now().strftime("%d-%m-%Y-%H-%M-%S-%f")}_{get_caption()[0].lower().replace(" ", "")}.png'
+    )
+
+
+__all__ = 'pillow_to_pygame', 'pygame_to_pillow', 'blur', 'cutout_by_mask', 'round_corners', 'take_screenshot'
