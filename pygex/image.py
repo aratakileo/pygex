@@ -61,7 +61,7 @@ def take_screenshot(directory='./screenshots'):
     pg_save_image(
         get_surface(),
         directory + '/' +
-        f'screenshot_{datetime.now().strftime("%d-%m-%Y-%H-%M-%S-%f")}_{get_caption()[0].lower().replace(" ", "")}.png'
+        f'screenshot_{datetime.now().strftime("%d-%m-%Y-%H-%M-%S-%f")}_{get_caption()[0].lower().replace(" ", "_")}.png'
     )
 
 
