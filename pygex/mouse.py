@@ -1,6 +1,6 @@
+from pygame.display import get_window_size as pg_win_get_size, get_desktop_sizes as pg_get_desktop_sizes
+from pygame.constants import MOUSEBUTTONDOWN, MOUSEBUTTONUP, MOUSEWHEEL, WINDOWMOVED
 from pygame.mouse import get_pos as pg_mouse_get_pos, set_pos as pg_mouse_set_pos
-from pygame.constants import MOUSEBUTTONDOWN, MOUSEBUTTONUP, MOUSEWHEEL
-from pygame.display import get_window_size
 from pygame.event import Event, set_grab
 from pygex.input import Input
 from typing import Sequence
@@ -16,6 +16,17 @@ class Mouse:
         _active_mouse = self
 
         self._last_pos = pg_mouse_get_pos()
+
+        # ABOUT THIS VARIABLE:
+        # - the window position is necessary for `flip()` function to prevent a bug related
+        # to the difference between the maximum mouse position and the maximum position
+        # to the right or bottom of the window
+        # - the window initially appears in the center (by default)
+        # - storing and retrieving the window position separately in this class is necessary
+        # to avoid recursions with the module `window.py`
+        self._win_pos = pg_get_desktop_sizes()[0]
+        self._win_pos = (self._win_pos[0] - pg_win_get_size()[0]) // 2, (self._win_pos[1] - pg_win_get_size()[1]) // 2
+
         self.flags = 0
 
         self.button_statuses = [Input.NOT_PRESSED] * 3
@@ -140,21 +151,36 @@ class Mouse:
                     if e.button == k + 1:
                         self.button_statuses[k] = statuses[i]
 
+        if e.type == WINDOWMOVED:
+            self._win_pos = e.x, e.y
+
     def flip(self):
         set_grab(bool(self.flags & Mouse.FLAG_CONFINED))
 
         if self.flags & Mouse.FLAG_NO_BORDERS:
-            if self.x > get_window_size()[0]:
+            winw, winh = pg_win_get_size()
+            desktopw, desktoph = pg_get_desktop_sizes()[0]
+
+            offset_x = offset_y = 0
+
+            # ABOUT THIS TWO CONDITIONS:
+            # - when the right or bottom of the window becomes adjacent to the right or bottom of the desktop
+            # the difference between these values and the maximum mouse position is 6
+            if self._win_pos[0] >= desktopw - winw - 5:
+                offset_x = 6
+
+            if self._win_pos[1] >= desktoph - winh - 5:
+                offset_y = 6
+
+            if self.x > winw - offset_x:
                 self.x = 0
+            elif self.x <= 0:
+                self.x = winw
 
-            if self.x < 0:
-                self.x = get_window_size()[0]
-
-            if self.y > get_window_size()[1]:
+            if self.y > winh - offset_y:
                 self.y = 0
-
-            if self.y < 0:
-                self.y = get_window_size()[1]
+            elif self.y <= 0:
+                self.y = winh
 
         for i in range(len(self.button_statuses)):
             if self.button_statuses[i] == Input.DOWN:
@@ -166,7 +192,7 @@ class Mouse:
         self._last_pos = pg_mouse_get_pos()
 
         if self.flags & Mouse.FLAG_CAPTURED:
-            pg_mouse_set_pos(get_window_size()[0] / 2, get_window_size()[1] / 2)
+            pg_mouse_set_pos(pg_win_get_size()[0] / 2, pg_win_get_size()[1] / 2)
 
 
 _active_mouse: Mouse | None = None
