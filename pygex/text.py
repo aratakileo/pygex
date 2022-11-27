@@ -17,12 +17,7 @@ def get_pygame_font(font_or_size: FontType | int = 20):
     return font_or_size
 
 
-def render_text(
-        text: any,
-        alpha_color: colorValue,
-        font_or_size: FontType | int = 20,
-        antialias=True
-):
+def render_text(text, alpha_color: colorValue, font_or_size: FontType | int = 20, antialias=True):
     return get_pygame_font(font_or_size).render(text.__str__(), antialias, to_pygame_alpha_color(alpha_color))
 
 
