@@ -1,6 +1,7 @@
 from pygame.draw import line as draw_line, rect as draw_rect
+from pygex.color import colorValue, to_pygame_alpha_color
 from pygame.surface import SurfaceType
-from pygex.color import colorValue
+from pygex.image import AlphaSurface
 from pygex.text import render_text
 from pygame.rect import RectType
 from typing import Sequence
@@ -37,11 +38,13 @@ def hint(
         text,
         anchor_bounds: Sequence | RectType,
         bounds_in: Sequence,
+        text_color: colorValue = 0xffffff,
+        bg_color: colorValue = 0xaa000000,
         padding=3,
         upper=False,
         strict_fit_in=False
 ):
-    text_surface = render_text(text, 0xffffff)
+    text_surface = render_text(text, text_color)
     textw, texth = text_surface.get_size()
 
     box_x = anchor_bounds[0] + (anchor_bounds[2] - textw) / 2 - padding * 2
@@ -62,6 +65,9 @@ def hint(
         elif box_y < bounds_in[1]:
             box_y = bounds_in[1]
 
-    draw_rect(surface, 0, (box_x, box_y, boxw, boxh), 0, 5)
+    box_surface = AlphaSurface((boxw, boxh))
 
+    draw_rect(box_surface, to_pygame_alpha_color(bg_color), (0, 0, boxw, boxh), 0, 5)
+
+    surface.blit(box_surface, (box_x, box_y))
     surface.blit(text_surface, (box_x + padding, box_y + padding))
