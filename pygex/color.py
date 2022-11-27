@@ -156,14 +156,13 @@ def to_black_white(color: colorValue):
 def to_pygame_alpha_color(color: colorValue):
     """
     Converting color from AHEX or HEX to HEXA (color format in pygame is HEXA)
-
     :param color: alpha format: AHEX, HEX, RGBA
     """
     if isinstance(color, int):
         if has_alpha(color):
-            return ahex_to_hexa(color)
+            return ahex_to_rgba(color)
 
-        return hex_to_hexa(color)
+        return ahex_to_rgba(color | 0xff << 24)
 
     if isinstance(color, Sequence) and len(color) < 4:
         return *color, 255  # converting rgb to rgba
