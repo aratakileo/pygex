@@ -16,7 +16,7 @@ def grid(
         width: int = 1
 ):
     for ix in range(1, ceil(bounds[2] / scale_interval + 1)):
-        x = bounds[0] + ix * (scale_interval + width) - offset[0] % (scale_interval + width)
+        x = bounds[0] + ix * (scale_interval - width / 2) - offset[0] % (scale_interval - width / 2)
 
         if x > bounds[0] + bounds[2] or x < bounds[0]:
             continue
@@ -24,7 +24,7 @@ def grid(
         draw_line(surface, color, (x, bounds[1]), (x, bounds[1] + bounds[3]), width)
 
     for iy in range(1, ceil(bounds[3] / scale_interval + 1)):
-        y = bounds[1] + iy * (scale_interval + width) - offset[1] % (scale_interval + width)
+        y = bounds[1] + iy * (scale_interval - width / 2) - offset[1] % (scale_interval - width / 2)
 
         if y > bounds[1] + bounds[3] or y < bounds[1]:
             continue
