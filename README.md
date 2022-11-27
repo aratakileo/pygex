@@ -12,7 +12,7 @@ This module include:
 - More advanced keys input controller (`input.py`: each key can be in one of four pressing statuses: not pressed, key down, held, key up)
 - Extensive functionality for manipulating color (by default, all color values of this module are accepted as an argument of functions that are not included in the submodule `color.py `, are expected only in HEX or AHEX format, and not as in pygame - HEXA)
 - Function for calculating the Bezier curve (`math.py`)
-- Functions for Gaussian blur, mask cutting, and corner rounding for pygame Surface (`image.py`)
+- Functions for Gaussian blur, mask cutting, taking screenshot, and corner rounding for pygame Surface (`image.py`)
 - Function for more convenient text rendering, with the ability to buffer the font by size, as well as render text by font size (`text.py`)
 - Drawing the simplest interface elements (`draw.py`)
 
