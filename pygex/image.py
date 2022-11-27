@@ -2,7 +2,12 @@ from pygame.image import frombuffer as pg_image_frombuffer, tostring as pg_image
 from PIL import Image as PillowImage, ImageFilter as PillowImageFilter
 from pygame.surface import Surface, SurfaceType
 from pygame.draw import rect as pg_draw_rect
+from pygame.constants import SRCALPHA
 from typing import Sequence
+
+
+def AlphaSurface(size: Sequence, flags: int = 0):
+    return Surface(size, flags | SRCALPHA, 32)
 
 
 def pillow_to_pygame(source: PillowImage):
@@ -50,4 +55,4 @@ def round_corners(source: SurfaceType, radius: int | tuple[int, int, int, int] |
     return cutout_by_mask(source, mask)
 
 
-__all__ = 'pillow_to_pygame', 'pygame_to_pillow', 'blur', 'cutout_by_mask', 'round_corners'
+__all__ = 'AlphaSurface', 'pillow_to_pygame', 'pygame_to_pillow', 'blur', 'cutout_by_mask', 'round_corners'
