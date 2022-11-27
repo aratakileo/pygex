@@ -1,6 +1,5 @@
-from pygame.constants import (
-    KEYDOWN, KEYUP, K_LCTRL, K_RCTRL, K_LALT, K_RALT, K_RETURN, K_KP_ENTER, K_KP_PERIOD, K_PERIOD, K_LSHIFT, K_RSHIFT
-)
+from pygame.constants import KEYDOWN, KEYUP, K_LCTRL, K_RCTRL, K_LALT, K_RALT, K_RETURN, K_KP_ENTER, K_KP_PERIOD
+from pygame.constants import K_PERIOD, K_LSHIFT, K_RSHIFT
 from pygame.event import Event
 from time import time
 
