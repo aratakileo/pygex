@@ -118,15 +118,20 @@ class Window:
     def remove_flags(self, flags: int):
         self.flags &= ~flags
 
-    def take_screenshot(self, save_directory='./screenshots'):
+    def take_screenshot(self, save_directory='./screenshots', successful_toast=True):
         if not isdir(save_directory):
             makedirs(save_directory)
 
+        save_path = save_directory + '/' + 'screenshot_' + datetime.now().strftime("%d-%m-%Y-%H-%M-%S-%f") + '_'
+        save_path += self.title.lower().replace(" ", "_") + '.png'
+
         pg_save_image(
             pg_win_get_surface(),
-            save_directory + '/' +
-            f'screenshot_{datetime.now().strftime("%d-%m-%Y-%H-%M-%S-%f")}_{self.title.lower().replace(" ", "_")}.png'
+            save_path
         )
+
+        if successful_toast:
+            self.show_toast(f'Screenshot "{save_path}" saved!')
 
     def show_toast(self, text, delay=Toast.SHORT_DELAY):
         return Toast(text, delay).show()
