@@ -83,6 +83,10 @@ def ahex_to_hexa(color: int):
     return remove_alpha(color) << 8 | get_alpha(color)
 
 
+def ahex_to_rgba(color: int):
+    return (color >> 16) & 0xff, (color >> 8) & 0xff, color & 0xff, (color >> 24) & 0xff
+
+
 def color_as_int(color: colorValue):
     if isinstance(color, Sequence):
         if len(color) == 3:
@@ -201,6 +205,7 @@ __all__ = (
     'argb_to_ahex',
     'hex_to_hexa',
     'ahex_to_hexa',
+    'ahex_to_rgba',
     'color_as_int',
     'invert',
     'to_gray',
