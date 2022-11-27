@@ -122,16 +122,16 @@ class Window:
         if not isdir(save_directory):
             makedirs(save_directory)
 
-        save_path = save_directory + '/' + 'screenshot_' + datetime.now().strftime("%d-%m-%Y-%H-%M-%S-%f") + '_'
-        save_path += self.title.lower().replace(" ", "_") + '.png'
+        file_name = 'screenshot_' + datetime.now().strftime("%d-%m-%Y-%H-%M-%S-%f") + '_'
+        file_name += self.title.lower().replace(" ", "_") + '.png'
 
         pg_save_image(
             pg_win_get_surface(),
-            save_path
+            save_directory + '/' + file_name
         )
 
         if successful_toast:
-            self.show_toast(f'Screenshot "{save_path}" saved!')
+            self.show_toast(f'Screenshot "{file_name}" saved!')
 
     def show_toast(self, text, delay=Toast.SHORT_DELAY):
         return Toast(text, delay).show()
