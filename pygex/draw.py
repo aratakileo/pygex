@@ -35,13 +35,12 @@ def grid(
 def hint(
         surface: SurfaceType,
         text,
-        text_size: int,
         anchor_bounds: Sequence | RectType,
         bounds_in: Sequence,
         upper=False,
         strict_fit_in=False
 ):
-    text_surface = render_text(text, 0xffffff, text_size)
+    text_surface = render_text(text, 0xffffff)
     textw, texth = text_surface.get_size()
     padding = 3
 
