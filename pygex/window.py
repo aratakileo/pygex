@@ -2,6 +2,7 @@ from pygame.display import set_mode as pg_win_set_mode, set_caption as pg_win_se
 from pygame.display import get_surface as pg_win_get_surface, get_window_size as pg_win_get_size
 from pygame.display import get_caption as pg_win_get_caption, init as pg_display_init
 from pygame.display import get_desktop_sizes as pg_get_desktop_sizes
+from pygex.gui.toast import Toast, render as render_toasts
 from pygame.constants import QUIT, FULLSCREEN, RESIZABLE
 from pygame.image import save as pg_save_image
 from pygame.time import Clock as pg_Clock
@@ -127,6 +128,9 @@ class Window:
             f'screenshot_{datetime.now().strftime("%d-%m-%Y-%H-%M-%S-%f")}_{self.title.lower().replace(" ", "_")}.png'
         )
 
+    def show_toast(self, text, delay=Toast.SHORT_DELAY):
+        return Toast(text, delay).show()
+
     def process_event(self, e: Event):
         if self.default_quit and e.type == QUIT:
             exit()
@@ -135,6 +139,7 @@ class Window:
         get_input().process_event(e)
 
     def flip(self):
+        render_toasts(pg_win_get_surface())
         pg_display_flip()
         get_mouse().flip()
         get_input().flip()
