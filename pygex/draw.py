@@ -37,12 +37,12 @@ def hint(
         text,
         anchor_bounds: Sequence | RectType,
         bounds_in: Sequence,
+        padding=3,
         upper=False,
         strict_fit_in=False
 ):
     text_surface = render_text(text, 0xffffff)
     textw, texth = text_surface.get_size()
-    padding = 3
 
     box_x = anchor_bounds[0] + (anchor_bounds[2] - textw) / 2 - padding * 2
     box_y = anchor_bounds[1] + anchor_bounds[3]
