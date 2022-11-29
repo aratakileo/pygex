@@ -1,8 +1,6 @@
-from pygame.draw import line as draw_line, rect as draw_rect
-from pygex.color import colorValue, to_pygame_alpha_color
+from pygame.draw import line as draw_line
 from pygame.surface import SurfaceType
-from pygex.image import AlphaSurface
-from pygex.text import render_text
+from pygex.color import colorValue
 from pygame.rect import RectType
 from typing import Sequence
 from math import ceil
@@ -33,41 +31,4 @@ def grid(
         draw_line(surface, color, (bounds[0], y), (bounds[0] + bounds[2], y), width)
 
 
-def hint(
-        surface: SurfaceType,
-        text,
-        anchor_bounds: Sequence | RectType,
-        bounds_in: Sequence,
-        text_color: colorValue = 0xffffff,
-        bg_color: colorValue = 0xaa000000,
-        padding=3,
-        upper=False,
-        strict_fit_in=False
-):
-    text_surface = render_text(text, text_color)
-    textw, texth = text_surface.get_size()
-
-    box_x = anchor_bounds[0] + (anchor_bounds[2] - textw) / 2 - padding * 2
-    box_y = anchor_bounds[1] + anchor_bounds[3]
-    boxw, boxh = textw + padding * 2, texth + padding * 2
-
-    if box_y + boxh > bounds_in[1] + bounds_in[3] or (upper and anchor_bounds[1] > boxh):
-        box_y = anchor_bounds[1] - texth - padding * 2
-
-    if strict_fit_in:
-        if box_x + boxw > bounds_in[0] + bounds_in[2]:
-            box_x = bounds_in[0] + bounds_in[2] - boxw
-        elif box_x < bounds_in[0]:
-            box_x = bounds_in[0]
-
-        if box_y + boxh > bounds_in[1] + bounds_in[3]:
-            box_y = bounds_in[1] + bounds_in[3] - boxh
-        elif box_y < bounds_in[1]:
-            box_y = bounds_in[1]
-
-    box_surface = AlphaSurface((boxw, boxh))
-
-    draw_rect(box_surface, to_pygame_alpha_color(bg_color), (0, 0, boxw, boxh), 0, 5)
-
-    surface.blit(box_surface, (box_x, box_y))
-    surface.blit(text_surface, (box_x + padding, box_y + padding))
+__all__ = 'grid',
