@@ -64,4 +64,4 @@ def gradient(size: Sequence, colors: Sequence[colorValue], is_vertical=False):
     return pg_smoothscale(colors_line_surface, size)
 
 
-__all__ = 'AlphaSurface', 'pillow_to_pygame', 'pygame_to_pillow', 'blur', 'cutout_by_mask', 'round_corners'
+__all__ = 'AlphaSurface', 'pillow_to_pygame', 'pygame_to_pillow', 'blur', 'cutout_by_mask', 'round_corners', 'gradient'
