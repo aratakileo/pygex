@@ -18,13 +18,21 @@ from time import time
 
 
 class Window:
-    def __init__(self, size: Sequence = (800, 600), title='Pygex window', vsync=False, flags=0):
+    def __init__(
+            self,
+            size: Sequence = (800, 600),
+            title='Pygex window',
+            fullscreen=False,
+            resizable=True,
+            vsync=False,
+            flags=0
+    ):
         global _active_window
         _active_window = self
 
         pg_display_init()
 
-        pg_win_set_mode(size, flags | RESIZABLE, vsync=vsync)
+        pg_win_set_mode(size, flags | RESIZABLE * resizable, vsync=vsync)
         pg_win_set_caption(title)
 
         if get_mouse() is None:
@@ -44,6 +52,9 @@ class Window:
         self.default_quit = True
         self.fps_limit: float | None = None
         self.bg_color: colorValue | None = None
+
+        if fullscreen:
+            self.fullscreen = True
 
     @property
     def title(self):
