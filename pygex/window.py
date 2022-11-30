@@ -1,9 +1,9 @@
 from pygame.display import set_mode as pg_win_set_mode, set_caption as pg_win_set_caption, flip as pg_display_flip
 from pygame.display import get_surface as pg_win_get_surface, get_window_size as pg_win_get_size
 from pygame.display import get_caption as pg_win_get_caption, init as pg_display_init
+from pygame.constants import QUIT, FULLSCREEN, RESIZABLE, WINDOWMOVED
 from pygame.display import get_desktop_sizes as pg_get_desktop_sizes
 from pygex.gui.toast import Toast, render as render_toasts
-from pygame.constants import QUIT, FULLSCREEN, RESIZABLE
 from pygame.image import save as pg_save_image
 from pygame.time import Clock as pg_Clock
 from pygex.input import get_input, Input
@@ -49,6 +49,9 @@ class Window:
         self._size = *size,
         self._vsync = vsync
 
+        self._pos = pg_get_desktop_sizes()[0]
+        self._pos = (self._pos[0] - self._size[0]) // 2, (self._pos[1] - self._size[1]) // 2
+
         self.default_quit = True
         self.fps_limit: float | None = None
         self.bg_color: colorValue | None = None
@@ -73,6 +76,18 @@ class Window:
         if not self.fullscreen:
             self._size = *value,
             pg_win_set_mode(value, pg_win_get_surface().get_flags(), vsync=self._vsync)
+
+    @property
+    def pos(self):
+        return (0, 0) if pg_win_get_surface().get_flags() & FULLSCREEN else self._pos
+
+    @property
+    def x(self):
+        return self.pos[0]
+
+    @property
+    def y(self):
+        return self.pos[1]
 
     @property
     def mouse(self):
@@ -150,6 +165,8 @@ class Window:
     def process_event(self, e: Event):
         if self.default_quit and e.type == QUIT:
             exit()
+        elif e.type == WINDOWMOVED:
+            self._pos = e.x, e.y
 
         get_mouse().process_event(e)
         get_input().process_event(e)
