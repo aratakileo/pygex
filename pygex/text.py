@@ -48,7 +48,7 @@ def render_wrapped_text(
     text = text.__str__().rstrip()
     color = to_pygame_alpha_color(color)
 
-    if not text or lines <= 0:
+    if not text or lines is not ... and lines <= 0:
         return None
 
     font = get_pygame_font(font_or_size)
