@@ -53,15 +53,14 @@ def render_wrapped_text(
 
     font = get_pygame_font(font_or_size)
     textw = font.size(text)[0]
+    is_single_line = '\n' not in text and (textw <= rect[2] or lines == 1)
 
-    if (
-            align == ALIGN_LEFT or align == ALIGN_BLOCK and ' ' not in text.strip()
-    ) and '\n' not in text and textw <= rect[2]:
+    if (align == ALIGN_LEFT or align == ALIGN_BLOCK and ' ' not in text.strip()) and is_single_line:
         return font.render(text, antialias, color)
 
     output_surface = AlphaSurface(rect[2:])
 
-    if '\n' not in text and textw <= rect[2] and align in (ALIGN_RIGHT, ALIGN_CENTER):
+    if is_single_line and align in (ALIGN_RIGHT, ALIGN_CENTER):
         if align == ALIGN_RIGHT:
             output_surface.blit(font.render(text, antialias, color), (rect[2] - textw, 0))
         else:
