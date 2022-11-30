@@ -1,16 +1,10 @@
 from pygame.display import get_window_size as pg_win_get_size
+from pygex.color import colorValue, to_pygame_alpha_color
 from pygame.draw import rect as pg_draw_rect
 from pygame.surface import SurfaceType
 from pygex.image import AlphaSurface
 from pygex.text import render_text
 from time import time
-
-
-_ANIMATION_DELAY = 0.25
-
-
-_toast_start_time = -1
-_toast_queue = []
 
 
 class Toast:
@@ -20,6 +14,11 @@ class Toast:
     def __init__(self, text, delay: float | int = SHORT_DELAY):
         self.text = text
         self.delay = delay
+
+        self.animation_delay = 0.25
+        self.padding = 10
+        self.text_color: colorValue = 0xffffff
+        self.bg_color: colorValue = 0xaa000000
 
     def show(self):
         if self not in _toast_queue:
@@ -32,13 +31,17 @@ class Toast:
             if self is _toast_queue[0]:
                 global _toast_start_time
 
-                if animation and time() - _toast_start_time < self.delay + _ANIMATION_DELAY:
-                    _toast_start_time = time() - self.delay - _ANIMATION_DELAY
+                if animation and time() - _toast_start_time < self.delay + self.animation_delay:
+                    _toast_start_time = time() - self.delay - self.animation_delay
                     return
 
                 _toast_start_time = -1
 
             _toast_queue.remove(self)
+
+
+_toast_start_time = -1
+_toast_queue: list[Toast] = []
 
 
 def render(surface: SurfaceType):
@@ -52,29 +55,28 @@ def render(surface: SurfaceType):
     if _toast_start_time == -1:
         _toast_start_time = current_time
 
-    padding = 10
     toast = _toast_queue[0]
-    text_surface = render_text(toast.text, 0xffffff)
+    text_surface = render_text(toast.text, to_pygame_alpha_color(toast.text_color))
     time_passed = current_time - _toast_start_time
 
     boxw, boxh = text_surface.get_size()
-    boxw, boxh = boxw + padding * 2, boxh + padding * 2
+    boxw, boxh = boxw + toast.padding * 2, boxh + toast.padding * 2
 
-    box_x, box_y = (pg_win_get_size()[0] - boxw) / 2, boxh - padding
+    box_x, box_y = (pg_win_get_size()[0] - boxw) / 2, boxh - toast.padding
 
-    if time_passed <= _ANIMATION_DELAY:
-        box_y = (box_y * 2 / _ANIMATION_DELAY) * time_passed - box_y
-    elif time_passed >= _ANIMATION_DELAY + toast.delay:
-        box_y -= (box_y * 2 / _ANIMATION_DELAY) * (time_passed - _ANIMATION_DELAY - toast.delay)
+    if time_passed <= toast.animation_delay:
+        box_y = (box_y * 2 / toast.animation_delay) * time_passed - box_y
+    elif time_passed >= toast.animation_delay + toast.delay:
+        box_y -= (box_y * 2 / toast.animation_delay) * (time_passed - toast.animation_delay - toast.delay)
 
     box_surface = AlphaSurface((boxw, boxh))
 
-    pg_draw_rect(box_surface, (0, 0, 0, 0xaa), (0, 0, boxw, boxh), 0, 5)
+    pg_draw_rect(box_surface, to_pygame_alpha_color(toast.bg_color), (0, 0, boxw, boxh), 0, 5)
 
     surface.blit(box_surface, (box_x, box_y))
-    surface.blit(text_surface, (box_x + padding, box_y + padding))
+    surface.blit(text_surface, (box_x + toast.padding, box_y + toast.padding))
 
-    if time_passed >= (toast.delay + _ANIMATION_DELAY * 2):
+    if time_passed >= (toast.delay + toast.animation_delay * 2):
         del _toast_queue[0]
         _toast_start_time = -1
 
