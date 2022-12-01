@@ -15,6 +15,7 @@ This module include:
 - Functions for Gaussian blur, mask cutting, taking screenshot, and corner rounding for pygame Surface (`image.py`)
 - Function for more convenient text rendering, with the ability to buffer the font by size, as well as render text by font size (`text.py`)
 - Drawing the simplest interface elements (`draw.py`)
+- Convenient interface for creating and managing a window (`window.py`)
 
 Use examples:
 - [Drawing application](https://github.com/teacondemns/upaint)
