@@ -7,6 +7,13 @@ Extended library for pygame users
 - [How to install](#how-to-install-pygex)
 
 ### Preview
+
+Use examples:
+
+- [Drawing application](https://github.com/teacondemns/upaint)
+
+- [Bezier curve editor](https://github.com/teacondemns/bezier-curve)
+
 This module include:
 - More advanced mouse controller (`mouse.py`: each button can be in one of four pressing statuses: not pressed, button down, held, button up)
 - More advanced keys input controller (`input.py`: each key can be in one of four pressing statuses: not pressed, key down, held, key up)
@@ -17,9 +24,7 @@ This module include:
 - Drawing the simplest interface elements (`draw.py`)
 - Convenient interface for creating and managing a window (`window.py`)
 
-Use examples:
-- [Drawing application](https://github.com/teacondemns/upaint)
-- [Bezier curve editor](https://github.com/teacondemns/bezier-curve)
+
 
 ### Requirements
 - `python >= 3.10`
