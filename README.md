@@ -7,11 +7,8 @@ Extended library for pygame users
 - [How to install](#how-to-install-pygex)
 
 ### Preview
-
 Use examples:
-
 - [Drawing application](https://github.com/teacondemns/upaint)
-
 - [Bezier curve editor](https://github.com/teacondemns/bezier-curve)
 
 This module include:
@@ -23,8 +20,6 @@ This module include:
 - Function for more convenient text rendering, with the ability to buffer the font by size, as well as render text by font size (`text.py`)
 - Drawing the simplest interface elements (`draw.py`)
 - Convenient interface for creating and managing a window (`window.py`)
-
-
 
 ### Requirements
 - `python >= 3.10`
