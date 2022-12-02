@@ -8,7 +8,7 @@ Extended library for pygame users
 
 ### Preview
 Use examples:
-- [Drawing application](https://github.com/teacondemns/upaint)
+- [Drawing application](https://github.com/teacondemns/vector-paint)
 - [Bezier curve editor](https://github.com/teacondemns/bezier-curve)
 
 This module include:
