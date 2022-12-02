@@ -23,7 +23,7 @@ This module include:
 
 ### Requirements
 - `python >= 3.10`
-- `pygame >= 2.0`
+- `pygame >= 2.0.1`
 
 ### How to install `pygex`
 Just use this command
