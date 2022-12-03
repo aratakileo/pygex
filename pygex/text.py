@@ -1,7 +1,6 @@
 from pygex.color import colorValue, to_pygame_alpha_color
 from pygame.font import FontType, get_init, init, Font
 from pygex.image import AlphaSurface
-from pygame.rect import Rect
 from typing import Sequence
 
 DEFAULT_FONT_SIZE = 20
@@ -35,98 +34,122 @@ def render_text(text, color: colorValue, font_or_size: FontType | int = DEFAULT_
     return get_pygame_font(font_or_size).render(text.__str__(), antialias, to_pygame_alpha_color(color))
 
 
-def render_wrapped_text(
+def render_aligned_text(
         text,
         color: colorValue,
-        rect: Sequence | Rect,
+        size: Sequence,
         font_or_size: FontType | int = DEFAULT_FONT_SIZE,
         align=ALIGN_LEFT,
-        line_spacing=0,
-        lines: int = ...,
-        antialias=True
-):
-    text = text.__str__().rstrip()
-    color = to_pygame_alpha_color(color)
+        line_spacing: float | int = 0,
+        lines_number: int = ...,
+        paragraph_space: float | int = 0,
+        antialias=True):
+    text = text.__str__()
 
-    if not text or lines is not ... and lines <= 0:
+    if not text or lines_number is not ... and lines_number <= 0 or paragraph_space < 0:
         return None
 
     font = get_pygame_font(font_or_size)
-    textw = font.size(text)[0]
-    is_single_line = '\n' not in text and (textw <= rect[2] or lines == 1)
+    char_height = font.get_height() + line_spacing
+    max_lines_number = lines_number if lines_number is not ... else (int(size[1] / char_height) + 1)
 
-    if (align == ALIGN_LEFT or align == ALIGN_BLOCK and ' ' not in text.strip()) and is_single_line:
-        return font.render(text, antialias, color)
+    parsed_queue = [0]
+    char_index = 0
+    line_number = -1
+    text_piece = ''
+    last_space_index = -1
 
-    output_surface = AlphaSurface(rect[2:])
-
-    if is_single_line and align in (ALIGN_RIGHT, ALIGN_CENTER):
-        if align == ALIGN_RIGHT:
-            output_surface.blit(font.render(text, antialias, color), (rect[2] - textw, 0))
-        else:
-            output_surface.blit(font.render(text, antialias, color), ((rect[2] - textw) / 2, 0))
-
-        return output_surface
-
-    space_char_width, charh = font.size(' ')
-
-    charh += line_spacing
-
-    rendered_width = 0
-    line_num = 0
-
-    for line in text.split('\n'):
-        for word in line.rstrip().split(' '):
-            if not word:
-                rendered_width += space_char_width
-                continue
-
-            wordw = font.size(word)[0]
-
-            if rendered_width + wordw >= rect[2] and rendered_width > 0:
-                line_num += 1
-
-                if (line_num + 1) * charh - rect[3] > charh or lines is not ... and line_num == lines:
-                    break
-
-                rendered_width = 0
-
-            if rendered_width == 0 and wordw > rect[2]:
-                chars_in_line = int(rect[2] / (wordw / len(word)))
-                chars_rendered = 0
-
-                while chars_rendered < len(word):
-                    chars_for_render = min(len(word) - chars_rendered, chars_in_line)
-
-                    chars_surface = font.render(
-                        word[chars_rendered: chars_rendered + chars_for_render],
-                        antialias,
-                        color
-                    )
-
-                    output_surface.blit(chars_surface, (0, line_num * charh))
-
-                    rendered_width = chars_surface.get_width()
-                    chars_rendered += chars_for_render
-                    line_num += 1
-
-                    if (line_num + 1) * charh - rect[3] > charh or lines is not ... and line_num == lines:
-                        break
-
-                line_num -= 1
-            else:
-                output_surface.blit(font.render(word, antialias, color), (rendered_width, line_num * charh))
-                rendered_width += wordw
-
-            rendered_width += space_char_width
-
-        rendered_width = 0
-        line_num += 1
-
-        if line_num * charh - rect[3] > charh:
+    while char_index < len(text):
+        if (line_number + 1) >= max_lines_number:
             break
 
-    return output_surface
+        char = text[char_index]
+
+        if char == '\n':
+            if text_piece:
+                parsed_queue.append(text_piece)
+                parsed_queue.append(0)
+            elif isinstance(parsed_queue[-1], int):
+                parsed_queue[-1] += 1
+
+            line_number += 1
+            text_piece = ''
+            char_index += 1
+            continue
+
+        if char == ' ':
+            last_space_index = char_index
+
+        if font.size(text_piece + char)[0] > size[0] - paragraph_space * isinstance(parsed_queue[-1], int):
+            if last_space_index > char_index - len(text_piece):
+                expected_piece_len = len(text_piece)
+                text_piece = text_piece[:last_space_index - char_index + len(text_piece) + 1]
+                char_index -= expected_piece_len - len(text_piece)
+
+            parsed_queue.append(text_piece)
+
+            text_piece = ''
+            line_number += 1
+            continue
+
+        text_piece += char
+
+        if char_index == len(text) - 1:
+            parsed_queue.append(text_piece)
+            break
+
+        char_index += 1
+
+    text_surface = AlphaSurface(size)
+    color = to_pygame_alpha_color(color)
+
+    line_number = 0
+    has_paragraph_space = True
+
+    for segment in parsed_queue:
+        if isinstance(segment, int):
+            has_paragraph_space = True
+            line_number += segment
+            continue
+
+        offset_x = paragraph_space * has_paragraph_space
+
+        y = char_height * line_number
+
+        if align in (ALIGN_LEFT, ALIGN_RIGHT, ALIGN_CENTER) or ' ' not in segment or len(segment.split()) == 1:
+            line_surface = font.render(segment, antialias, color)
+
+            if align == ALIGN_RIGHT:
+                x = size[0] - line_surface.get_width() - offset_x
+            elif align == ALIGN_CENTER:
+                x = (size[0] - line_surface.get_width()) / 2 + offset_x
+            else:
+                x = offset_x
+
+            text_surface.blit(line_surface, (x, y))
+        else:
+            segment_pieces = segment.split(' ')
+            space_width = (size[0] - offset_x - font.size(segment.replace(' ', ''))[0]) / segment.count(' ')
+            spaces_number = 0
+
+            x = offset_x
+
+            for piece in segment_pieces:
+                if not piece:
+                    spaces_number += 1
+                    continue
+
+                x += spaces_number * space_width
+                piece_surface = font.render(piece, antialias, color)
+                text_surface.blit(piece_surface, (x, y))
+                x += piece_surface.get_width()
+
+                spaces_number = 1
+
+        has_paragraph_space = False
+        line_number += 1
+
+    return text_surface
 
 
 __all__ = (
@@ -138,5 +161,5 @@ __all__ = (
     'get_pygame_font',
     'get_text_size',
     'render_text',
-    'render_wrapped_text'
+    'render_aligned_text'
 )
