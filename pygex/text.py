@@ -13,32 +13,32 @@ ALIGN_BLOCK = 3
 _font_buffer = {}
 
 
-def get_pygame_font(font_or_size: FontType | int = DEFAULT_FONT_SIZE):
+def get_pygame_font(font_or_font_size: FontType | int = DEFAULT_FONT_SIZE):
     if not get_init():
         init()
 
-    if isinstance(font_or_size, int):
-        if font_or_size not in _font_buffer:
-            _font_buffer[font_or_size] = Font(None, font_or_size)
+    if isinstance(font_or_font_size, int):
+        if font_or_font_size not in _font_buffer:
+            _font_buffer[font_or_font_size] = Font(None, font_or_font_size)
 
-        return _font_buffer[font_or_size]
+        return _font_buffer[font_or_font_size]
 
-    return font_or_size
-
-
-def get_text_size(text, font_or_size: FontType | int = DEFAULT_FONT_SIZE):
-    return get_pygame_font(font_or_size).size(text.__str__())
+    return font_or_font_size
 
 
-def render_text(text, color: colorValue, font_or_size: FontType | int = DEFAULT_FONT_SIZE, antialias=True):
-    return get_pygame_font(font_or_size).render(text.__str__(), antialias, to_pygame_alpha_color(color))
+def get_text_size(text, font_or_font_size: FontType | int = DEFAULT_FONT_SIZE):
+    return get_pygame_font(font_or_font_size).size(text.__str__())
+
+
+def render_text(text, color: colorValue, font_or_font_size: FontType | int = DEFAULT_FONT_SIZE, antialias=True):
+    return get_pygame_font(font_or_font_size).render(text.__str__(), antialias, to_pygame_alpha_color(color))
 
 
 def render_aligned_text(
         text,
         color: colorValue,
-        size: Sequence,
-        font_or_size: FontType | int = DEFAULT_FONT_SIZE,
+        size_or_width: Sequence | float | int,
+        font_or_font_size: FontType | int = DEFAULT_FONT_SIZE,
         align=ALIGN_LEFT,
         line_spacing: float | int = 0,
         lines_number: int = ...,
@@ -49,18 +49,28 @@ def render_aligned_text(
     if not text or lines_number is not ... and lines_number <= 0 or paragraph_space < 0:
         return None
 
-    font = get_pygame_font(font_or_size)
+    only_horizontal_limit = False
+
+    if isinstance(size_or_width, int) or isinstance(size_or_width, float):
+        only_horizontal_limit = True
+
+    max_width = size_or_width if only_horizontal_limit else size_or_width[0]
+    font = get_pygame_font(font_or_font_size)
     char_height = font.get_height() + line_spacing
-    max_lines_number = lines_number if lines_number is not ... else (int(size[1] / char_height) + 1)
+
+    max_lines_number = lines_number
+
+    if lines_number is ... and not only_horizontal_limit:
+        max_lines_number = int(size_or_width[1] / char_height) + 1
 
     parsed_queue = [0]
     char_index = 0
-    line_number = -1
+    line_number = 0
     text_piece = ''
     last_space_index = -1
 
     while char_index < len(text):
-        if (line_number + 1) >= max_lines_number:
+        if not only_horizontal_limit and line_number >= max_lines_number:
             break
 
         char = text[char_index]
@@ -80,7 +90,7 @@ def render_aligned_text(
         if char == ' ':
             last_space_index = char_index
 
-        if font.size(text_piece + char)[0] > size[0] - paragraph_space * isinstance(parsed_queue[-1], int):
+        if font.size(text_piece + char)[0] > max_width - paragraph_space * isinstance(parsed_queue[-1], int):
             if last_space_index > char_index - len(text_piece):
                 expected_piece_len = len(text_piece)
                 text_piece = text_piece[:last_space_index - char_index + len(text_piece) + 1]
@@ -100,6 +110,7 @@ def render_aligned_text(
 
         char_index += 1
 
+    size = size_or_width if not only_horizontal_limit else (max_width, line_number * char_height)
     text_surface = AlphaSurface(size)
     color = to_pygame_alpha_color(color)
 
