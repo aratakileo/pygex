@@ -10,6 +10,8 @@ ALIGN_RIGHT = 1
 ALIGN_CENTER = 2
 ALIGN_BLOCK = 3
 
+SIZE_WRAP_CONTENT = -2
+
 _font_buffer = {}
 
 
@@ -37,7 +39,7 @@ def render_text(text, color: colorValue, font_or_font_size: FontType | int = DEF
 def render_aligned_text(
         text,
         color: colorValue,
-        size_or_width: Sequence[float | int] | float | int,
+        size: Sequence[float | int],
         font_or_font_size: FontType | int = DEFAULT_FONT_SIZE,
         align=ALIGN_LEFT,
         line_spacing: float | int = 0,
@@ -46,37 +48,36 @@ def render_aligned_text(
         antialias=True):
     text = text.__str__()
 
-    if not text or lines_number is not ... and lines_number <= 0 or paragraph_space < 0:
+    if not text or lines_number is not ... and lines_number <= 0 or paragraph_space < 0 \
+            or size[0] != SIZE_WRAP_CONTENT and size[0] <= 0 or size[1] != SIZE_WRAP_CONTENT and size[1] <= 0:
         return None
 
-    only_horizontal_limit = False
-
-    if isinstance(size_or_width, int) or isinstance(size_or_width, float):
-        only_horizontal_limit = True
-
-    max_width = size_or_width if only_horizontal_limit else size_or_width[0]
     font = get_pygame_font(font_or_font_size)
     char_height = font.get_height() + line_spacing
 
     max_lines_number = lines_number
 
-    if lines_number is ... and not only_horizontal_limit:
-        max_lines_number = int(size_or_width[1] / char_height) + 2
+    if lines_number is ... and size[1] != SIZE_WRAP_CONTENT:
+        max_lines_number = int(size[1] / char_height) + 2
 
     parsed_queue = [0]
     char_index = 0
     line_number = 1
     text_piece = ''
     last_space_index = -1
+    max_width = -1
 
     while char_index < len(text):
-        if not only_horizontal_limit and line_number >= max_lines_number:
+        if size[1] != SIZE_WRAP_CONTENT and line_number >= max_lines_number:
             break
 
         char = text[char_index]
 
         if char == '\n':
             if text_piece:
+                if size[0] == SIZE_WRAP_CONTENT:
+                    max_width = max(max_width, font.size(text_piece)[0])
+
                 parsed_queue.append(text_piece)
                 parsed_queue.append(0)
             elif isinstance(parsed_queue[-1], int):
@@ -90,7 +91,8 @@ def render_aligned_text(
         if char == ' ':
             last_space_index = char_index
 
-        if font.size(text_piece + char)[0] > max_width - paragraph_space * isinstance(parsed_queue[-1], int):
+        if size[0] != SIZE_WRAP_CONTENT \
+                and font.size(text_piece + char)[0] > size[0] - paragraph_space * isinstance(parsed_queue[-1], int):
             if last_space_index > char_index - len(text_piece):
                 expected_piece_len = len(text_piece)
                 text_piece = text_piece[:last_space_index - char_index + len(text_piece) + 1]
@@ -110,7 +112,14 @@ def render_aligned_text(
 
         char_index += 1
 
-    size = size_or_width if not only_horizontal_limit else (max_width, line_number * char_height)
+    if max_width == -1 and size[0] == SIZE_WRAP_CONTENT:
+        max_width = font.size(text_piece)[0]
+
+    size = (
+        size[0] if size[0] != SIZE_WRAP_CONTENT else max_width,
+        size[1] if size[1] != SIZE_WRAP_CONTENT else line_number * char_height
+    )
+
     text_surface = AlphaSurface(size)
     color = to_pygame_alpha_color(color)
 
