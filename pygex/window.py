@@ -89,7 +89,7 @@ class Window:
     @property
     def height(self):
         return self.size[1]
-    
+
     @height.setter
     def height(self, value: int):
         self.size = self.size[0], value
@@ -189,10 +189,6 @@ class Window:
         get_input().process_event(e)
 
     def flip(self, read_events=True):
-        if read_events:
-            for e in get_events():
-                self.process_event(e)
-
         render_toasts(pg_win_get_surface())
         pg_display_flip()
         get_mouse().flip()
@@ -210,6 +206,10 @@ class Window:
 
         if self.fps_limit is not None:
             self._clock.tick(self.fps_limit)
+
+        if read_events:
+            for e in get_events():
+                self.process_event(e)
 
 
 _active_window: Window | None = None
