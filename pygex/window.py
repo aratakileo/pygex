@@ -5,6 +5,7 @@ from pygame.constants import QUIT, FULLSCREEN, RESIZABLE, WINDOWMOVED
 from pygame.display import get_desktop_sizes as pg_get_desktop_sizes
 from pygex.gui.toast import Toast, render as render_toasts
 from pygame.image import save as pg_save_image
+from pygame.event import get as get_events
 from pygame.time import Clock as pg_Clock
 from pygex.input import get_input, Input
 from pygex.mouse import get_mouse, Mouse
@@ -171,7 +172,11 @@ class Window:
         get_mouse().process_event(e)
         get_input().process_event(e)
 
-    def flip(self):
+    def flip(self, read_events=True):
+        if read_events:
+            for e in get_events():
+                self.process_event(e)
+
         render_toasts(pg_win_get_surface())
         pg_display_flip()
         get_mouse().flip()
