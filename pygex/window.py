@@ -79,6 +79,22 @@ class Window:
             pg_win_set_mode(value, pg_win_get_surface().get_flags(), vsync=self._vsync)
 
     @property
+    def width(self):
+        return self.size[0]
+
+    @width.setter
+    def width(self, value: int):
+        self.size = value, self.size[0]
+
+    @property
+    def height(self):
+        return self.size[1]
+    
+    @height.setter
+    def height(self, value: int):
+        self.size = self.size[0], value
+
+    @property
     def pos(self):
         return (0, 0) if pg_win_get_surface().get_flags() & FULLSCREEN else self._pos
 
