@@ -113,7 +113,7 @@ class Mouse:
         return pg_mouse_get_pos()
 
     @pos.setter
-    def pos(self, value: Sequence[float]):
+    def pos(self, value: Sequence[int]):
         pg_mouse_set_pos(value)
 
     @property
@@ -121,7 +121,7 @@ class Mouse:
         return pg_mouse_get_pos()[0]
 
     @x.setter
-    def x(self, value: float):
+    def x(self, value: int):
         pg_mouse_set_pos(value, pg_mouse_get_pos()[1])
 
     @property
@@ -129,7 +129,7 @@ class Mouse:
         return pg_mouse_get_pos()[1]
 
     @y.setter
-    def y(self, value: float):
+    def y(self, value: int):
         pg_mouse_set_pos(pg_mouse_get_pos()[0], value)
 
     def add_flags(self, flags: int):

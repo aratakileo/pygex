@@ -1,13 +1,12 @@
 from pygame import color as pg_color
 from typing import Sequence
 
-colorValue = pg_color.Color | int | str | Sequence
+colorValue = pg_color.Color | int | str | Sequence[int]
 
 
 def has_alpha(color: int):
     """
     Checking if color has alpha channel (works only for AHEX or HEX)
-
     :param color: alpha format AHEX or HEX
     """
     return color > 0xffffff
@@ -16,7 +15,6 @@ def has_alpha(color: int):
 def get_alpha(color: int):
     """
     Checking if color has alpha channel (works only for AHEX or HEX)
-
     :param color: alpha format AHEX or HEX
     """
     return color >> 24
@@ -25,9 +23,7 @@ def get_alpha(color: int):
 def set_alpha(color: int, alpha: int):
     """
     Checking if color has alpha channel (works only for AHEX or HEX)
-
     :param alpha: value from 0x00 to 0xff
-
     :param color: alpha format AHEX or HEX
     """
     return (alpha & 0xff) << 24 | color
@@ -36,7 +32,6 @@ def set_alpha(color: int, alpha: int):
 def remove_alpha(color: int):
     """
     Checking if color has alpha channel (works only for AHEX or HEX)
-
     :param color: alpha format AHEX or HEX
     """
     return color & ~0xff000000
@@ -49,29 +44,15 @@ def from_hex(color: str):
     return tuple(int(color[i:i+2], 16) for i in range(0, len(color), 2))
 
 
-def from_ahex(color: str):
-    if color.startswith('#'):
-        color = color[1:]
-
-    return int(color[:2], 16), *from_hex(color[2:])
-
-
-def from_hexa(color: str):
-    if color.startswith('#'):
-        color = color[1:]
-
-    return from_hex(color[:6]), int(color[6:], 16)
-
-
-def rgb_to_hex(color: Sequence | pg_color.Color):
+def rgb_to_hex(color: Sequence[int] | pg_color.Color):
     return (color[0] & 0xff) << 16 | (color[1] & 0xff) << 8 | (color[2] & 0xff)
 
 
-def rgba_to_ahex(color: Sequence | pg_color.Color):
+def rgba_to_ahex(color: Sequence[int] | pg_color.Color):
     return (color[3] & 0xff) << 24 | rgb_to_hex(color)
 
 
-def argb_to_ahex(color: Sequence | pg_color.Color):
+def argb_to_ahex(color: Sequence[int] | pg_color.Color):
     return (color[0] & 0xff) << 24 | rgb_to_hex(color[1:])
 
 
@@ -101,10 +82,10 @@ def color_as_int(color: colorValue):
         if isinstance(color, str):
             if color.startswith('#'):
                 if len(color) == 7:
-                    return from_hex(color)
+                    return rgb_to_hex(from_hex(color))
 
                 if len(color) == 9:
-                    return from_ahex(color)
+                    return rgba_to_ahex(from_hex(color))
 
                 return None
 
@@ -153,7 +134,16 @@ def to_black_white(color: colorValue):
     return rgba_to_ahex((segment, segment, segment, get_alpha(color)))
 
 
-def to_pygame_alpha_color(color: colorValue):
+def get_readable_text_color(background_color: colorValue):
+    background_color = color_as_int(background_color)
+
+    if background_color is None:
+        return None
+
+    return to_black_white(invert(background_color))
+
+
+def to_pygame_alpha_color(color: colorValue) -> tuple[int, int, int, int] | None:
     """
     Converting color from AHEX or HEX to HEXA (color format in pygame is HEXA)
     :param color: alpha format: AHEX, HEX, RGBA
@@ -173,7 +163,7 @@ def to_pygame_alpha_color(color: colorValue):
                 return from_hex(color)
 
             if len(color) == 9:
-                return from_ahex(color)
+                return from_hex(color)
 
             return None
 
@@ -182,23 +172,12 @@ def to_pygame_alpha_color(color: colorValue):
     return color
 
 
-def get_optimal_text_color(background_color: colorValue):
-    background_color = color_as_int(background_color)
-
-    if background_color is None:
-        return None
-
-    return to_black_white(invert(background_color))
-
-
 __all__ = (
     'colorValue',
     'has_alpha',
     'get_alpha',
     'set_alpha',
     'from_hex',
-    'from_ahex',
-    'from_hexa',
     'rgb_to_hex',
     'rgba_to_ahex',
     'argb_to_ahex',
@@ -210,5 +189,5 @@ __all__ = (
     'to_gray',
     'to_black_white',
     'to_pygame_alpha_color',
-    'get_optimal_text_color'
+    'get_readable_text_color'
 )

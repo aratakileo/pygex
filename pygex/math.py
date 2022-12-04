@@ -1,7 +1,10 @@
 from typing import Sequence
 
 
-def generate_curve(vertexes: Sequence, density: int, fixed_ends=False):
+def generate_curve(
+        vertexes: Sequence[Sequence[float | int]],
+        density: int, fixed_ends=False
+) -> tuple | tuple[Sequence[float | int]]:
     if len(vertexes) <= 2:
         return *vertexes,
 

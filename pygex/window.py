@@ -54,7 +54,7 @@ class Window:
         self._pos = (self._pos[0] - self._size[0]) // 2, (self._pos[1] - self._size[1]) // 2
 
         self.default_quit = True
-        self.fps_limit: float | None = None
+        self.fps_limit: float | int | None = None
         self.bg_color: colorValue | None = None
 
         if fullscreen:

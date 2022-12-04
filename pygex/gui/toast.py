@@ -1,9 +1,10 @@
+from pygex.color import colorValue, to_pygame_alpha_color, get_readable_text_color
 from pygame.display import get_window_size as pg_win_get_size
-from pygex.color import colorValue, to_pygame_alpha_color
 from pygame.draw import rect as pg_draw_rect
 from pygame.surface import SurfaceType
 from pygex.image import AlphaSurface
 from pygex.text import render_text
+from typing import Sequence
 from time import time
 
 
@@ -17,8 +18,9 @@ class Toast:
 
         self.animation_delay = 0.25
         self.padding = 10
-        self.text_color: colorValue = 0xffffff
+        self.text_color: colorValue = ...
         self.bg_color: colorValue = 0xaa000000
+        self.border_radius_or_radii: int | Sequence[int] = 5
 
     def show(self):
         if self not in _toast_queue:
@@ -56,7 +58,8 @@ def render(surface: SurfaceType):
         _toast_start_time = current_time
 
     toast = _toast_queue[0]
-    text_surface = render_text(toast.text, to_pygame_alpha_color(toast.text_color))
+    text_color = toast.text_color if toast.text_color is not ... else get_readable_text_color(toast.bg_color)
+    text_surface = render_text(toast.text, text_color)
     time_passed = current_time - _toast_start_time
 
     boxw, boxh = text_surface.get_size()
@@ -71,7 +74,10 @@ def render(surface: SurfaceType):
 
     box_surface = AlphaSurface((boxw, boxh))
 
-    pg_draw_rect(box_surface, to_pygame_alpha_color(toast.bg_color), (0, 0, boxw, boxh), 0, 5)
+    border_radii = (toast.border_radius_or_radii,) if isinstance(toast.border_radius_or_radii, int) \
+        else (-1, *toast.border_radius_or_radii)
+
+    pg_draw_rect(box_surface, to_pygame_alpha_color(toast.bg_color), (0, 0, boxw, boxh), 0, *border_radii)
 
     surface.blit(box_surface, (box_x, box_y))
     surface.blit(text_surface, (box_x + toast.padding, box_y + toast.padding))

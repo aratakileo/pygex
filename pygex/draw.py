@@ -10,7 +10,7 @@ def grid(
         surface: SurfaceType,
         color: colorValue,
         scale_interval: float | int,
-        bounds: Sequence | RectType,
+        bounds: Sequence[float | int] | RectType,
         offset: Sequence = (0, 0),
         width: int = 1
 ):

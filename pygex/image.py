@@ -8,7 +8,7 @@ from pygame.constants import SRCALPHA
 from typing import Sequence
 
 
-def AlphaSurface(size: Sequence, flags: int = 0):
+def AlphaSurface(size: Sequence[int], flags: int = 0):
     return Surface(size, flags | SRCALPHA, 32)
 
 
@@ -40,7 +40,7 @@ def cutout_by_mask(source_surface: SurfaceType, mask: SurfaceType):
     return new_source
 
 
-def round_corners(source_surface: SurfaceType, radius: int | tuple[int, int, int, int] | Sequence):
+def round_corners(source_surface: SurfaceType, radius: int | Sequence[int]):
     """
     Rounding the borders of image (Surface)
     :param source_surface: source_surface image
@@ -55,7 +55,7 @@ def round_corners(source_surface: SurfaceType, radius: int | tuple[int, int, int
     return cutout_by_mask(source_surface, mask_surface)
 
 
-def gradient(size: Sequence, colors: Sequence[colorValue], is_vertical=False):
+def gradient(size: Sequence[int], colors: Sequence[colorValue], is_vertical=False):
     colors_line_surface = Surface((1, len(colors)) if is_vertical else (len(colors), 1), SRCALPHA, 32)
 
     for i in range(len(colors)):

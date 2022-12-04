@@ -1,4 +1,4 @@
-from pygex.color import colorValue, to_pygame_alpha_color
+from pygex.color import colorValue, to_pygame_alpha_color, get_readable_text_color
 from pygame.draw import rect as draw_rect
 from pygame.surface import SurfaceType
 from pygex.image import AlphaSurface
@@ -22,7 +22,7 @@ class Hint:
     def __init__(
             self,
             text,
-            text_color: colorValue = 0xffffff,
+            text_color: colorValue = ...,
             bg_color: colorValue = 0xaa000000,
             gravity=GRAVITY_CENTER_HORIZONTAL | GRAVITY_UNDER_CENTER,
             strict_fit_in_bounds=True
@@ -40,16 +40,18 @@ class Hint:
     def render(
             self,
             surface: SurfaceType,
-            anchor_rect_or_point: Sequence | RectType,
-            bounds_in: Sequence | RectType
+            anchor_rect_or_point: Sequence[float | int] | RectType,
+            bounds_in: Sequence[float | int] | RectType
     ):
         if len(anchor_rect_or_point) == 2:
             anchor_rect_or_point = *anchor_rect_or_point, 0, 0
 
+        text_color = self.text_color if self.text_color is not ... else get_readable_text_color(self.bg_color)
+
         if self.font_or_size is not ...:
-            text_surface = render_text(self.text, self.text_color, self.font_or_size)
+            text_surface = render_text(self.text, text_color, self.font_or_size)
         else:
-            text_surface = render_text(self.text, self.text_color)
+            text_surface = render_text(self.text, text_color)
 
         textw, texth = text_surface.get_size()
         boxw, boxh = textw + self.padding * 2, texth + self.padding * 2
@@ -103,7 +105,10 @@ class Hint:
 
         box_surface = AlphaSurface((boxw, boxh))
 
-        draw_rect(box_surface, to_pygame_alpha_color(self.bg_color), (0, 0, boxw, boxh), 0, self.border_radius_or_radii)
+        border_radii = (self.border_radius_or_radii,) if isinstance(self.border_radius_or_radii, int) \
+            else (-1, *self.border_radius_or_radii)
+
+        draw_rect(box_surface, to_pygame_alpha_color(self.bg_color), (0, 0, boxw, boxh), 0, *border_radii)
 
         surface.blit(box_surface, (box_x, box_y))
         surface.blit(text_surface, (box_x + self.padding, box_y + self.padding))

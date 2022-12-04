@@ -73,7 +73,7 @@ class Input:
             if _key not in self._keys_data:
                 self.reset(_key)
 
-    def get_status(self, key: int | str):
+    def get_status(self, key: int | str) -> int:
         self.try_start_observing(key)
 
         if isinstance(key, int):
@@ -81,7 +81,7 @@ class Input:
 
         return max(tuple(self._keys_data[_key][0] for _key in self._generalized_keys[key]))
 
-    def __get_time(self, key: int | str):
+    def __get_time(self, key: int | str) -> float | int:
         if isinstance(key, int):
             return self._keys_data[key][1]
 
