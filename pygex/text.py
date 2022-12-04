@@ -61,11 +61,11 @@ def render_aligned_text(
     max_lines_number = lines_number
 
     if lines_number is ... and not only_horizontal_limit:
-        max_lines_number = int(size_or_width[1] / char_height) + 1
+        max_lines_number = int(size_or_width[1] / char_height) + 2
 
     parsed_queue = [0]
     char_index = 0
-    line_number = 0
+    line_number = 1
     text_piece = ''
     last_space_index = -1
 
