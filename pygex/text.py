@@ -28,16 +28,16 @@ def get_pygame_font(font_or_font_size: FontType | int = DEFAULT_FONT_SIZE):
     return font_or_font_size
 
 
-def get_text_size(text, font_or_font_size: FontType | int = DEFAULT_FONT_SIZE):
-    return get_pygame_font(font_or_font_size).size(text.__str__())
+def get_text_size(text: str, font_or_font_size: FontType | int = DEFAULT_FONT_SIZE):
+    return get_pygame_font(font_or_font_size).size(text)
 
 
-def render_text(text, color: colorValue, font_or_font_size: FontType | int = DEFAULT_FONT_SIZE, antialias=True):
-    return get_pygame_font(font_or_font_size).render(text.__str__(), antialias, to_pygame_alpha_color(color))
+def render_text(text: str, color: colorValue, font_or_font_size: FontType | int = DEFAULT_FONT_SIZE, antialias=True):
+    return get_pygame_font(font_or_font_size).render(text, antialias, to_pygame_alpha_color(color))
 
 
 def render_aligned_text(
-        text,
+        text: str,
         color: colorValue,
         size: Sequence[float | int],
         font_or_font_size: FontType | int = DEFAULT_FONT_SIZE,
@@ -46,8 +46,6 @@ def render_aligned_text(
         lines_number: int = ...,
         paragraph_space: float | int = 0,
         antialias=True):
-    text = text.__str__()
-
     if not text or lines_number is not ... and lines_number <= 0 or paragraph_space < 0 \
             or size[0] != SIZE_WRAP_CONTENT and size[0] <= 0 or size[1] != SIZE_WRAP_CONTENT and size[1] <= 0:
         return None
@@ -178,6 +176,7 @@ __all__ = (
     'ALIGN_RIGHT',
     'ALIGN_CENTER',
     'ALIGN_BLOCK',
+    'SIZE_WRAP_CONTENT',
     'get_pygame_font',
     'get_text_size',
     'render_text',
