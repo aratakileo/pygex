@@ -4,9 +4,11 @@ Extended library for pygame users
 ##### Navigation
 - [Preview](#preview)
 - [Requirements](#requirements)
-- [How to install](#how-to-install-pygex)
+- [How to install `pygex`](#how-to-install-pygex)
 
 ### Preview
+Current development version: `0.2.dev1` (the same version will be [installed](#how-to-install-pygex))
+
 Use examples:
 - [Drawing application](https://github.com/teacondemns/vector-paint)
 - [Bezier curve editor](https://github.com/teacondemns/bezier-curve)
@@ -26,7 +28,7 @@ This module include:
 - `pygame >= 2.0.1`
 
 ### How to install `pygex`
-Just use this command
+To install `pygex` of [current version](#preview) just use this command
 ```
 pip install git+https://github.com/teacondemns/pygex.git
 ```
