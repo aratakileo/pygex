@@ -39,7 +39,7 @@ def render_text(text: str, color: colorValue, font_or_font_size: FontType | int 
 def render_aligned_text(
         text: str,
         color: colorValue,
-        size: Sequence[float | int],
+        size: Sequence[float | int] = (SIZE_WRAP_CONTENT, SIZE_WRAP_CONTENT),
         font_or_font_size: FontType | int = DEFAULT_FONT_SIZE,
         align=ALIGN_LEFT,
         line_spacing: float | int = 0,
