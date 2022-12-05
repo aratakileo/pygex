@@ -61,9 +61,9 @@ class Input:
 
         return bool(sum(tuple(self._keys_data[_key][2] for _key in self._generalized_keys[key])))
 
-    def reset(self, key: int):
+    def reset_data(self, key: int):
         """
-        Reset data for specified key
+        Reset data for specified key, but if key is not exists, data for that key will be added automatically
         :param key: just a key
         """
         self._keys_data[key] = [Input.NOT_PRESSED, -1, True]
@@ -97,13 +97,13 @@ class Input:
         """
         if isinstance(key, int):
             if key not in self._keys_data:
-                self.reset(key)
+                self.reset_data(key)
 
             return
 
         for _key in self._generalized_keys[key]:
             if _key not in self._keys_data:
-                self.reset(_key)
+                self.reset_data(_key)
 
     def get_status(self, key: int | str) -> int:
         """
@@ -243,7 +243,7 @@ class Input:
             if self._keys_data[key][0] == Input.DOWN:
                 self._keys_data[key][:-1] = [Input.HOLD, time()]
             elif self._keys_data[key][0] == Input.UP:
-                self.reset(key)
+                self.reset_data(key)
 
 
 _active_input: Input | None = None
