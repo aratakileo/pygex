@@ -5,6 +5,14 @@ def generate_curve(
         vertexes: Sequence[Sequence[float | int]],
         density: int, fixed_ends=False
 ) -> tuple | tuple[Sequence[float | int]]:
+    """
+    Fast Bézier curve generator
+    :param vertexes: the vertexes on the basis of which the curve will be generated
+    :param density: the number of segments that the curve will consist of
+    :param fixed_ends: if true, then the beginning and end of the curve will be the same where it was at the specified
+    vertices
+    """
+
     if len(vertexes) <= 2:
         return *vertexes,
 
