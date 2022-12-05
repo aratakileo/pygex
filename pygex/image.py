@@ -21,13 +21,18 @@ def pygame_to_pillow(source_surface: SurfaceType):
 
 
 def blur(source_surface: SurfaceType, radius: int):
+    """
+    Gaussian blur
+    :param source_surface: source Surface
+    :param radius: blur radius
+    """
     return pillow_to_pygame(pygame_to_pillow(source_surface).filter(PillowImageFilter.GaussianBlur(radius)))
 
 
 def cutout_by_mask(source_surface: SurfaceType, mask: SurfaceType):
     """
-    The cutout color on the mask is black (#000000)
-    :param source_surface: original Surface
+    The cutout color on the mask is black (#ff000000 or (0, 0, 0, 255))
+    :param source_surface: source Surface
     :param mask: mask for cutout
     """
     new_source = source_surface.copy()
@@ -44,7 +49,8 @@ def round_corners(source_surface: SurfaceType, radius: int | Sequence[int]):
     """
     Rounding the borders of image (Surface)
     :param source_surface: source_surface image
-    :param radius: value by which the corners will be rounded: `radius` or `top_left, top_right, bottom_left, bottom_tight`
+    :param radius: value by which the corners will be rounded: `radius` or
+    `top_left, top_right, bottom_left, bottom_tight`
     """
     radius = (radius,) if isinstance(radius, int) else (-1, *radius)
     mask_surface = Surface(source_surface.get_size())
