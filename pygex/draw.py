@@ -11,7 +11,7 @@ def grid(
         color: colorValue,
         scale_interval: float | int,
         bounds: Sequence[float | int] | RectType,
-        offset: Sequence = (0, 0),
+        offset: Sequence[float | int] = (0, 0),
         width: int = 1
 ):
     for ix in range(1, ceil(bounds[2] / scale_interval + 1)):
