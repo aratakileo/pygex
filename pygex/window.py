@@ -135,6 +135,15 @@ class Window:
         pg_win_set_mode(pg_win_get_size(), value, vsync=self._vsync)
 
     @property
+    def vsync(self):
+        return self._vsync
+    
+    @vsync.setter
+    def vsync(self, value: bool):
+        self._vsync = value
+        pg_win_set_mode(pg_win_get_size(), pg_win_get_surface().get_flags(), vsync=value)
+
+    @property
     def fullscreen(self):
         return bool(pg_win_get_surface().get_flags() & FULLSCREEN)
 
