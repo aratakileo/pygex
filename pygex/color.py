@@ -4,6 +4,41 @@ from typing import Sequence
 colorValue = pg_color.Color | int | str | Sequence[int]
 
 
+ABSOLUTE_RED = 0xff0000
+ABSOLUTE_GREEN = 0x00ff00
+ABSOLUTE_BLUE = 0x0000ff
+BLACK = 0x000000
+WHITE = 0xffffff
+RED = 0xf44336
+GREEN = 0x4caf50
+BLUE = 0x2196f3
+PINK = 0xe91e63
+PURPLE = 0x9c27b0
+DEEP_PURPLE = 0x673ab7
+INDIGO = 0x3f51b5
+LIGHT_BLUE = 0x03a9f4
+CYAN = 0x00bcd4
+TEAL = 0x009688
+LIGHT_GREEN = 0x8bc34a
+LIME = 0xcddc39
+YELLOW = 0xffeb3b
+AMBER = 0xffc107
+ORANGE = 0xff9800
+DEEP_ORANGE = 0xff5722
+BROWN = 0x795548
+BLUE_GREY = 0x607d8b
+GREY = 0x9e9e9e
+AQUA = 0x00ffff
+AQUAMARINE = 0x7fffd4
+AZURE = 0xf0ffff
+BEIGE = 0xf5f5dc
+BLUE_VIOLET = 0x8a2be2
+CADET_BLUE = 0x5f9ea0
+CHOCOLATE = 0xd2691e
+CORAL = 0xff7f50
+CRIMSON = 0xdc143c
+
+
 def has_alpha(color: int):
     """
     Checking if color has alpha channel (works only for AHEX or HEX)
@@ -143,7 +178,7 @@ def get_readable_text_color(background_color: colorValue):
     return to_black_white(invert(background_color))
 
 
-def to_pygame_alpha_color(color: colorValue) -> tuple[int, int, int, int] | None:
+def to_pygame_alpha_color(color: colorValue) -> tuple[int, int, int, int] | pg_color.Color | None:
     """
     Converting color from AHEX or HEX to HEXA (color format in pygame is HEXA)
     :param color: alpha format: AHEX, HEX, RGBA
@@ -174,6 +209,39 @@ def to_pygame_alpha_color(color: colorValue) -> tuple[int, int, int, int] | None
 
 __all__ = (
     'colorValue',
+    'ABSOLUTE_RED',
+    'ABSOLUTE_GREEN',
+    'ABSOLUTE_BLUE',
+    'BLACK',
+    'WHITE',
+    'RED',
+    'GREEN',
+    'BLUE',
+    'PINK',
+    'PURPLE',
+    'DEEP_PURPLE',
+    'INDIGO',
+    'LIGHT_BLUE',
+    'CYAN',
+    'TEAL',
+    'LIGHT_GREEN',
+    'LIME',
+    'YELLOW',
+    'AMBER',
+    'ORANGE',
+    'DEEP_ORANGE',
+    'BROWN',
+    'BLUE_GREY',
+    'GREY',
+    'AQUA',
+    'AQUAMARINE',
+    'AZURE',
+    'BEIGE',
+    'BLUE_VIOLET',
+    'CADET_BLUE',
+    'CHOCOLATE',
+    'CORAL',
+    'CRIMSON',
     'has_alpha',
     'get_alpha',
     'set_alpha',
