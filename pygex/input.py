@@ -49,38 +49,6 @@ class Input:
         self.generalize_keys(Input.GK_SHIFT, K_LSHIFT, K_RSHIFT)
         self.generalize_keys(Input.GK_ENTER, K_RETURN, K_KP_ENTER)
 
-    def reset(self, key: int):
-        self._keys_data[key] = [Input.NOT_PRESSED, -1, True]
-
-    def generalize_keys(self, name: str, *keys: int | str):
-        self._generalized_keys[name] = ()
-
-        for key in keys:
-            if isinstance(key, int):
-                self._generalized_keys[name] = *self._generalized_keys[name], key
-                continue
-
-            self._generalized_keys[name] = *self._generalized_keys[name], self._generalized_keys[key]
-
-    def try_start_observing(self, key: int | str):
-        if isinstance(key, int):
-            if key not in self._keys_data:
-                self.reset(key)
-
-            return
-
-        for _key in self._generalized_keys[key]:
-            if _key not in self._keys_data:
-                self.reset(_key)
-
-    def get_status(self, key: int | str) -> int:
-        self.try_start_observing(key)
-
-        if isinstance(key, int):
-            return self._keys_data[key][0]
-
-        return max(tuple(self._keys_data[_key][0] for _key in self._generalized_keys[key]))
-
     def __get_time(self, key: int | str) -> float | int:
         if isinstance(key, int):
             return self._keys_data[key][1]
@@ -93,19 +61,96 @@ class Input:
 
         return bool(sum(tuple(self._keys_data[_key][2] for _key in self._generalized_keys[key])))
 
+    def reset(self, key: int):
+        """
+        Reset data for specified key
+        :param key: just a key
+        """
+        self._keys_data[key] = [Input.NOT_PRESSED, -1, True]
+
+    def generalize_keys(self, name: str, *keys: int | str):
+        """
+        The function let add a generalized key, that is, group several keys as one, and then get the most up-to-date
+        data among the specified keys by the specified name
+
+        Example: by default, the added generic key `Input.GK_CTRL` when calling the `get_status` function will return
+        `Input.HOLD` if `pygame.K_LCTRL` or `pygame.K_RCTRL` have the status `Input.HOLD`, and if `pygame.K_LCTRL` has
+        the status `Input.HOLD`, and pygame.K_RCTRL has the status `Input.UP`, then the resulting the status for
+        `Input.GK_CTRL` will be `Input.UP`
+        :param name: new generic key name
+        :param keys: generic keys or just keys
+        """
+        self._generalized_keys[name] = ()
+
+        for key in keys:
+            if isinstance(key, int):
+                self._generalized_keys[name] = *self._generalized_keys[name], key
+                continue
+
+            self._generalized_keys[name] = *self._generalized_keys[name], self._generalized_keys[key]
+
+    def try_start_observing(self, key: int | str):
+        """
+        The function allows you to add a key to the internal list of observables (as a result, it includes only simple
+        keys, in the case of generalized keys, they are divided into simple ones)
+        :param key: generic key or just key
+        """
+        if isinstance(key, int):
+            if key not in self._keys_data:
+                self.reset(key)
+
+            return
+
+        for _key in self._generalized_keys[key]:
+            if _key not in self._keys_data:
+                self.reset(_key)
+
+    def get_status(self, key: int | str) -> int:
+        """
+        Get the up-to-date key status
+        :return: `Input.NOT_PRESSED` or `Input.DOWN` or `Input.HOLD` or `Input.UP`
+        """
+        self.try_start_observing(key)
+
+        if isinstance(key, int):
+            return self._keys_data[key][0]
+
+        return max(tuple(self._keys_data[_key][0] for _key in self._generalized_keys[key]))
+
     def is_not_pressed(self, key: int | str):
+        """
+        Checks if the specified key is not pressed
+        :param key: generic key or just key
+        """
         return self.get_status(key) == Input.NOT_PRESSED
 
     def is_down(self, key: int | str):
+        """
+        Checks if the specified key is down
+        :param key: generic key or just key
+        """
         return self.get_status(key) == Input.DOWN
 
     def is_hold(self, key: int | str):
+        """
+        Checks if the specified key is hold
+        :param key: generic key or just key
+        """
         return self.get_status(key) == Input.HOLD
 
     def is_up(self, key: int | str):
+        """
+        Checks if the specified key is up
+        :param key: generic key or just key
+        """
         return self.get_status(key) == Input.UP
 
-    def is_applying(self, key: int | str, no_reset=False):
+    def is_applying(self, key: int | str, reset_data=True):
+        """
+        Checks if the specified key is up or hold for first 0.5s and after that every 0.1s
+        :param key: generic key or just key
+        :param reset_data: if true, the timer will reset after the time expires
+        """
         self.try_start_observing(key)
 
         current_time = time()
@@ -118,13 +163,13 @@ class Input:
 
         if self.is_hold(key) and dt >= hold_duration:
             if isinstance(key, int):
-                if not no_reset:
+                if reset_data:
                     self._keys_data[key][1:] = [current_time, False]
 
                 return True
 
             for _key in self._generalized_keys[key]:
-                if not no_reset:
+                if reset_data:
                     self._keys_data[_key][1:] = [current_time, False]
 
             return True
@@ -132,6 +177,10 @@ class Input:
         return False
 
     def any_is_not_pressed(self, *keys: int | str):
+        """
+        Checks if any of specified keys is not pressed
+        :param keys: generic keys or just keys
+        """
         for key in keys:
             if self.get_status(key) == Input.NOT_PRESSED:
                 return True
@@ -139,6 +188,10 @@ class Input:
         return False
 
     def any_is_down(self, *keys: int | str):
+        """
+        Checks if any of specified keys is down
+        :param keys: generic keys or just keys
+        """
         for key in keys:
             if self.get_status(key) == Input.DOWN:
                 return True
@@ -146,6 +199,10 @@ class Input:
         return False
 
     def any_is_hold(self, *keys: int | str):
+        """
+        Checks if any of specified keys is hold
+        :param keys: generic keys or just keys
+        """
         for key in keys:
             if self.get_status(key) == Input.HOLD:
                 return True
@@ -153,15 +210,24 @@ class Input:
         return False
 
     def any_is_up(self, *keys: int | str):
+        """
+        Checks if any of specified keys is up
+        :param keys: generic keys or just keys
+        """
         for key in keys:
             if self.get_status(key) == Input.UP:
                 return True
 
         return False
 
-    def any_is_applying(self, *keys: int | str, no_reset=False):
+    def any_is_applying(self, *keys: int | str, reset_data=True):
+        """
+        Checks if any of specified keys is up or hold for first 0.5s and after that every 0.1s
+        :param keys: generic keys or just keys
+        :param reset_data: if true, the timer will reset after the time expires for key for which this condition was met
+        """
         for key in keys:
-            if self.is_applying(key, no_reset):
+            if self.is_applying(key, reset_data):
                 return True
 
         return False
