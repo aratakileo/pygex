@@ -133,6 +133,10 @@ def color_as_int(color: colorValue):
 
 
 def invert(color: colorValue, invert_alpha=False):
+    """
+    Invert the source color to inverse color.
+    For example: black color will invert to white and white to black
+    """
     color = color_as_int(color)
 
     if color is None:
@@ -147,6 +151,11 @@ def invert(color: colorValue, invert_alpha=False):
 
 
 def to_gray(color: colorValue):
+    """
+    Converts to specified color to shade of gray, based on which of shade of gray the specified color is closer to
+    :param color: source color
+    :return: shade of gray
+    """
     color = color_as_int(color)
 
     if color is None:
@@ -158,6 +167,11 @@ def to_gray(color: colorValue):
 
 
 def to_black_white(color: colorValue):
+    """
+    Converts the specified color to black or white, based on which of them the specified color is closer to
+    :param color: source color
+    :return: black or white color
+    """
     color = color_as_int(color)
 
     if color is None:
@@ -170,6 +184,11 @@ def to_black_white(color: colorValue):
 
 
 def get_readable_text_color(background_color: colorValue):
+    """
+    Get a black or white color that will be clearly visible on the specified background color
+    :param background_color: source color for analysis
+    :return: black or white color
+    """
     background_color = color_as_int(background_color)
 
     if background_color is None:
