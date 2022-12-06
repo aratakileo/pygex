@@ -10,22 +10,30 @@ class TextView:
     def __init__(
             self,
             text: str,
+            size: Sequence[int] = (SIZE_WRAP_CONTENT, SIZE_WRAP_CONTENT),
             pos: Sequence[float | int] = (0, 0),
             text_color: colorValue = ...,
-            size: Sequence[int] = (SIZE_WRAP_CONTENT, SIZE_WRAP_CONTENT),
+            text_align=ALIGN_LEFT,
+            text_line_spacing: float | int = 0,
+            text_lines_number: int = ...,
+            text_paragraph_space: float | int = 0,
             font_or_font_size: FontType | int = DEFAULT_FONT_SIZE,
-            text_align=ALIGN_LEFT
+            font_antialiasing=True
     ):
         self.padding = (8, 8, 8, 8)
         self.x, self.y = pos
 
         self._text = text
-        self._text_align = text_align
-        self._text_color = text_color
-        self._font_or_font_size = font_or_font_size
         self._width, self._height = size
 
-        self._pygex_gui_flags = 0
+        self._text_color = text_color
+        self._text_align = text_align
+        self._text_line_spacing = text_line_spacing
+        self._text_lines_number = text_lines_number
+        self._text_paragraph_space = text_paragraph_space
+
+        self._font_antialiasing = font_antialiasing
+        self._font_or_font_size = font_or_font_size
 
         self.__render_surface()
 
@@ -40,15 +48,6 @@ class TextView:
     @property
     def size(self):
         return self._width, self._height
-
-    @size.setter
-    def size(self, value: Sequence[int]):
-        old_size = self._width, self._height
-
-        self._width, self._height = value
-
-        if value != old_size:
-            self.__render_surface()
 
     @property
     def width(self):
@@ -75,18 +74,27 @@ class TextView:
 
         if value != old_height:
             self.__render_surface()
-    
-    @property
-    def rendered_size(self):
-        return self._surface_buffer.get_size()
+
+    @size.setter
+    def size(self, value: Sequence[int]):
+        old_size = self._width, self._height
+
+        self._width, self._height = value
+
+        if value != old_size:
+            self.__render_surface()
 
     @property
     def rendered_width(self):
-        return self._surface_buffer.get_width()
+        return self._surface_buffer.get_width() + self.padding[0] + self.padding[2]
 
     @property
     def rendered_height(self):
-        return self._surface_buffer.get_height()
+        return self._surface_buffer.get_height() + self.padding[1] + self.padding[3]
+
+    @property
+    def rendered_size(self):
+        return self.rendered_width, self.rendered_height
 
     @property
     def text(self):
@@ -140,6 +148,58 @@ class TextView:
         if value != old_font_or_font_size:
             self.__render_surface()
 
+    @property
+    def text_line_spacing(self):
+        return self._text_line_spacing
+
+    @text_line_spacing.setter
+    def text_line_spacing(self, value: float | int):
+        old_text_line_spacing = self._text_line_spacing
+
+        self._text_line_spacing = value
+
+        if value != old_text_line_spacing:
+            self.__render_surface()
+
+    @property
+    def text_lines_number(self):
+        return self._text_lines_number
+
+    @text_lines_number.setter
+    def text_lines_number(self, value: float | int):
+        old_text_lines_number = self._text_lines_number
+
+        self._text_lines_number = value
+
+        if value != old_text_lines_number:
+            self.__render_surface()
+
+    @property
+    def text_paragraph_space(self):
+        return self._text_paragraph_space
+
+    @text_paragraph_space.setter
+    def text_paragraph_space(self, value: float | int):
+        old_text_paragraph_space = self._text_paragraph_space
+
+        self._text_paragraph_space = value
+
+        if value != old_text_paragraph_space:
+            self.__render_surface()
+
+    @property
+    def font_antialiasing(self):
+        return self._font_antialiasing
+
+    @font_antialiasing.setter
+    def font_antialiasing(self, value: float | int):
+        old_font_antialiasing = self._font_antialiasing
+
+        self._font_antialiasing = value
+
+        if value != old_font_antialiasing:
+            self.__render_surface()
+
     def __render_surface(self):
         self._surface_buffer = render_aligned_text(
             self._text,
@@ -150,7 +210,7 @@ class TextView:
         )
 
     def render(self, surface: SurfaceType):
-        surface.blit(self._surface_buffer, self.pos)
+        surface.blit(self._surface_buffer, (self.x + self.padding[0], self.y + self.padding[1]))
 
 
 __all__ = 'ALIGN_LEFT', 'ALIGN_RIGHT', 'ALIGN_CENTER', 'ALIGN_BLOCK', 'SIZE_WRAP_CONTENT', 'TextView',
