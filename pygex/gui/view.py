@@ -54,8 +54,8 @@ class View:
         self._width = value
 
         if value != old_width:
-            self.__render_content_surface()
-            self.__render_background_surface()
+            self.render_content_surface()
+            self.render_background_surface()
 
     @property
     def height(self):
@@ -68,8 +68,8 @@ class View:
         self._height = value
 
         if value != old_height:
-            self.__render_content_surface()
-            self.__render_background_surface()
+            self.render_content_surface()
+            self.render_background_surface()
 
     @size.setter
     def size(self, value: Sequence[int]):
@@ -78,8 +78,8 @@ class View:
         self._width, self._height = value
 
         if value != old_size:
-            self.__render_content_surface()
-            self.__render_background_surface()
+            self.render_content_surface()
+            self.render_background_surface()
 
     @property
     def padding(self):
@@ -92,7 +92,7 @@ class View:
         self._padding = value
 
         if value != old_padding:
-            self.__render_background_surface()
+            self.render_background_surface()
 
     @property
     def rendered_width(self):
@@ -112,13 +112,13 @@ class View:
         else:
             self._background_drawable = ColorDrawable(drawable_or_color)
 
-        self.__render_background_surface(force_render=True)
+        self.render_background_surface(force_render=True)
 
-    def __render_content_surface(self):
-        raise RuntimeError('Method `View.__render_content_surface()` is not initialized!')
+    def render_content_surface(self):
+        raise RuntimeError('Method `View.render_content_surface()` is not initialized!')
 
-    def __render_background_surface(self, force_render=False):
-        if self._content_surface_buffer is None:
+    def render_background_surface(self, force_render=False):
+        if self._content_surface_buffer is None or self._background_drawable is None:
             return
 
         background_size = self._content_surface_buffer.get_size()
@@ -138,11 +138,11 @@ class View:
 
     def render(self, surface: SurfaceType):
         if self._content_surface_buffer is None:
-            self.__render_content_surface()
+            self.render_content_surface()
 
         if self._background_drawable is not None:
             if self._background_surface_buffer is None:
-                self.__render_background_surface()
+                self.render_background_surface()
 
             surface.blit(self._background_surface_buffer, self.pos)
 

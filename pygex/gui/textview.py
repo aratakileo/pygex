@@ -46,8 +46,8 @@ class TextView(View):
         self._text = value
 
         if value != old_text:
-            self.__render_content_surface()
-            self.__render_background_surface()
+            self.render_content_surface()
+            self.render_background_surface()
 
     @property
     def text_align(self):
@@ -60,8 +60,8 @@ class TextView(View):
         self._text_align = value
 
         if value != old_text_align:
-            self.__render_content_surface()
-            self.__render_background_surface()
+            self.render_content_surface()
+            self.render_background_surface()
 
     @property
     def text_color(self):
@@ -74,7 +74,7 @@ class TextView(View):
         self._text_color = value
 
         if value != old_text_color:
-            self.__render_content_surface()
+            self.render_content_surface()
 
     @property
     def font_or_font_size(self):
@@ -87,8 +87,8 @@ class TextView(View):
         self._font_or_font_size = value
 
         if value != old_font_or_font_size:
-            self.__render_content_surface()
-            self.__render_background_surface()
+            self.render_content_surface()
+            self.render_background_surface()
 
     @property
     def text_line_spacing(self):
@@ -101,8 +101,8 @@ class TextView(View):
         self._text_line_spacing = value
 
         if value != old_text_line_spacing:
-            self.__render_content_surface()
-            self.__render_background_surface()
+            self.render_content_surface()
+            self.render_background_surface()
 
     @property
     def text_lines_number(self):
@@ -115,8 +115,8 @@ class TextView(View):
         self._text_lines_number = value
 
         if value != old_text_lines_number:
-            self.__render_content_surface()
-            self.__render_background_surface()
+            self.render_content_surface()
+            self.render_background_surface()
 
     @property
     def text_paragraph_space(self):
@@ -129,8 +129,8 @@ class TextView(View):
         self._text_paragraph_space = value
 
         if value != old_text_paragraph_space:
-            self.__render_content_surface()
-            self.__render_background_surface()
+            self.render_content_surface()
+            self.render_background_surface()
 
     @property
     def font_antialiasing(self):
@@ -143,10 +143,10 @@ class TextView(View):
         self._font_antialiasing = value
 
         if value != old_font_antialiasing:
-            self.__render_content_surface()
+            self.render_content_surface()
 
-    def __render_content_surface(self):
-        self._surface_buffer = render_aligned_text(
+    def render_content_surface(self):
+        self._content_surface_buffer = render_aligned_text(
             self._text,
             self.text_color,
             self.size,
