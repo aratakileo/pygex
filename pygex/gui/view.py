@@ -54,8 +54,8 @@ class View:
         self._width = value
 
         if value != old_width:
-            self.__render_background_surface()
             self.__render_content_surface()
+            self.__render_background_surface()
 
     @property
     def height(self):
@@ -68,8 +68,8 @@ class View:
         self._height = value
 
         if value != old_height:
-            self.__render_background_surface()
             self.__render_content_surface()
+            self.__render_background_surface()
 
     @size.setter
     def size(self, value: Sequence[int]):
@@ -78,8 +78,8 @@ class View:
         self._width, self._height = value
 
         if value != old_size:
-            self.__render_background_surface()
             self.__render_content_surface()
+            self.__render_background_surface()
 
     @property
     def padding(self):
