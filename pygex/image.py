@@ -50,7 +50,7 @@ def round_corners(source_surface: SurfaceType, radius: int | Sequence[int]):
     Rounding the borders of image (Surface)
     :param source_surface: source_surface image
     :param radius: value by which the corners will be rounded: `radius` or
-    `top_left, top_right, bottom_left, bottom_tight`
+    `top_left, top_right, bottom_left, bottom_right`
     """
     radius = (radius,) if isinstance(radius, int) else (-1, *radius)
     mask_surface = Surface(source_surface.get_size())
