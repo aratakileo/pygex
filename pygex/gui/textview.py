@@ -1,5 +1,5 @@
 from pygex.text import render_aligned_text, ALIGN_LEFT, ALIGN_RIGHT, ALIGN_CENTER, ALIGN_BLOCK, DEFAULT_FONT_SIZE
-from pygex.gui.view import View, SIZE_WRAP_CONTENT, DEFAULT_PADDING
+from pygex.gui.view import View, SIZE_WRAP_CONTENT, DEFAULT_PADDING, GRAVITY_LEFT, GRAVITY_TOP
 from pygex.gui.drawable import Drawable
 from pygex.color import colorValue
 from pygame.font import FontType
@@ -14,6 +14,7 @@ class TextView(View):
             size: Sequence[int] = (SIZE_WRAP_CONTENT, SIZE_WRAP_CONTENT),
             pos: Sequence[float | int] = (0, 0),
             padding: Sequence[int] = DEFAULT_PADDING,
+            content_gravity=GRAVITY_LEFT | GRAVITY_TOP,
             text_align=ALIGN_LEFT,
             text_line_spacing: float | int = 0,
             text_lines_number: int = ...,
@@ -22,7 +23,7 @@ class TextView(View):
             background_drawable_or_color: Drawable | colorValue = ...,
             font_antialiasing=True
     ):
-        super().__init__(size, pos, padding, background_drawable_or_color)
+        super().__init__(size, pos, padding, content_gravity, background_drawable_or_color)
 
         self._text = text
 
@@ -146,15 +147,10 @@ class TextView(View):
             self.render_content_surface()
 
     def render_content_surface(self):
-        width = self._width if self._width == SIZE_WRAP_CONTENT \
-            else (self._width - self._padding[0] - self._padding[2])
-        height = self._height if self._height == SIZE_WRAP_CONTENT \
-            else (self._height - self._padding[1] - self._padding[3])
-
         self._content_surface_buffer = render_aligned_text(
             self._text,
             self.text_color,
-            (width, height),
+            self._content_size,
             self._font_or_font_size,
             self._text_align
         )

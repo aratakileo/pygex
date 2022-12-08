@@ -7,6 +7,12 @@ from typing import Sequence
 
 DEFAULT_PADDING = (8, 8, 8, 8)
 
+GRAVITY_LEFT = GRAVITY_TOP = 0
+GRAVITY_RIGHT = 1 << 0
+GRAVITY_BOTTOM = 1 << 1
+GRAVITY_CENTER_HORIZONTAL = 1 << 2
+GRAVITY_CENTER_VERTICAL = 1 << 3
+
 
 class View:
     def __init__(
@@ -14,9 +20,11 @@ class View:
             size: Sequence[int],
             pos: Sequence[float | int],
             padding: Sequence[int],
+            content_gravity: int,
             background_drawable_or_color: Drawable | colorValue
     ):
         self.x, self.y = pos
+        self.content_gravity = content_gravity
 
         self._width, self._height = size
         self._padding = padding
@@ -95,16 +103,29 @@ class View:
             self.render_background_surface()
 
     @property
-    def rendered_width(self):
-        return 0 if self._background_surface_buffer is None else self._background_surface_buffer.get_width()
+    def _content_width(self):
+        return self._width if self._width == SIZE_WRAP_CONTENT else (self._width - self._padding[0] - self._padding[2])
 
     @property
-    def rendered_height(self):
-        return 0 if self._background_surface_buffer is None else self._background_surface_buffer.get_height()
+    def _content_height(self):
+        return self._height if self._height == SIZE_WRAP_CONTENT \
+            else (self._height - self._padding[1] - self._padding[3])
 
     @property
-    def rendered_size(self):
-        return self.rendered_width, self.rendered_height
+    def _content_size(self):
+        return self._content_width, self._content_height
+
+    @property
+    def _background_width(self):
+        return self._content_surface_buffer.get_width() + self._padding[0] + self._padding[2]
+
+    @property
+    def _background_height(self):
+        return self._content_surface_buffer.get_height() + self._padding[1] + self._padding[3]
+
+    @property
+    def _background_size(self):
+        return self._background_width, self._background_height
 
     def set_bg_drawable(self, drawable_or_color: Drawable | colorValue):
         if isinstance(drawable_or_color, Drawable):
@@ -118,20 +139,11 @@ class View:
         raise RuntimeError('Method `View.render_content_surface()` is not initialized!')
 
     def render_background_surface(self, force_render=False):
-        if self._content_surface_buffer is None or self._background_drawable is None:
+        if self._background_drawable is None or not force_render and self._background_surface_buffer is not None \
+                and self._background_surface_buffer.get_size() == self._background_size:
             return
 
-        background_size = self._content_surface_buffer.get_size()
-        background_size = (
-            background_size[0] + self.padding[0] + self.padding[2],
-            background_size[1] + self.padding[1] + self.padding[3]
-        )
-
-        if not force_render and self._background_surface_buffer is not None \
-                and self._content_surface_buffer.get_size() == background_size:
-            return
-
-        self._background_surface_buffer = self._background_drawable.render(background_size)
+        self._background_surface_buffer = self._background_drawable.render(self._background_size)
 
     def render(self, surface: SurfaceType):
         if self._content_surface_buffer is None:
@@ -146,4 +158,14 @@ class View:
         surface.blit(self._content_surface_buffer, (self.x + self.padding[0], self.y + self.padding[1]))
 
 
-__all__ = 'DEFAULT_PADDING', 'SIZE_WRAP_CONTENT', 'View'
+__all__ = (
+    'DEFAULT_PADDING',
+    'GRAVITY_LEFT',
+    'GRAVITY_TOP',
+    'GRAVITY_RIGHT',
+    'GRAVITY_BOTTOM',
+    'GRAVITY_CENTER_HORIZONTAL',
+    'GRAVITY_CENTER_VERTICAL',
+    'SIZE_WRAP_CONTENT',
+    'View'
+)
