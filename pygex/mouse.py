@@ -1,16 +1,16 @@
 from pygame.display import get_window_size as pg_win_get_size, get_desktop_sizes as pg_get_desktop_sizes
 from pygame.constants import MOUSEBUTTONDOWN, MOUSEBUTTONUP, MOUSEWHEEL, WINDOWMOVED
 from pygame.mouse import get_pos as pg_mouse_get_pos, set_pos as pg_mouse_set_pos
+from pygex.input import S_NOT_PRESSED, S_HOLD, S_DOWN, S_UP
 from pygame.event import Event, set_grab
-from pygex.input import Input
 from typing import Sequence
+
+F_NO_BORDERS = 1 << 0
+F_CONFINED = 1 << 1
+F_CAPTURED = 1 << 2
 
 
 class Mouse:
-    FLAG_NO_BORDERS = 1 << 0
-    FLAG_CONFINED = 1 << 1
-    FLAG_CAPTURED = 1 << 2
-
     def __init__(self):
         global _active_mouse
         _active_mouse = self
@@ -29,56 +29,56 @@ class Mouse:
 
         self.flags = 0
 
-        self.button_statuses = [Input.NOT_PRESSED] * 3
+        self.button_statuses = [S_NOT_PRESSED] * 3
         self.wheel = (0, 0)
 
     @property
     def left_is_not_pressed(self):
-        return self.button_statuses[0] == Input.NOT_PRESSED
+        return self.button_statuses[0] == S_NOT_PRESSED
 
     @property
     def left_is_down(self):
-        return self.button_statuses[0] == Input.DOWN
+        return self.button_statuses[0] == S_DOWN
 
     @property
     def left_is_hold(self):
-        return self.button_statuses[0] == Input.HOLD
+        return self.button_statuses[0] == S_HOLD
 
     @property
     def left_is_up(self):
-        return self.button_statuses[0] == Input.UP
+        return self.button_statuses[0] == S_UP
 
     @property
     def middle_is_not_pressed(self):
-        return self.button_statuses[1] == Input.NOT_PRESSED
+        return self.button_statuses[1] == S_NOT_PRESSED
 
     @property
     def middle_is_down(self):
-        return self.button_statuses[1] == Input.DOWN
+        return self.button_statuses[1] == S_DOWN
 
     @property
     def middle_is_hold(self):
-        return self.button_statuses[1] == Input.HOLD
+        return self.button_statuses[1] == S_HOLD
 
     @property
     def middle_is_up(self):
-        return self.button_statuses[1] == Input.UP
+        return self.button_statuses[1] == S_UP
 
     @property
     def right_is_not_pressed(self):
-        return self.button_statuses[2] == Input.NOT_PRESSED
+        return self.button_statuses[2] == S_NOT_PRESSED
 
     @property
     def right_is_down(self):
-        return self.button_statuses[2] == Input.DOWN
+        return self.button_statuses[2] == S_DOWN
 
     @property
     def right_is_hold(self):
-        return self.button_statuses[2] == Input.HOLD
+        return self.button_statuses[2] == S_HOLD
 
     @property
     def right_is_up(self):
-        return self.button_statuses[2] == Input.UP
+        return self.button_statuses[2] == S_UP
 
     @property
     def is_wheel_up(self):
@@ -143,7 +143,7 @@ class Mouse:
             self.wheel = (e.x, e.y)
 
         event_types = (MOUSEBUTTONDOWN, MOUSEBUTTONUP)
-        statuses = (Input.DOWN, Input.UP)
+        statuses = (S_DOWN, S_UP)
 
         for i in range(2):
             if e.type == event_types[i]:
@@ -155,9 +155,9 @@ class Mouse:
             self._win_pos = e.x, e.y
 
     def flip(self):
-        set_grab(bool(self.flags & Mouse.FLAG_CONFINED))
+        set_grab(bool(self.flags & F_CONFINED))
 
-        if self.flags & Mouse.FLAG_NO_BORDERS:
+        if self.flags & F_NO_BORDERS:
             winw, winh = pg_win_get_size()
             desktopw, desktoph = pg_get_desktop_sizes()[0]
 
@@ -183,15 +183,15 @@ class Mouse:
                 self.y = winh
 
         for i in range(len(self.button_statuses)):
-            if self.button_statuses[i] == Input.DOWN:
-                self.button_statuses[i] = Input.HOLD
-            elif self.button_statuses[i] == Input.UP:
-                self.button_statuses[i] = Input.NOT_PRESSED
+            if self.button_statuses[i] == S_DOWN:
+                self.button_statuses[i] = S_HOLD
+            elif self.button_statuses[i] == S_UP:
+                self.button_statuses[i] = S_NOT_PRESSED
 
         self.wheel = (0, 0)
         self._last_pos = pg_mouse_get_pos()
 
-        if self.flags & Mouse.FLAG_CAPTURED:
+        if self.flags & F_CAPTURED:
             pg_mouse_set_pos(pg_win_get_size()[0] / 2, pg_win_get_size()[1] / 2)
 
 
@@ -202,4 +202,4 @@ def get_mouse():
     return _active_mouse
 
 
-__all__ = 'Mouse', 'get_mouse'
+__all__ = 'Mouse', 'F_NO_BORDERS', 'F_CONFINED', 'F_CAPTURED', 'S_NOT_PRESSED', 'S_HOLD', 'S_DOWN', 'S_UP', 'get_mouse'
