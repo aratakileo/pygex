@@ -103,19 +103,6 @@ class View:
             self.render_background_surface()
 
     @property
-    def _content_width(self):
-        return self._width if self._width == SIZE_WRAP_CONTENT else (self._width - self._padding[0] - self._padding[2])
-
-    @property
-    def _content_height(self):
-        return self._height if self._height == SIZE_WRAP_CONTENT \
-            else (self._height - self._padding[1] - self._padding[3])
-
-    @property
-    def _content_size(self):
-        return self._content_width, self._content_height
-
-    @property
     def _background_width(self):
         return self._content_surface_buffer.get_width() + self._padding[0] + self._padding[2]
 
