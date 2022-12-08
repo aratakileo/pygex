@@ -146,6 +146,11 @@ class TextView(View):
             self.render_content_surface()
 
     def render_content_surface(self):
+        width = self._width if self._width == SIZE_WRAP_CONTENT \
+            else (self._width - self._padding[0] - self._padding[2])
+        height = self._height if self._height == SIZE_WRAP_CONTENT \
+            else (self._height - self._padding[1] - self._padding[3])
+
         self._content_surface_buffer = render_aligned_text(
             self._text,
             self.text_color,

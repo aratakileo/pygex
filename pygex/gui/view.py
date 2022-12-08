@@ -131,10 +131,7 @@ class View:
                 and self._content_surface_buffer.get_size() == background_size:
             return
 
-        self._background_surface_buffer = self._background_drawable.render((
-            background_size[0] + self.padding[0] + self.padding[2],
-            background_size[1] + self.padding[1] + self.padding[3]
-        ))
+        self._background_surface_buffer = self._background_drawable.render(background_size)
 
     def render(self, surface: SurfaceType):
         if self._content_surface_buffer is None:
