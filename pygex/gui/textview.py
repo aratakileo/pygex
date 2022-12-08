@@ -154,7 +154,7 @@ class TextView(View):
         self._content_surface_buffer = render_aligned_text(
             self._text,
             self.text_color,
-            self.size,
+            (width, height),
             self._font_or_font_size,
             self._text_align
         )
