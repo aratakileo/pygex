@@ -103,18 +103,18 @@ class View:
             self.render_background_surface()
 
     @property
-    def _background_width(self):
+    def background_width(self):
         return (self._content_surface_buffer.get_width() + self._padding[0] + self._padding[2]) \
             if self._width == SIZE_WRAP_CONTENT else self._width
 
     @property
-    def _background_height(self):
+    def background_height(self):
         return (self._content_surface_buffer.get_height() + self._padding[1] + self._padding[3])  \
             if self._height == SIZE_WRAP_CONTENT else self._height
 
     @property
-    def _background_size(self):
-        return self._background_width, self._background_height
+    def background_size(self):
+        return self.background_width, self.background_height
 
     def set_bg_drawable(self, drawable_or_color: Drawable | colorValue):
         if isinstance(drawable_or_color, Drawable):
@@ -129,10 +129,10 @@ class View:
 
     def render_background_surface(self, force_render=False):
         if self._background_drawable is None or not force_render and self._background_surface_buffer is not None \
-                and self._background_surface_buffer.get_size() == self._background_size:
+                and self._background_surface_buffer.get_size() == self.background_size:
             return
 
-        self._background_surface_buffer = self._background_drawable.render(self._background_size)
+        self._background_surface_buffer = self._background_drawable.render(self.background_size)
 
     def render(self, surface: SurfaceType):
         if self._content_surface_buffer is None:
@@ -147,14 +147,14 @@ class View:
         content_x, content_y = self.x + self._padding[0], self.y + self._padding[1]
 
         if self.content_gravity & GRAVITY_RIGHT:
-            content_x = self._background_width - self._padding[2] - self._content_surface_buffer.get_width()
+            content_x = self.background_width - self._padding[2] - self._content_surface_buffer.get_width()
         elif self.content_gravity & GRAVITY_CENTER_HORIZONTAL:
-            content_x = (self._background_width - self._padding[2] - self._content_surface_buffer.get_width()) / 2
+            content_x = (self.background_width - self._padding[2] - self._content_surface_buffer.get_width()) / 2
 
         if self.content_gravity & GRAVITY_BOTTOM:
-            content_y = self._background_height - self._padding[3] - self._content_surface_buffer.get_height()
+            content_y = self.background_height - self._padding[3] - self._content_surface_buffer.get_height()
         elif self.content_gravity & GRAVITY_CENTER_VERTICAL:
-            content_y = (self._background_height - self._padding[3] - self._content_surface_buffer.get_height()) / 2
+            content_y = (self.background_height - self._padding[3] - self._content_surface_buffer.get_height()) / 2
 
         surface.blit(self._content_surface_buffer, (self.x + content_x, self.y + content_y))
 
