@@ -3,3 +3,5 @@ from pygex.gui.toast import Toast
 from pygex.input import *
 from pygex.mouse import *
 from pygex import color
+from pygex import draw
+from pygex import gui
