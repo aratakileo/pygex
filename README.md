@@ -77,4 +77,5 @@ python3 -m pip install pygame --pre
 </details>
 
 [[Look to previous version]](https://github.com/teacondemns/pygex/releases/tag/v0.2.dev1)
+
 [[Look to other versions]](https://github.com/teacondemns/pygex/releases)
