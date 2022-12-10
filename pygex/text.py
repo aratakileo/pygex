@@ -61,7 +61,9 @@ def parse_multiline_text(
     line_number = 1
     text_piece = ''
     last_space_index = -1
-    reserved_width = -1
+    reserved_width = 0
+
+    has_paragraph_space = True
 
     while char_index < len(text):
         if size[1] != SIZE_WRAP_CONTENT and line_number >= max_lines_number:
@@ -71,7 +73,7 @@ def parse_multiline_text(
 
         if char == '\n':
             if text_piece:
-                reserved_width = max(reserved_width, font.size(text_piece)[0])
+                reserved_width = max(reserved_width, font.size(text_piece)[0] + paragraph_space * has_paragraph_space)
 
                 parsed_queue.append(text_piece)
                 parsed_queue.append(0)
@@ -79,15 +81,16 @@ def parse_multiline_text(
                 parsed_queue[-1] += 1
 
             line_number += 1
-            text_piece = ''
             char_index += 1
+            text_piece = ''
+            has_paragraph_space = True
             continue
 
         if char == ' ':
             last_space_index = char_index
 
         if size[0] != SIZE_WRAP_CONTENT \
-                and font.size(text_piece + char)[0] > size[0] - paragraph_space * isinstance(parsed_queue[-1], int):
+                and font.size(text_piece + char)[0] > size[0] - paragraph_space * has_paragraph_space:
             if last_space_index > char_index - len(text_piece):
                 expected_piece_len = len(text_piece)
                 text_piece = text_piece[:last_space_index - char_index + len(text_piece) + 1]
@@ -95,7 +98,8 @@ def parse_multiline_text(
 
             parsed_queue.append(text_piece)
 
-            reserved_width = max(reserved_width, font.size(text_piece)[0])
+            reserved_width = max(reserved_width, font.size(text_piece)[0] + paragraph_space * has_paragraph_space)
+            has_paragraph_space = False
             text_piece = ''
             line_number += 1
             continue
@@ -105,7 +109,8 @@ def parse_multiline_text(
         if char_index == len(text) - 1:
             parsed_queue.append(text_piece)
 
-            reserved_width = max(reserved_width, font.size(text_piece)[0])
+            reserved_width = max(reserved_width, font.size(text_piece)[0] + paragraph_space * has_paragraph_space)
+            has_paragraph_space = False
             break
 
         char_index += 1
