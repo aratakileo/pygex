@@ -104,11 +104,13 @@ class View:
 
     @property
     def _background_width(self):
-        return self._content_surface_buffer.get_width() + self._padding[0] + self._padding[2]
+        return (self._content_surface_buffer.get_width() + self._padding[0] + self._padding[2]) \
+            if self._width == SIZE_WRAP_CONTENT else self._width
 
     @property
     def _background_height(self):
-        return self._content_surface_buffer.get_height() + self._padding[1] + self._padding[3]
+        return (self._content_surface_buffer.get_height() + self._padding[1] + self._padding[3])  \
+            if self._height == SIZE_WRAP_CONTENT else self._height
 
     @property
     def _background_size(self):
@@ -142,7 +144,19 @@ class View:
 
             surface.blit(self._background_surface_buffer, self.pos)
 
-        surface.blit(self._content_surface_buffer, (self.x + self.padding[0], self.y + self.padding[1]))
+        content_x, content_y = self.x + self._padding[0], self.y + self._padding[1]
+
+        if self.content_gravity & GRAVITY_RIGHT:
+            content_x = self._background_width - self._padding[2] - self._content_surface_buffer.get_width()
+        elif self.content_gravity & GRAVITY_CENTER_HORIZONTAL:
+            content_x = (self._background_width - self._padding[2] - self._content_surface_buffer.get_width()) / 2
+
+        if self.content_gravity & GRAVITY_BOTTOM:
+            content_y = self._background_height - self._padding[3] - self._content_surface_buffer.get_height()
+        elif self.content_gravity & GRAVITY_CENTER_VERTICAL:
+            content_y = (self._background_height - self._padding[3] - self._content_surface_buffer.get_height()) / 2
+
+        surface.blit(self._content_surface_buffer, (content_x, content_y))
 
 
 __all__ = (

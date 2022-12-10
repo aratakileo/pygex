@@ -1,5 +1,6 @@
 from pygex.text import render_aligned_text, ALIGN_LEFT, ALIGN_RIGHT, ALIGN_CENTER, ALIGN_BLOCK, DEFAULT_FONT_SIZE
 from pygex.gui.view import View, SIZE_WRAP_CONTENT, DEFAULT_PADDING, GRAVITY_LEFT, GRAVITY_TOP
+from pygex.text import parse_multiline_text, render_parsed_multiline_text
 from pygex.gui.drawable import Drawable
 from pygex.color import colorValue
 from pygame.font import FontType
@@ -36,6 +37,8 @@ class TextView(View):
         self._font_antialiasing = font_antialiasing
         self._font_or_font_size = font_or_font_size
 
+        self.parse_text()
+
     @property
     def text(self):
         return self._text
@@ -61,8 +64,7 @@ class TextView(View):
         self._text_align = value
 
         if value != old_text_align:
-            self.render_content_surface()
-            self.render_background_surface()
+            self.render_text()
 
     @property
     def text_color(self):
@@ -75,7 +77,7 @@ class TextView(View):
         self._text_color = value
 
         if value != old_text_color:
-            self.render_content_surface()
+            self.render_text()
 
     @property
     def font_or_font_size(self):
@@ -144,20 +146,36 @@ class TextView(View):
         self._font_antialiasing = value
 
         if value != old_font_antialiasing:
-            self.render_content_surface()
+            self.render_text()
 
-    def render_content_surface(self):
+    def parse_text(self):
         width = self._width if self._width == SIZE_WRAP_CONTENT else (self._width - self._padding[0] - self._padding[2])
         height = self._height if self._height == SIZE_WRAP_CONTENT \
             else (self._height - self._padding[1] - self._padding[3])
 
-        self._content_surface_buffer = render_aligned_text(
+        self._parsed_text = parse_multiline_text(
             self._text,
-            self.text_color,
-            (width, height),
+            (height, width),
             self._font_or_font_size,
-            self._text_align
+            self._text_line_spacing,
+            self._text_lines_number,
+            self._text_paragraph_space
         )
+
+    def render_text(self):
+        self._content_surface_buffer = render_parsed_multiline_text(
+            self._parsed_text,
+            self.text_color,
+            self._parsed_text[1],
+            self._font_or_font_size,
+            self._text_align,
+            self._text_paragraph_space,
+            self._font_antialiasing
+        )
+
+    def render_content_surface(self):
+        self.parse_text()
+        self.render_text()
 
 
 __all__ = 'ALIGN_LEFT', 'ALIGN_RIGHT', 'ALIGN_CENTER', 'ALIGN_BLOCK', 'TextView',

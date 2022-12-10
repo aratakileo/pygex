@@ -126,7 +126,6 @@ def render_parsed_multiline_text(
         size[0] if size[0] != SIZE_WRAP_CONTENT else parsed[1][0],
         size[1] if size[1] != SIZE_WRAP_CONTENT else parsed[1][1]
     )
-    print(size)
 
     text_surface = AlphaSurface(size)
     color = to_pygame_alpha_color(color)
@@ -137,7 +136,6 @@ def render_parsed_multiline_text(
     has_paragraph_space = True
 
     for segment in parsed[0]:
-        print(segment)
         if isinstance(segment, int):
             has_paragraph_space = True
             line_number += segment
