@@ -169,6 +169,7 @@ class TextView(View):
             self._parsed_text[1],
             self._font_or_font_size,
             self._text_align,
+            self._text_line_spacing,
             self._text_paragraph_space,
             self._font_antialiasing
         )

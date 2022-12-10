@@ -49,12 +49,12 @@ def parse_multiline_text(
         return None
 
     font = get_pygame_font(font_or_font_size)
-    char_height = font.get_height() + line_spacing
+    char_height = font.get_height()
 
     max_lines_number = lines_number
 
     if lines_number is ... and size[1] != SIZE_WRAP_CONTENT:
-        max_lines_number = int(size[1] / char_height) + 2
+        max_lines_number = int(size[1] / (char_height + line_spacing)) + 2
 
     parsed_queue = [0]
     char_index = 0
@@ -113,7 +113,7 @@ def parse_multiline_text(
     if reserved_width == -1:
         reserved_width = font.size(text_piece)[0]
 
-    return (*parsed_queue, ), (reserved_width, line_number * char_height)
+    return (*parsed_queue, ), (reserved_width, line_number * char_height + (line_number - 1) * line_spacing)
 
 
 def render_parsed_multiline_text(
@@ -122,6 +122,7 @@ def render_parsed_multiline_text(
         size: Sequence[float | int] = (SIZE_WRAP_CONTENT, SIZE_WRAP_CONTENT),
         font_or_font_size: FontType | int = DEFAULT_FONT_SIZE,
         align=ALIGN_LEFT,
+        line_spacing: float | int = 0,
         paragraph_space: float | int = 0,
         antialias=True
 ):
@@ -135,18 +136,19 @@ def render_parsed_multiline_text(
     font = get_pygame_font(font_or_font_size)
     char_height = font.get_height()
 
-    line_number = 0
+    y = 0
+    line_index = 0
     has_paragraph_space = True
 
     for segment in parsed[0]:
         if isinstance(segment, int):
             has_paragraph_space = True
-            line_number += segment
+            line_index += segment
             continue
 
         offset_x = paragraph_space * has_paragraph_space
 
-        y = char_height * line_number
+        y += (char_height + line_spacing) * (line_index > 0)
 
         if align in (ALIGN_LEFT, ALIGN_RIGHT, ALIGN_CENTER) or ' ' not in segment or len(segment.split()) == 1:
             line_surface = font.render(segment, antialias, color)
@@ -179,7 +181,7 @@ def render_parsed_multiline_text(
                 spaces_number = 1
 
         has_paragraph_space = False
-        line_number += 1
+        line_index += 1
 
     return text_surface
 
