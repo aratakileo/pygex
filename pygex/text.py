@@ -148,6 +148,7 @@ def render_parsed_multiline_text(
         if isinstance(segment, int):
             has_paragraph_space = True
             line_index += segment
+            y += (char_height + line_spacing) * segment
             continue
 
         offset_x = paragraph_space * has_paragraph_space
