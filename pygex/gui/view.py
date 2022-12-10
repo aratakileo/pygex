@@ -156,7 +156,7 @@ class View:
         elif self.content_gravity & GRAVITY_CENTER_VERTICAL:
             content_y = (self._background_height - self._padding[3] - self._content_surface_buffer.get_height()) / 2
 
-        surface.blit(self._content_surface_buffer, (content_x, content_y))
+        surface.blit(self._content_surface_buffer, (self.x + content_x, self.y + content_y))
 
 
 __all__ = (
