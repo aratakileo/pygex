@@ -27,6 +27,7 @@ class TextView(View):
         super().__init__(size, pos, padding, content_gravity, background_drawable_or_color)
 
         self._text = text
+        self._formatted_text = None
 
         self._text_color = text_color
         self._text_align = text_align
@@ -41,7 +42,7 @@ class TextView(View):
 
     @property
     def text(self):
-        return self._text
+        return self._text if self._formatted_text is None else self._formatted_text
 
     @text.setter
     def text(self, value: str):
@@ -50,6 +51,7 @@ class TextView(View):
         self._text = value
 
         if value != old_text:
+            self._formatted_text = None
             self.render_content_surface()
             self.render_background_surface()
 
@@ -148,13 +150,19 @@ class TextView(View):
         if value != old_font_antialiasing:
             self.render_text()
 
+    def format_text(self, *args):
+        self._formatted_text = self._text % args
+
+        self.render_content_surface()
+        self.render_background_surface()
+
     def parse_text(self):
         width = self._width if self._width == SIZE_WRAP_CONTENT else (self._width - self._padding[0] - self._padding[2])
         height = self._height if self._height == SIZE_WRAP_CONTENT \
             else (self._height - self._padding[1] - self._padding[3])
 
         self._parsed_text = parse_multiline_text(
-            self._text,
+            self.text,
             (height, width),
             self._font_or_font_size,
             self._text_line_spacing,
