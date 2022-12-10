@@ -95,6 +95,7 @@ def parse_multiline_text(
 
             parsed_queue.append(text_piece)
 
+            reserved_width = max(reserved_width, font.size(text_piece)[0])
             text_piece = ''
             line_number += 1
             continue
@@ -103,6 +104,8 @@ def parse_multiline_text(
 
         if char_index == len(text) - 1:
             parsed_queue.append(text_piece)
+
+            reserved_width = max(reserved_width, font.size(text_piece)[0])
             break
 
         char_index += 1
