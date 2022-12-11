@@ -191,14 +191,14 @@ class View:
         content_width, content_height = self._content_surface_buffer.get_size()
 
         if self.content_gravity & GRAVITY_RIGHT:
-            content_x = bg_width - self._padding[2] - content_width
+            content_x = bg_width - content_width - self._padding[2]
         elif self.content_gravity & GRAVITY_CENTER_HORIZONTAL:
-            content_x = (bg_width - self._padding[2] - content_width) / 2
+            content_x = (bg_width - self._padding[0] - self._padding[2] - content_width) / 2 + self._padding[0]
 
         if self.content_gravity & GRAVITY_BOTTOM:
-            content_y = bg_height - self._padding[3] - content_height
+            content_y = bg_height - content_height - self._padding[3]
         elif self.content_gravity & GRAVITY_CENTER_VERTICAL:
-            content_y = (bg_height - self._padding[3] - content_height) / 2
+            content_y = (bg_height - self._padding[1] - self._padding[3] - content_height) / 2 + self._padding[1]
 
         surface.blit(self._content_surface_buffer, (self.x + content_x, self.y + content_y))
 
