@@ -7,7 +7,7 @@ Extended library for pygame users
 - [How to install `pygex`](#how-to-install-pygex)
 
 ### Preview
-Current development version: `0.2.dev2` (the same version will be [installed](#how-to-install-pygex))
+Current development version: `0.2.dev3` (the same version will be [installed](#how-to-install-pygex))
 
 Use examples:
 - [Drawing application](https://github.com/teacondemns/vector-paint)
@@ -76,6 +76,6 @@ python3 -m pip install pygame --pre
 ```
 </details>
 
-[[Look to previous version]](https://github.com/teacondemns/pygex/releases/tag/v0.2.dev1)
+[[Look to previous version]](https://github.com/teacondemns/pygex/releases/tag/v0.2.dev2)
 
 [[Look to other versions]](https://github.com/teacondemns/pygex/releases)
