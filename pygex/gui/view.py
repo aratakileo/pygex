@@ -187,7 +187,7 @@ class View:
             self.render_content_surface()
             self.render_background_surface()
 
-        content_x, content_y = self.x + self._padding[0], self.y + self._padding[1]
+        content_x, content_y = self._padding[0], self._padding[1]
         content_width, content_height = self._content_surface_buffer.get_size()
 
         if self.content_gravity & GRAVITY_RIGHT:
