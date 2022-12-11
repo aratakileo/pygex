@@ -142,7 +142,7 @@ class View:
             return self._parent.background_height
 
         if self._height == SIZE_WRAP_CONTENT:
-            self._content_surface_buffer.get_height() + self._padding[1] + self._padding[3]
+            return self._content_surface_buffer.get_height() + self._padding[1] + self._padding[3]
 
         return self._height
 
