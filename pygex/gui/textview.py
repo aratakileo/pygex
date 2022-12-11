@@ -1,5 +1,5 @@
-from pygex.text import render_aligned_text, ALIGN_LEFT, ALIGN_RIGHT, ALIGN_CENTER, ALIGN_BLOCK, DEFAULT_FONT_SIZE
 from pygex.gui.view import View, SIZE_WRAP_CONTENT, DEFAULT_PADDING, GRAVITY_LEFT, GRAVITY_TOP
+from pygex.text import ALIGN_LEFT, ALIGN_RIGHT, ALIGN_CENTER, ALIGN_BLOCK, DEFAULT_FONT_SIZE
 from pygex.text import parse_multiline_text, render_parsed_multiline_text
 from pygex.gui.drawable import Drawable
 from pygex.color import colorValue
@@ -157,9 +157,10 @@ class TextView(View):
         self.render_background_surface()
 
     def parse_text(self):
-        width = self._width if self._width == SIZE_WRAP_CONTENT else (self._width - self._padding[0] - self._padding[2])
+        width = self._width if self._width == SIZE_WRAP_CONTENT \
+            else (self.background_width - self._padding[0] - self._padding[2])
         height = self._height if self._height == SIZE_WRAP_CONTENT \
-            else (self._height - self._padding[1] - self._padding[3])
+            else (self.background_height - self._padding[1] - self._padding[3])
 
         self._parsed_text = parse_multiline_text(
             self.text,
