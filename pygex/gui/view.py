@@ -1,3 +1,4 @@
+from pygame.display import get_window_size as pg_win_get_size
 from pygex.gui.drawable import Drawable, ColorDrawable
 from pygex.text import SIZE_WRAP_CONTENT
 from pygame.surface import SurfaceType
@@ -12,6 +13,8 @@ GRAVITY_RIGHT = 1 << 0
 GRAVITY_BOTTOM = 1 << 1
 GRAVITY_CENTER_HORIZONTAL = 1 << 2
 GRAVITY_CENTER_VERTICAL = 1 << 3
+
+SIZE_MATCH_PARENT = -1
 
 
 class View:
@@ -31,6 +34,7 @@ class View:
 
         self._background_surface_buffer: SurfaceType | None = None
         self._content_surface_buffer: SurfaceType | None = None
+        self._parent: View | None = None
 
         if background_drawable_or_color is ...:
             self._background_drawable = None
@@ -103,14 +107,44 @@ class View:
             self.render_background_surface()
 
     @property
+    def min_width(self):
+        return 50
+
+    @property
+    def min_height(self):
+        return 50
+
+    @property
     def background_width(self):
-        return (self._content_surface_buffer.get_width() + self._padding[0] + self._padding[2]) \
-            if self._width == SIZE_WRAP_CONTENT else self._width
+        if self._width == SIZE_MATCH_PARENT:
+            if self._parent is None:
+                return pg_win_get_size()[0]
+
+            if self._parent._width == SIZE_WRAP_CONTENT:
+                return self.min_width
+
+            return self._parent.background_width
+
+        if self._width == SIZE_WRAP_CONTENT:
+            return self._content_surface_buffer.get_width() + self._padding[0] + self._padding[2]
+
+        return self._width
 
     @property
     def background_height(self):
-        return (self._content_surface_buffer.get_height() + self._padding[1] + self._padding[3])  \
-            if self._height == SIZE_WRAP_CONTENT else self._height
+        if self._height == SIZE_MATCH_PARENT:
+            if self._parent is None:
+                return pg_win_get_size()[1]
+
+            if self._parent._height == SIZE_WRAP_CONTENT:
+                return self.min_height
+
+            return self._parent.background_height
+
+        if self._height == SIZE_WRAP_CONTENT:
+            self._content_surface_buffer.get_height() + self._padding[1] + self._padding[3]
+
+        return self._height
 
     @property
     def background_size(self):
@@ -145,16 +179,18 @@ class View:
             surface.blit(self._background_surface_buffer, self.pos)
 
         content_x, content_y = self.x + self._padding[0], self.y + self._padding[1]
+        bg_width, bg_height = self.background_width, self.background_height
+        content_width, content_height = self._content_surface_buffer.get_size()
 
         if self.content_gravity & GRAVITY_RIGHT:
-            content_x = self.background_width - self._padding[2] - self._content_surface_buffer.get_width()
+            content_x = bg_width - self._padding[2] - content_width
         elif self.content_gravity & GRAVITY_CENTER_HORIZONTAL:
-            content_x = (self.background_width - self._padding[2] - self._content_surface_buffer.get_width()) / 2
+            content_x = (bg_width - self._padding[2] - content_width) / 2
 
         if self.content_gravity & GRAVITY_BOTTOM:
-            content_y = self.background_height - self._padding[3] - self._content_surface_buffer.get_height()
+            content_y = bg_height - self._padding[3] - content_height
         elif self.content_gravity & GRAVITY_CENTER_VERTICAL:
-            content_y = (self.background_height - self._padding[3] - self._content_surface_buffer.get_height()) / 2
+            content_y = (bg_height - self._padding[3] - content_height) / 2
 
         surface.blit(self._content_surface_buffer, (self.x + content_x, self.y + content_y))
 
@@ -168,5 +204,6 @@ __all__ = (
     'GRAVITY_CENTER_HORIZONTAL',
     'GRAVITY_CENTER_VERTICAL',
     'SIZE_WRAP_CONTENT',
+    'SIZE_MATCH_PARENT',
     'View'
 )
