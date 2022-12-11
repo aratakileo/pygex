@@ -121,6 +121,7 @@ class View:
                 return pg_win_get_size()[0]
 
             if self._parent._width == SIZE_WRAP_CONTENT:
+                #  if there is no such condition, there will be an infinite recursion
                 return self.min_width
 
             return self._parent.background_width - self._parent._padding[0] - self._parent._padding[2]
@@ -137,6 +138,7 @@ class View:
                 return pg_win_get_size()[1]
 
             if self._parent._height == SIZE_WRAP_CONTENT:
+                #  if there is no such condition, there will be an infinite recursion
                 return self.min_height
 
             return self._parent.background_height - self._parent._padding[1] - self._parent._padding[3]
