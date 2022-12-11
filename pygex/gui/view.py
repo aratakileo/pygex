@@ -180,8 +180,14 @@ class View:
 
             surface.blit(self._background_surface_buffer, self.pos)
 
-        content_x, content_y = self.x + self._padding[0], self.y + self._padding[1]
         bg_width, bg_height = self.background_width, self.background_height
+
+        if self._width == SIZE_MATCH_PARENT and self._background_surface_buffer.get_width() != bg_width \
+                or self._height == SIZE_MATCH_PARENT and self._background_surface_buffer.get_height() != bg_height:
+            self.render_content_surface()
+            self.render_background_surface()
+
+        content_x, content_y = self.x + self._padding[0], self.y + self._padding[1]
         content_width, content_height = self._content_surface_buffer.get_size()
 
         if self.content_gravity & GRAVITY_RIGHT:
