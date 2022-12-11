@@ -161,7 +161,7 @@ def render_parsed_multiline_text(
             if align == ALIGN_RIGHT:
                 x = size[0] - line_surface.get_width() - offset_x
             elif align == ALIGN_CENTER:
-                x = (size[0] - line_surface.get_width()) / 2 + offset_x
+                x = (size[0] - line_surface.get_width() + offset_x) / 2
             else:
                 x = offset_x
 
