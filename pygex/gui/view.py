@@ -123,7 +123,7 @@ class View:
             if self._parent._width == SIZE_WRAP_CONTENT:
                 return self.min_width
 
-            return self._parent.background_width
+            return self._parent.background_width - self._parent._padding[0] - self._parent._padding[2]
 
         if self._width == SIZE_WRAP_CONTENT:
             return self._content_surface_buffer.get_width() + self._padding[0] + self._padding[2]
@@ -139,7 +139,7 @@ class View:
             if self._parent._height == SIZE_WRAP_CONTENT:
                 return self.min_height
 
-            return self._parent.background_height
+            return self._parent.background_height - self._parent._padding[1] - self._parent._padding[3]
 
         if self._height == SIZE_WRAP_CONTENT:
             return self._content_surface_buffer.get_height() + self._padding[1] + self._padding[3]
