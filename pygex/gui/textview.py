@@ -164,7 +164,7 @@ class TextView(View):
 
         self._parsed_text = parse_multiline_text(
             self.text,
-            (height, width),
+            (width, height),
             self._font_or_font_size,
             self._text_line_spacing,
             self._text_lines_number,
