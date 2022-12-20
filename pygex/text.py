@@ -162,16 +162,16 @@ class TextRenderer:
 
     def render_as_singleline(self):
         """This method is fast for single line text and not support align by block (`ALIGN_BLOCK`)"""
-        size = self.get_render_size()
+        renderw, renderh = self.get_render_size()
         x = self._paragraph_space
         base_text_surface = self._font.render(self._text.strip('\n'), self._antialias, self._pygame_alpha_color)
 
         if self._align == ALIGN_RIGHT:
-            x = size[0] - base_text_surface.get_width() - x
+            x = renderw - base_text_surface.get_width() - x
         elif self._align == ALIGN_CENTER:
-            x = (size[0] - base_text_surface.get_width() + x) / 2
+            x = (renderw - base_text_surface.get_width() + x) / 2
 
-        self.text_surface = AlphaSurface(size)
+        self.text_surface = AlphaSurface((renderw, renderh))
         self.text_surface.blit(
             base_text_surface,
             (x, self._parsed_queue[0] * (self._font.get_height() + self._line_spacing))
@@ -179,8 +179,8 @@ class TextRenderer:
 
     def render_as_multiline(self):
         """This method is slow for single line text"""
-        size = self.get_render_size()
-        self.text_surface = AlphaSurface(size)
+        renderw, renderh = self.get_render_size()
+        self.text_surface = AlphaSurface((renderw, renderh))
         char_height = self._font.get_height()
 
         y = 0
@@ -203,16 +203,16 @@ class TextRenderer:
                 line_surface = self._font.render(segment, self._antialias, self._pygame_alpha_color)
 
                 if self._align == ALIGN_RIGHT:
-                    x = size[0] - line_surface.get_width() - offset_x
+                    x = renderw - line_surface.get_width() - offset_x
                 elif self._align == ALIGN_CENTER:
-                    x = (size[0] - line_surface.get_width() + offset_x) / 2
+                    x = (renderw - line_surface.get_width() + offset_x) / 2
                 else:
                     x = offset_x
 
                 self.text_surface.blit(line_surface, (x, y))
             else:
                 segment_pieces = segment.split(' ')
-                space_width = (size[0] - offset_x - self._font.size(segment.replace(' ', ''))[0]) / segment.count(' ')
+                space_width = (renderw - offset_x - self._font.size(segment.replace(' ', ''))[0]) / segment.count(' ')
                 spaces_number = 0
 
                 x = offset_x
