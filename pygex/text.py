@@ -151,7 +151,9 @@ class TextRenderer:
         if not self._parsed_queue:
             return
 
-        if len(self._parsed_queue) == 2 and self._align != ALIGN_BLOCK:
+        if (
+                len(self._parsed_queue) == 2 or len(self._parsed_queue) == 3 and isinstance(self._parsed_queue[-1], int)
+        ) and self._align != ALIGN_BLOCK:
             self.render_as_singleline()
             return
 
@@ -163,17 +165,17 @@ class TextRenderer:
         """
         size = self.get_render_size()
         x = self._paragraph_space
-        base_text_surface = self._font.render(self._text, self._antialias, self._pygame_alpha_color)
+        base_text_surface = self._font.render(self._text.strip('\n'), self._antialias, self._pygame_alpha_color)
 
         if self._align == ALIGN_RIGHT:
             x = size[0] - base_text_surface.get_width() - x
-        elif self._align == ALIGN_RIGHT:
+        elif self._align == ALIGN_CENTER:
             x = (size[0] - base_text_surface.get_width() + x) / 2
 
         self.text_surface = AlphaSurface(size)
         self.text_surface.blit(
             base_text_surface,
-            (x, 0)
+            (x, self._parsed_queue[0] * (self._font.get_height() + self._line_spacing))
         )
 
     def render_as_multiline(self):
