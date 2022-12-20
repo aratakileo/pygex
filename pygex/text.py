@@ -152,30 +152,54 @@ class TextRenderer:
         if not self._parsed_queue:
             return
 
-        if (
-                len(self._parsed_queue) == 2 or len(self._parsed_queue) == 3 and isinstance(self._parsed_queue[-1], int)
-        ) and self._align != ALIGN_BLOCK:
+        if len(self._parsed_queue) == 2 or len(self._parsed_queue) == 3 and isinstance(self._parsed_queue[-1], int):
             self.render_as_singleline()
             return
 
         self.render_as_multiline()
 
     def render_as_singleline(self):
-        """This method is fast for single line text and not support align by block (`ALIGN_BLOCK`)"""
+        """This method is fast for single line text"""
         renderw, renderh = self.get_render_size()
-        x = self._paragraph_space
-        base_text_surface = self._font.render(self._text.strip('\n'), self._antialias, self._pygame_alpha_color)
-
-        if self._align == ALIGN_RIGHT:
-            x = renderw - base_text_surface.get_width() - x
-        elif self._align == ALIGN_CENTER:
-            x = (renderw - base_text_surface.get_width() + x) / 2
+        text = self._text.strip('\n')
+        y = self._parsed_queue[0] * (self._font.get_height() + self._line_spacing)
 
         self.text_surface = AlphaSurface((renderw, renderh))
-        self.text_surface.blit(
-            base_text_surface,
-            (x, self._parsed_queue[0] * (self._font.get_height() + self._line_spacing))
-        )
+
+        if self._align != ALIGN_BLOCK or ' ' not in text or len(text.split()) == 1:
+            base_text_surface = self._font.render(text, self._antialias, self._pygame_alpha_color)
+
+            if self._align == ALIGN_RIGHT:
+                x = renderw - base_text_surface.get_width() - self._paragraph_space
+            elif self._align == ALIGN_CENTER:
+                x = (renderw - base_text_surface.get_width() + self._paragraph_space) / 2
+            else:
+                x = self._paragraph_space
+
+            self.text_surface.blit(
+                base_text_surface,
+                (x, y)
+            )
+        else:
+            segment_pieces = text.split(' ')
+            space_width = (
+                                  renderw - self._paragraph_space - self._font.size(text.replace(' ', ''))[0]
+                          ) / text.count(' ')
+            spaces_number = 0
+
+            x = self._paragraph_space
+
+            for piece in segment_pieces:
+                if not piece:
+                    spaces_number += 1
+                    continue
+
+                x += spaces_number * space_width
+                piece_surface = self._font.render(piece, self._antialias, self._pygame_alpha_color)
+                self.text_surface.blit(piece_surface, (x, y))
+                x += piece_surface.get_width()
+
+                spaces_number = 1
 
     def render_as_multiline(self):
         """This method is slow for single line text"""
@@ -198,8 +222,7 @@ class TextRenderer:
 
             y += (char_height + self._line_spacing) * (line_index > 0)
 
-            if self._align in (ALIGN_LEFT, ALIGN_RIGHT, ALIGN_CENTER) \
-                    or ' ' not in segment or len(segment.split()) == 1:
+            if self._align != ALIGN_BLOCK or ' ' not in segment or len(segment.split()) == 1:
                 line_surface = self._font.render(segment, self._antialias, self._pygame_alpha_color)
 
                 if self._align == ALIGN_RIGHT:
