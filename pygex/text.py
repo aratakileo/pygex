@@ -66,7 +66,8 @@ class TextRenderer:
         if not self._text or self._lines_number is not ... and self._lines_number <= 0 or self._paragraph_space < 0 \
                 or self._size[0] != SIZE_WRAP_CONTENT and self._size[0] <= 0 \
                 or self._size[1] != SIZE_WRAP_CONTENT and self._size[1] <= 0:
-            return None
+            self._parsed_queue = ()
+            return
 
         font = get_pygame_font(self._font_or_font_size)
         char_height = font.get_height()
@@ -160,9 +161,7 @@ class TextRenderer:
         self.render_as_multiline()
 
     def render_as_singleline(self):
-        """
-        This method is not support align by block (`ALIGN_BLOCK`)
-        """
+        """This method is fast for single line text and not support align by block (`ALIGN_BLOCK`)"""
         size = self.get_render_size()
         x = self._paragraph_space
         base_text_surface = self._font.render(self._text.strip('\n'), self._antialias, self._pygame_alpha_color)
@@ -179,6 +178,7 @@ class TextRenderer:
         )
 
     def render_as_multiline(self):
+        """This method is slow for single line text"""
         size = self.get_render_size()
         self.text_surface = AlphaSurface(size)
         char_height = self._font.get_height()
