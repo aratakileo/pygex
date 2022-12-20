@@ -28,7 +28,7 @@ class TextRenderer:
             lines_number: int = ...,
             paragraph_space: float | int = 0,
             antialias=True,
-            strict_surface_size=False
+            strict_surface_width=False
     ):
         self._text = text
         self._color = color
@@ -41,7 +41,7 @@ class TextRenderer:
         self._lines_number = lines_number
         self._paragraph_space = paragraph_space
         self._antialias = antialias
-        self._strict_surface_size = strict_surface_size
+        self._strict_surface_width = strict_surface_width
 
         self._parsed_queue = ()
         self._parsed_text_size = 0, 0
@@ -53,12 +53,12 @@ class TextRenderer:
 
     def get_render_size(self):
         return (
-            self._size[0] if self._size[0] != SIZE_WRAP_CONTENT and self._strict_surface_size
+            self._size[0] if self._size[0] != SIZE_WRAP_CONTENT and self._strict_surface_width
             else self._parsed_text_size[0],
 
             self._size[1]
             if self._size[1] != SIZE_WRAP_CONTENT
-               and (self._strict_surface_size or self._parsed_text_size[1] >= self._size[1])
+               and (self._strict_surface_width or self._parsed_text_size[1] >= self._size[1])
             else self._parsed_text_size[1]
         )
 
