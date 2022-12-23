@@ -38,7 +38,7 @@ class TextRenderer:
         self._font_or_font_size = font_or_font_size
         self._font = get_pygame_font(font_or_font_size)
         self._align = min(ALIGN_BLOCK, max(align, ALIGN_LEFT))
-        self._line_spacing = max(line_spacing, 0)
+        self._line_spacing = line_spacing
         self._lines_number = lines_number if lines_number is ... else max(lines_number, 0)
         self._paragraph_space = max(paragraph_space, 0)
         self._antialiasing = antialiasing
@@ -65,7 +65,6 @@ class TextRenderer:
 
     def set_color(self, color: colorValue):
         old_pygame_alpha_color = self._pygame_color
-
         self._color = color
         self._pygame_color = to_pygame_alpha_color(color)
 
@@ -138,8 +137,8 @@ class TextRenderer:
         return self._align
 
     def set_line_spacing(self, line_spacing: float | int):
-        old_line_spacing = line_spacing
-        self._line_spacing = max(line_spacing, 0)
+        old_line_spacing = self._line_spacing
+        self._line_spacing = line_spacing
 
         if old_line_spacing == self._line_spacing:
             return
