@@ -27,46 +27,196 @@ class TextRenderer:
             line_spacing: float | int = 0,
             lines_number: int = ...,
             paragraph_space: float | int = 0,
-            antialias=True,
+            antialiasing=True,
             strict_surface_width=False
     ):
         self._text = text
         self._color = color
-        self._pygame_alpha_color = to_pygame_alpha_color(color)
-        self._size = size
+        self._pygame_color = to_pygame_alpha_color(color)
+        self._width = SIZE_WRAP_CONTENT if size[0] == SIZE_WRAP_CONTENT else max(size[0], 0)
+        self._height = SIZE_WRAP_CONTENT if size[1] == SIZE_WRAP_CONTENT else max(size[1], 0)
         self._font_or_font_size = font_or_font_size
         self._font = get_pygame_font(font_or_font_size)
-        self._align = align
-        self._line_spacing = line_spacing
-        self._lines_number = lines_number
-        self._paragraph_space = paragraph_space
-        self._antialias = antialias
+        self._align = min(ALIGN_BLOCK, max(align, ALIGN_LEFT))
+        self._line_spacing = max(line_spacing, 0)
+        self._lines_number = lines_number if lines_number is ... else max(lines_number, 0)
+        self._paragraph_space = max(paragraph_space, 0)
+        self._antialiasing = antialiasing
         self._strict_surface_width = strict_surface_width
 
         self._parsed_queue = ()
-        self._parsed_text_size = 0, 0
+        self._parsed_text_width = self._parsed_text_height = 0
 
         self.text_surface: SurfaceType | None = None
 
         self.parse_text()
         self.render()
 
+    def set_text(self, text: str):
+        old_text = self._text
+        self._text = text
+
+        if old_text != self._text:
+            self.parse_text()
+            self.render()
+
+    def get_text(self):
+        return self._text
+
+    def set_color(self, color: colorValue):
+        old_pygame_alpha_color = self._pygame_color
+
+        self._color = color
+        self._pygame_color = to_pygame_alpha_color(color)
+
+        if old_pygame_alpha_color != self._pygame_color:
+            self.render()
+
+    def get_color(self) -> colorValue:
+        return self._color
+
+    def get_pygame_color(self) -> tuple[int, int, int, int]:
+        return self._pygame_color
+
+    def set_size(self, size: Sequence[float | int]):
+        old_size = self._width, self._height
+        self._width = SIZE_WRAP_CONTENT if size[0] == SIZE_WRAP_CONTENT else max(size[0], 0)
+        self._height = SIZE_WRAP_CONTENT if size[1] == SIZE_WRAP_CONTENT else max(size[1], 0)
+
+        if old_size != (self._width, self._height):
+            self.parse_text()
+            self.render()
+
+    def get_size(self) -> tuple[float | int, float | int]:
+        return self._width, self._height
+
+    def set_width(self, width: float | int):
+        old_width = self._width
+        self._width = SIZE_WRAP_CONTENT if width == SIZE_WRAP_CONTENT else max(width, 0)
+
+        if old_width != self._width:
+            self.parse_text()
+            self.render()
+
+    def get_width(self) -> float | int:
+        return self._width
+
+    def set_height(self, height: float | int):
+        old_height = self._height
+        self._height = SIZE_WRAP_CONTENT if height == SIZE_WRAP_CONTENT else max(height, 0)
+
+        if old_height != self._height:
+            self.parse_text()
+            self.render()
+
+    def get_height(self) -> float | int:
+        return self._height
+
+    def set_font_or_font_size(self, font_or_font_size: FontType | int):
+        old_font = self._font
+        self._font_or_font_size = font_or_font_size
+        self._font = get_pygame_font(font_or_font_size)
+
+        if old_font != self._font:
+            self.parse_text()
+            self.render()
+
+    def get_font_or_font_size(self):
+        return self._font_or_font_size
+
+    def get_font(self):
+        return self._font
+
+    def set_align(self, align: int):
+        old_align = self._align
+        self._align = min(ALIGN_BLOCK, max(align, ALIGN_LEFT))
+
+        if old_align != self._align:
+            self.render()
+
+    def get_align(self):
+        return self._align
+
+    def set_line_spacing(self, line_spacing: float | int):
+        old_line_spacing = line_spacing
+        self._line_spacing = max(line_spacing, 0)
+
+        if old_line_spacing == self._line_spacing:
+            return
+
+        if self._line_spacing > old_line_spacing:
+            self.render()
+            return
+
+        self.parse_text()
+        self.render()
+
+    def get_line_spacing(self):
+        return self._line_spacing
+
+    def set_lines_number(self, lines_number: int):
+        old_lines_number = self._lines_number
+        self._lines_number = lines_number if lines_number is ... else max(lines_number, 0)
+
+        if old_lines_number == self._lines_number:
+            return
+
+        if self._lines_number < old_lines_number:
+            self.render()
+            return
+
+        self.parse_text()
+        self.render()
+
+    def get_lines_number(self):
+        return self._lines_number
+
+    def set_paragraph_space(self, paragraph_space: float | int):
+        old_paragraph_space = self._paragraph_space
+        self._paragraph_space = max(paragraph_space, 0)
+
+        if old_paragraph_space != self._paragraph_space:
+            self.parse_text()
+            self.render()
+
+    def get_paragraph_space(self):
+        return self._paragraph_space
+
+    def set_antialiasing(self, antialiasing: bool):
+        old_antialiasing = self._antialiasing
+        self._antialiasing = antialiasing
+
+        if old_antialiasing != antialiasing:
+            self.render()
+
+    def is_antialiasing(self):
+        return self._antialiasing
+
+    def set_strict_surface_width(self, strict_surface_width: bool):
+        old_strict_surface_width = self._strict_surface_width
+        self._strict_surface_width = strict_surface_width
+
+        if old_strict_surface_width != strict_surface_width:
+            self.render()
+
+    def is_strict_surface_width(self):
+        return self._strict_surface_width
+
     def get_render_size(self):
         return (
-            self._size[0] if self._size[0] != SIZE_WRAP_CONTENT and self._strict_surface_width
-            else self._parsed_text_size[0],
+            self._width if self._width != SIZE_WRAP_CONTENT and self._strict_surface_width
+            else self._parsed_text_width,
 
-            self._size[1]
-            if self._size[1] != SIZE_WRAP_CONTENT
-               and (self._strict_surface_width or self._parsed_text_size[1] >= self._size[1])
-            else self._parsed_text_size[1]
+            self._height
+            if self._height != SIZE_WRAP_CONTENT
+            and (self._strict_surface_width or self._parsed_text_height >= self._height)
+            else self._parsed_text_height
         )
 
     def parse_text(self):
-        if not self._text or self._lines_number is not ... and self._lines_number <= 0 or self._paragraph_space < 0 \
-                or self._size[0] != SIZE_WRAP_CONTENT and self._size[0] <= 0 \
-                or self._size[1] != SIZE_WRAP_CONTENT and self._size[1] <= 0:
+        if not self._text or self._lines_number == 0:
             self._parsed_queue = ()
+            self._parsed_text_width = self._parsed_text_height = 0
             return
 
         font = get_pygame_font(self._font_or_font_size)
@@ -74,8 +224,8 @@ class TextRenderer:
 
         max_lines_number = self._lines_number
 
-        if self._lines_number is ... and self._size[1] != SIZE_WRAP_CONTENT:
-            max_lines_number = int(self._size[1] / (char_height + self._line_spacing)) + 2
+        if self._lines_number is ... and self._height != SIZE_WRAP_CONTENT:
+            max_lines_number = int(self._height / (char_height + self._line_spacing)) + 2
 
         parsed_queue = [0]
         char_index = 0
@@ -87,7 +237,7 @@ class TextRenderer:
         has_paragraph_space = True
 
         while char_index < len(self._text):
-            if self._size[1] != SIZE_WRAP_CONTENT and line_number >= max_lines_number:
+            if self._height != SIZE_WRAP_CONTENT and line_number >= max_lines_number:
                 break
 
             char = self._text[char_index]
@@ -111,8 +261,8 @@ class TextRenderer:
             if char == ' ':
                 last_space_index = char_index
 
-            if self._size[0] != SIZE_WRAP_CONTENT \
-                    and font.size(text_piece + char)[0] > self._size[0] - self._paragraph_space * has_paragraph_space:
+            if self._width != SIZE_WRAP_CONTENT \
+                    and font.size(text_piece + char)[0] > self._width - self._paragraph_space * has_paragraph_space:
                 if last_space_index > char_index - len(text_piece):
                     expected_piece_len = len(text_piece)
                     text_piece = text_piece[:last_space_index - char_index + len(text_piece) + 1]
@@ -146,20 +296,27 @@ class TextRenderer:
             reserved_width = font.size(text_piece)[0]
 
         self._parsed_queue = *parsed_queue,
-        self._parsed_text_size = reserved_width, line_number * char_height + (line_number - 1) * self._line_spacing
+        self._parsed_text_width = reserved_width
+        self._parsed_text_height = line_number * char_height + (line_number - 1) * self._line_spacing
 
     def render(self):
         if not self._parsed_queue:
+            self.text_surface = None
             return
 
-        if len(self._parsed_queue) == 2 or len(self._parsed_queue) == 3 and isinstance(self._parsed_queue[-1], int):
-            self.render_as_singleline()
+        if self._lines_number == 1 or len(self._parsed_queue) == 2 \
+                or len(self._parsed_queue) == 3 and isinstance(self._parsed_queue[-1], int):
+            self.render_as_singleline_content()
             return
 
-        self.render_as_multiline()
+        self.render_as_multiline_content()
 
-    def render_as_singleline(self):
+    def render_as_singleline_content(self):
         """This method is fast for single line text"""
+        if not self._parsed_queue:
+            self.text_surface = None
+            return
+
         renderw, renderh = self.get_render_size()
         text = self._text.strip('\n')
         y = self._parsed_queue[0] * (self._font.get_height() + self._line_spacing)
@@ -167,7 +324,7 @@ class TextRenderer:
         self.text_surface = AlphaSurface((renderw, renderh))
 
         if self._align != ALIGN_BLOCK or ' ' not in text or len(text.split()) == 1:
-            base_text_surface = self._font.render(text, self._antialias, self._pygame_alpha_color)
+            base_text_surface = self._font.render(text, self._antialiasing, self._pygame_color)
 
             if self._align == ALIGN_RIGHT:
                 x = renderw - base_text_surface.get_width() - self._paragraph_space
@@ -195,14 +352,18 @@ class TextRenderer:
                     continue
 
                 x += spaces_number * space_width
-                piece_surface = self._font.render(piece, self._antialias, self._pygame_alpha_color)
+                piece_surface = self._font.render(piece, self._antialiasing, self._pygame_color)
                 self.text_surface.blit(piece_surface, (x, y))
                 x += piece_surface.get_width()
 
                 spaces_number = 1
 
-    def render_as_multiline(self):
+    def render_as_multiline_content(self):
         """This method is slow for single line text"""
+        if not self._parsed_queue:
+            self.text_surface = None
+            return
+
         renderw, renderh = self.get_render_size()
         self.text_surface = AlphaSurface((renderw, renderh))
         char_height = self._font.get_height()
@@ -223,7 +384,7 @@ class TextRenderer:
             y += (char_height + self._line_spacing) * (line_index > 0)
 
             if self._align != ALIGN_BLOCK or ' ' not in segment or len(segment.split()) == 1:
-                line_surface = self._font.render(segment, self._antialias, self._pygame_alpha_color)
+                line_surface = self._font.render(segment, self._antialiasing, self._pygame_color)
 
                 if self._align == ALIGN_RIGHT:
                     x = renderw - line_surface.get_width() - offset_x
@@ -246,7 +407,7 @@ class TextRenderer:
                         continue
 
                     x += spaces_number * space_width
-                    piece_surface = self._font.render(piece, self._antialias, self._pygame_alpha_color)
+                    piece_surface = self._font.render(piece, self._antialiasing, self._pygame_color)
                     self.text_surface.blit(piece_surface, (x, y))
                     x += piece_surface.get_width()
 
@@ -261,6 +422,8 @@ def get_pygame_font(font_or_font_size: FontType | int = DEFAULT_FONT_SIZE):
         init()
 
     if isinstance(font_or_font_size, int):
+        font_or_font_size = max(font_or_font_size, 1)
+
         if font_or_font_size not in _font_buffer:
             _font_buffer[font_or_font_size] = Font(None, font_or_font_size)
 
@@ -358,7 +521,7 @@ def parse_multiline_text(
     if reserved_width == -1:
         reserved_width = font.size(text_piece)[0]
 
-    return (*parsed_queue, ), (reserved_width, line_number * char_height + (line_number - 1) * line_spacing)
+    return (*parsed_queue,), (reserved_width, line_number * char_height + (line_number - 1) * line_spacing)
 
 
 def render_parsed_multiline_text(
