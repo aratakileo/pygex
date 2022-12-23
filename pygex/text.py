@@ -432,6 +432,10 @@ def get_pygame_font(font_or_font_size: FontType | int = DEFAULT_FONT_SIZE):
     return font_or_font_size
 
 
+def render_text(text: str, color: colorValue, font_or_font_size: FontType | int = DEFAULT_FONT_SIZE, antialiasing=True):
+    return get_pygame_font(font_or_font_size).render(text, antialiasing, to_pygame_alpha_color(color))
+
+
 def parse_multiline_text(
         text: str,
         size: Sequence[float | int] = (SIZE_WRAP_CONTENT, SIZE_WRAP_CONTENT),
@@ -596,6 +600,7 @@ __all__ = (
     'SIZE_WRAP_CONTENT',
     'TextRenderer',
     'get_pygame_font',
+    'render_text',
     'parse_multiline_text',
     'render_parsed_multiline_text'
 )
