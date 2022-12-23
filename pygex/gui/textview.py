@@ -45,14 +45,12 @@ class TextView(View):
             self._height if self._height == SIZE_WRAP_CONTENT
             else (self.background_height - self._padding[1] - self._padding[3])
         )
-    
+
     def apply_text_surface_changes(self):
         self._content_surface_buffer = self.text_renderer.text_surface
 
     def render_content_surface(self):
         self.text_renderer.set_size(self.get_text_size())
-        self.text_renderer.parse_text()
-        self.text_renderer.render()
 
         self._content_surface_buffer = self.text_renderer.text_surface
 
