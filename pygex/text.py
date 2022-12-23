@@ -21,7 +21,7 @@ class TextRenderer:
             self,
             text: str,
             color: colorValue,
-            size: Sequence[float | int] = (SIZE_WRAP_CONTENT, SIZE_WRAP_CONTENT),
+            size: Sequence[int] = (SIZE_WRAP_CONTENT, SIZE_WRAP_CONTENT),
             font_or_font_size: FontType | int = DEFAULT_FONT_SIZE,
             align=ALIGN_LEFT,
             line_spacing: float | int = 0,
@@ -78,7 +78,7 @@ class TextRenderer:
     def get_pygame_color(self) -> tuple[int, int, int, int]:
         return self._pygame_color
 
-    def set_size(self, size: Sequence[float | int]):
+    def set_size(self, size: Sequence[int]):
         old_size = self._width, self._height
         self._width = SIZE_WRAP_CONTENT if size[0] == SIZE_WRAP_CONTENT else max(size[0], 0)
         self._height = SIZE_WRAP_CONTENT if size[1] == SIZE_WRAP_CONTENT else max(size[1], 0)
@@ -87,10 +87,10 @@ class TextRenderer:
             self.parse_text()
             self.render()
 
-    def get_size(self) -> tuple[float | int, float | int]:
+    def get_size(self) -> tuple[int, int]:
         return self._width, self._height
 
-    def set_width(self, width: float | int):
+    def set_width(self, width: int):
         old_width = self._width
         self._width = SIZE_WRAP_CONTENT if width == SIZE_WRAP_CONTENT else max(width, 0)
 
@@ -98,10 +98,10 @@ class TextRenderer:
             self.parse_text()
             self.render()
 
-    def get_width(self) -> float | int:
+    def get_width(self) -> int:
         return self._width
 
-    def set_height(self, height: float | int):
+    def set_height(self, height: int):
         old_height = self._height
         self._height = SIZE_WRAP_CONTENT if height == SIZE_WRAP_CONTENT else max(height, 0)
 
@@ -109,7 +109,7 @@ class TextRenderer:
             self.parse_text()
             self.render()
 
-    def get_height(self) -> float | int:
+    def get_height(self) -> int:
         return self._height
 
     def set_font_or_font_size(self, font_or_font_size: FontType | int):
@@ -432,14 +432,6 @@ def get_pygame_font(font_or_font_size: FontType | int = DEFAULT_FONT_SIZE):
     return font_or_font_size
 
 
-def get_text_size(text: str, font_or_font_size: FontType | int = DEFAULT_FONT_SIZE):
-    return get_pygame_font(font_or_font_size).size(text)
-
-
-def render_text(text: str, color: colorValue, font_or_font_size: FontType | int = DEFAULT_FONT_SIZE, antialias=True):
-    return get_pygame_font(font_or_font_size).render(text, antialias, to_pygame_alpha_color(color))
-
-
 def parse_multiline_text(
         text: str,
         size: Sequence[float | int] = (SIZE_WRAP_CONTENT, SIZE_WRAP_CONTENT),
@@ -604,8 +596,6 @@ __all__ = (
     'SIZE_WRAP_CONTENT',
     'TextRenderer',
     'get_pygame_font',
-    'get_text_size',
-    'render_text',
     'parse_multiline_text',
     'render_parsed_multiline_text'
 )
