@@ -93,64 +93,57 @@ class View:
             self.render_content_surface()
             self.render_background_surface()
 
-    @property
-    def padding(self):
+    def get_padding(self):
         return self._padding
 
-    @padding.setter
-    def padding(self, value: Sequence[int]):
+    def set_padding(self, padding: Sequence[int]):
         old_padding = self._padding
 
-        self._padding = value
+        self._padding = padding
 
-        if value != old_padding:
+        if padding != old_padding:
             self.render_background_surface()
 
-    @property
-    def min_width(self):
+    def get_min_width(self):
         return 50
 
-    @property
-    def min_height(self):
+    def get_min_height(self):
         return 50
 
-    @property
-    def background_width(self):
+    def get_background_width(self):
         if self._width == SIZE_MATCH_PARENT:
             if self._parent is None:
                 return pg_win_get_size()[0]
 
             if self._parent._width == SIZE_WRAP_CONTENT:
                 #  if there is no such condition, there will be an infinite recursion
-                return self.min_width
+                return self.get_min_width()
 
-            return self._parent.background_width - self._parent._padding[0] - self._parent._padding[2]
+            return self._parent.get_background_width() - self._parent._padding[0] - self._parent._padding[2]
 
         if self._width == SIZE_WRAP_CONTENT:
             return self._content_surface_buffer.get_width() + self._padding[0] + self._padding[2]
 
         return self._width
 
-    @property
-    def background_height(self):
+    def get_background_height(self):
         if self._height == SIZE_MATCH_PARENT:
             if self._parent is None:
                 return pg_win_get_size()[1]
 
             if self._parent._height == SIZE_WRAP_CONTENT:
                 #  if there is no such condition, there will be an infinite recursion
-                return self.min_height
+                return self.get_min_height()
 
-            return self._parent.background_height - self._parent._padding[1] - self._parent._padding[3]
+            return self._parent.get_background_height() - self._parent._padding[1] - self._parent._padding[3]
 
         if self._height == SIZE_WRAP_CONTENT:
             return self._content_surface_buffer.get_height() + self._padding[1] + self._padding[3]
 
         return self._height
 
-    @property
-    def background_size(self):
-        return self.background_width, self.background_height
+    def get_background_size(self):
+        return self.get_background_width(), self.get_background_height()
 
     def set_bg_drawable(self, drawable_or_color: Drawable | colorValue):
         if isinstance(drawable_or_color, Drawable):
@@ -165,10 +158,10 @@ class View:
 
     def render_background_surface(self, force_render=False):
         if self._background_drawable is None or not force_render and self._background_surface_buffer is not None \
-                and self._background_surface_buffer.get_size() == self.background_size:
+                and self._background_surface_buffer.get_size() == self.get_background_size():
             return
 
-        self._background_surface_buffer = self._background_drawable.render(self.background_size)
+        self._background_surface_buffer = self._background_drawable.render(self.get_background_size())
 
     def render(self, surface: SurfaceType):
         if self._content_surface_buffer is None:
@@ -180,7 +173,7 @@ class View:
 
             surface.blit(self._background_surface_buffer, self.pos)
 
-        bg_width, bg_height = self.background_width, self.background_height
+        bg_width, bg_height = self.get_background_width(), self.get_background_height()
 
         if self._width == SIZE_MATCH_PARENT and self._background_surface_buffer.get_width() != bg_width \
                 or self._height == SIZE_MATCH_PARENT and self._background_surface_buffer.get_height() != bg_height:

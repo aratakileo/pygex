@@ -37,16 +37,26 @@ class TextView(View):
             font_antialiasing
         )
 
+    def set_text(self, text: str):
+        self.text_renderer.set_text(text)
+
+        self._content_surface_buffer = self.text_renderer.text_surface
+
+    def set_text_color(self, text_color: colorValue):
+        self.text_renderer.set_color(text_color)
+
+        self._content_surface_buffer = self.text_renderer.text_surface
+
     def get_text_size(self):
         return (
             self._width if self._width == SIZE_WRAP_CONTENT
-            else (self.background_width - self._padding[0] - self._padding[2]),
+            else (self.get_background_width() - self._padding[0] - self._padding[2]),
 
             self._height if self._height == SIZE_WRAP_CONTENT
-            else (self.background_height - self._padding[1] - self._padding[3])
+            else (self.get_background_height() - self._padding[1] - self._padding[3])
         )
 
-    def apply_text_surface_changes(self):
+    def apply_text_surface(self):
         self._content_surface_buffer = self.text_renderer.text_surface
 
     def render_content_surface(self):

@@ -10,17 +10,20 @@ class Drawable:
         if isinstance(border_radius_or_radii, int):
             self.set_border_radius(border_radius_or_radii)
         else:
-            self.radii = border_radius_or_radii
+            self.set_radii(border_radius_or_radii)
 
         self.border_width = border_width
         self.border_color = border_color
 
-    @property
     def has_border_radii(self):
-        return self.radii != (-1, -1, -1, -1)
+        return (
+            self.border_top_left_radius,
+            self.border_top_right_radius,
+            self.border_bottom_left_radius,
+            self.border_bottom_right_radius
+        ) != (-1, -1, -1, -1)
 
-    @property
-    def radii(self):
+    def get_radii(self):
         return (
             self.border_top_left_radius,
             self.border_top_right_radius,
@@ -28,14 +31,13 @@ class Drawable:
             self.border_bottom_right_radius
         )
 
-    @radii.setter
-    def radii(self, value: Sequence[int]):
+    def set_radii(self, radii: Sequence[int]):
         (
             self.border_top_left_radius,
             self.border_top_right_radius,
             self.border_bottom_left_radius,
             self.border_bottom_right_radius
-        ) = value
+        ) = radii
 
     def set_border_radius(self, radius: int):
         self.border_top_left_radius = radius
@@ -107,8 +109,14 @@ class GradientDrawable(Drawable):
     def render(self, size: Sequence[int]) -> SurfaceType:
         output_surface = gradient(size, self.colors, self.is_vertical)
 
-        if self.has_border_radii:
-            output_surface = round_corners(output_surface, self.radii)
+        if self.has_border_radii():
+            output_surface = round_corners(
+                output_surface,
+                self.border_top_left_radius,
+                self.border_top_right_radius,
+                self.border_bottom_left_radius,
+                self.border_bottom_right_radius
+            )
 
         if self.border_width > 0:
             pg_draw_rect(

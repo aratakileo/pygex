@@ -45,18 +45,27 @@ def cutout_by_mask(source_surface: SurfaceType, mask: SurfaceType):
     return new_source
 
 
-def round_corners(source_surface: SurfaceType, radius: int | Sequence[int]):
-    """
-    Rounding the borders of image (Surface)
-    :param source_surface: source_surface image
-    :param radius: value by which the corners will be rounded: `radius` or
-    `top_left, top_right, bottom_left, bottom_right`
-    """
-    radius = (radius,) if isinstance(radius, int) else (-1, *radius)
+def round_corners(
+        source_surface: SurfaceType,
+        border_top_left_radius: int,
+        border_top_right_radius: int,
+        border_bottom_left_radius: int,
+        border_bottom_right_radius: int
+):
     mask_surface = Surface(source_surface.get_size())
     mask_surface.fill(0x000000)
 
-    pg_draw_rect(mask_surface, 0xffffff, (0, 0, *source_surface.get_size()), 0, *radius)
+    pg_draw_rect(
+        mask_surface,
+        0xffffff,
+        (0, 0, *source_surface.get_size()),
+        0,
+        -1,
+        border_top_left_radius,
+        border_top_right_radius,
+        border_bottom_left_radius,
+        border_bottom_right_radius
+    )
 
     return cutout_by_mask(source_surface, mask_surface)
 
