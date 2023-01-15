@@ -21,7 +21,7 @@ from time import time
 class Window:
     def __init__(
             self,
-            size: Sequence = (800, 600),
+            size: Sequence[int] = (800, 600),
             title='Pygex window',
             fullscreen=False,
             resizable=True,

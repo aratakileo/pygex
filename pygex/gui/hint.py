@@ -1,4 +1,4 @@
-from pygex.color import colorValue, to_pygame_alpha_color, get_readable_text_color
+from pygex.color import colorValue, to_pygame_alpha_color, to_readable_color
 from pygame.draw import rect as draw_rect
 from pygame.surface import SurfaceType
 from pygex.image import AlphaSurface
@@ -46,7 +46,7 @@ class Hint:
         if len(anchor_rect_or_point) == 2:
             anchor_rect_or_point = *anchor_rect_or_point, 0, 0
 
-        text_color = self.text_color if self.text_color is not ... else get_readable_text_color(self.bg_color)
+        text_color = self.text_color if self.text_color is not ... else to_readable_color(self.bg_color)
 
         if self.font_or_size is not ...:
             text_surface = render_text(self.text, text_color, self.font_or_size)

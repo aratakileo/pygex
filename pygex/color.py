@@ -183,7 +183,7 @@ def to_black_white(color: colorValue):
     return rgba_to_ahex((segment, segment, segment, get_alpha(color)))
 
 
-def get_readable_text_color(background_color: colorValue):
+def to_readable_color(background_color: colorValue):
     """
     Get a black or white color that will be clearly visible on the specified background color
     :param background_color: source color for analysis
@@ -276,5 +276,5 @@ __all__ = (
     'to_gray',
     'to_black_white',
     'to_pygame_alpha_color',
-    'get_readable_text_color'
+    'to_readable_color'
 )

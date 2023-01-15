@@ -1,4 +1,4 @@
-from pygex.color import colorValue, to_pygame_alpha_color, get_readable_text_color
+from pygex.color import colorValue, to_pygame_alpha_color, to_readable_color
 from pygame.display import get_window_size as pg_win_get_size
 from pygame.draw import rect as pg_draw_rect
 from pygame.surface import SurfaceType
@@ -58,7 +58,7 @@ def render(surface: SurfaceType):
         _toast_start_time = current_time
 
     toast = _toast_queue[0]
-    text_color = toast.text_color if toast.text_color is not ... else get_readable_text_color(toast.bg_color)
+    text_color = toast.text_color if toast.text_color is not ... else to_readable_color(toast.bg_color)
     text_surface = render_text(toast.text, text_color)
     time_passed = current_time - _toast_start_time
 
