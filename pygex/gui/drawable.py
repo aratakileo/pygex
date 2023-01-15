@@ -1,4 +1,4 @@
-from pygex.color import colorValue, to_pygame_alpha_color, BLACK
+from pygex.color import COLOR_TYPE, to_pygame_alpha_color, C_BLACK
 from pygex.image import AlphaSurface, gradient, round_corners
 from pygame.draw import rect as pg_draw_rect
 from pygame.surface import SurfaceType
@@ -6,7 +6,7 @@ from typing import Sequence
 
 
 class Drawable:
-    def __init__(self, border_radius_or_radii: int | Sequence[int], border_width: int, border_color: colorValue):
+    def __init__(self, border_radius_or_radii: int | Sequence[int], border_width: int, border_color: COLOR_TYPE):
         if isinstance(border_radius_or_radii, int):
             self.set_border_radius(border_radius_or_radii)
         else:
@@ -52,10 +52,10 @@ class Drawable:
 class ColorDrawable(Drawable):
     def __init__(
             self,
-            color: colorValue,
+            color: COLOR_TYPE,
             border_radius_or_radii: int | Sequence[int] = -1,
             border_width: int = 0,
-            border_color: colorValue = BLACK
+            border_color: COLOR_TYPE = C_BLACK
     ):
         super().__init__(border_radius_or_radii, border_width, border_color)
 
@@ -95,11 +95,11 @@ class ColorDrawable(Drawable):
 class GradientDrawable(Drawable):
     def __init__(
             self,
-            colors: Sequence[colorValue],
+            colors: Sequence[COLOR_TYPE],
             is_vertical=False,
             border_radius_or_radii: int | Sequence[int] = -1,
             border_width: int = 0,
-            border_color: colorValue = BLACK
+            border_color: COLOR_TYPE = C_BLACK
     ):
         super().__init__(border_radius_or_radii, border_width, border_color)
 

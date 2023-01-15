@@ -1,4 +1,4 @@
-from pygex.color import colorValue, to_pygame_alpha_color, to_readable_color
+from pygex.color import COLOR_TYPE, to_pygame_alpha_color, to_readable_color
 from pygame.display import get_window_size as pg_win_get_size
 from pygame.draw import rect as pg_draw_rect
 from pygame.surface import SurfaceType
@@ -18,8 +18,8 @@ class Toast:
 
         self.animation_delay = 0.25
         self.padding = 10
-        self.text_color: colorValue = ...
-        self.bg_color: colorValue = 0xaa000000
+        self.text_color: COLOR_TYPE = ...
+        self.bg_color: COLOR_TYPE = 0xaa000000
         self.border_radius_or_radii: int | Sequence[int] = 5
 
     def show(self):

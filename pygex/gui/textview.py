@@ -1,6 +1,6 @@
 from pygex.text import ALIGN_LEFT, ALIGN_RIGHT, ALIGN_CENTER, ALIGN_BLOCK, DEFAULT_FONT_SIZE, TextRenderer
 from pygex.gui.view import View, SIZE_WRAP_CONTENT, DEFAULT_PADDING, GRAVITY_LEFT, GRAVITY_TOP
-from pygex.color import colorValue, BLACK
+from pygex.color import COLOR_TYPE, C_BLACK
 from pygex.gui.drawable import Drawable
 from pygame.font import FontType
 from typing import Sequence
@@ -10,7 +10,7 @@ class TextView(View):
     def __init__(
             self,
             text: str,
-            text_color: colorValue = BLACK,
+            text_color: COLOR_TYPE = C_BLACK,
             size: Sequence[int] = (SIZE_WRAP_CONTENT, SIZE_WRAP_CONTENT),
             pos: Sequence[float | int] = (0, 0),
             padding: Sequence[int] = DEFAULT_PADDING,
@@ -20,7 +20,7 @@ class TextView(View):
             text_lines_number: int = ...,
             text_paragraph_space: float | int = 0,
             font_or_font_size: FontType | int = DEFAULT_FONT_SIZE,
-            background_drawable_or_color: Drawable | colorValue = ...,
+            background_drawable_or_color: Drawable | COLOR_TYPE = ...,
             font_antialiasing=True
     ):
         super().__init__(size, pos, padding, content_gravity, background_drawable_or_color)
@@ -42,7 +42,7 @@ class TextView(View):
 
         self._content_surface_buffer = self.text_renderer.text_surface
 
-    def set_text_color(self, text_color: colorValue):
+    def set_text_color(self, text_color: COLOR_TYPE):
         self.text_renderer.set_color(text_color)
 
         self._content_surface_buffer = self.text_renderer.text_surface

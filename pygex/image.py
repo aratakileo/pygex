@@ -1,7 +1,7 @@
 from pygame.image import frombuffer as pg_image_frombuffer, tostring as pg_image_tostring
 from PIL import Image as PillowImage, ImageFilter as PillowImageFilter
 from pygame.transform import smoothscale as pg_smoothscale
-from pygex.color import colorValue, to_pygame_alpha_color
+from pygex.color import COLOR_TYPE, to_pygame_alpha_color
 from pygame.surface import Surface, SurfaceType
 from pygame.draw import rect as pg_draw_rect
 from pygame.constants import SRCALPHA
@@ -70,7 +70,7 @@ def round_corners(
     return cutout_by_mask(source_surface, mask_surface)
 
 
-def gradient(size: Sequence[int], colors: Sequence[colorValue], is_vertical=False):
+def gradient(size: Sequence[int], colors: Sequence[COLOR_TYPE], is_vertical=False):
     colors_line_surface = Surface((1, len(colors)) if is_vertical else (len(colors), 1), SRCALPHA, 32)
 
     for i in range(len(colors)):

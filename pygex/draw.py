@@ -1,6 +1,6 @@
 from pygame.draw import line as draw_line
 from pygame.surface import SurfaceType
-from pygex.color import colorValue
+from pygex.color import COLOR_TYPE
 from pygame.rect import RectType
 from typing import Sequence
 from math import ceil
@@ -8,7 +8,7 @@ from math import ceil
 
 def grid(
         surface: SurfaceType,
-        line_color: colorValue,
+        line_color: COLOR_TYPE,
         scale_interval: float | int,
         bounds: Sequence[float | int] | RectType,
         offset: Sequence[float | int] = (0, 0),

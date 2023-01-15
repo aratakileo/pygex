@@ -1,4 +1,4 @@
-from pygex.color import colorValue, to_pygame_alpha_color
+from pygex.color import COLOR_TYPE, to_pygame_alpha_color
 from pygame.font import FontType, get_init, init, Font
 from pygame.surface import SurfaceType
 from pygex.image import AlphaSurface
@@ -20,7 +20,7 @@ class TextRenderer:
     def __init__(
             self,
             text: str,
-            color: colorValue,
+            color: COLOR_TYPE,
             size: Sequence[int] = (SIZE_WRAP_CONTENT, SIZE_WRAP_CONTENT),
             font_or_font_size: FontType | int = DEFAULT_FONT_SIZE,
             align=ALIGN_LEFT,
@@ -63,7 +63,7 @@ class TextRenderer:
     def get_text(self):
         return self._text
 
-    def set_color(self, color: colorValue):
+    def set_color(self, color: COLOR_TYPE):
         old_pygame_alpha_color = self._pygame_color
         self._color = color
         self._pygame_color = to_pygame_alpha_color(color)
@@ -71,7 +71,7 @@ class TextRenderer:
         if old_pygame_alpha_color != self._pygame_color:
             self.render()
 
-    def get_color(self) -> colorValue:
+    def get_color(self) -> COLOR_TYPE:
         return self._color
 
     def get_pygame_color(self) -> tuple[int, int, int, int]:
@@ -431,7 +431,7 @@ def get_pygame_font(font_or_font_size: FontType | int = DEFAULT_FONT_SIZE):
     return font_or_font_size
 
 
-def render_text(text: str, color: colorValue, font_or_font_size: FontType | int = DEFAULT_FONT_SIZE, antialiasing=True):
+def render_text(text: str, color: COLOR_TYPE, font_or_font_size: FontType | int = DEFAULT_FONT_SIZE, antialiasing=True):
     return get_pygame_font(font_or_font_size).render(text, antialiasing, to_pygame_alpha_color(color))
 
 

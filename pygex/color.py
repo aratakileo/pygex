@@ -1,42 +1,42 @@
 from pygame import color as pg_color
 from typing import Sequence
 
-colorValue = pg_color.Color | int | str | Sequence[int]
+COLOR_TYPE = pg_color.Color | int | str | Sequence[int]
 
 
-ABSOLUTE_RED = 0xff0000
-ABSOLUTE_GREEN = 0x00ff00
-ABSOLUTE_BLUE = 0x0000ff
-BLACK = 0x000000
-WHITE = 0xffffff
-RED = 0xf44336
-GREEN = 0x4caf50
-BLUE = 0x2196f3
-PINK = 0xe91e63
-PURPLE = 0x9c27b0
-DEEP_PURPLE = 0x673ab7
-INDIGO = 0x3f51b5
-LIGHT_BLUE = 0x03a9f4
-CYAN = 0x00bcd4
-TEAL = 0x009688
-LIGHT_GREEN = 0x8bc34a
-LIME = 0xcddc39
-YELLOW = 0xffeb3b
-AMBER = 0xffc107
-ORANGE = 0xff9800
-DEEP_ORANGE = 0xff5722
-BROWN = 0x795548
-BLUE_GREY = 0x607d8b
-GREY = 0x9e9e9e
-AQUA = 0x00ffff
-AQUAMARINE = 0x7fffd4
-AZURE = 0xf0ffff
-BEIGE = 0xf5f5dc
-BLUE_VIOLET = 0x8a2be2
-CADET_BLUE = 0x5f9ea0
-CHOCOLATE = 0xd2691e
-CORAL = 0xff7f50
-CRIMSON = 0xdc143c
+C_ABSOLUTE_RED = 0xff0000
+C_ABSOLUTE_GREEN = 0x00ff00
+C_ABSOLUTE_BLUE = 0x0000ff
+C_BLACK = 0x000000
+C_WHITE = 0xffffff
+C_RED = 0xf44336
+C_GREEN = 0x4caf50
+C_BLUE = 0x2196f3
+C_PINK = 0xe91e63
+C_PURPLE = 0x9c27b0
+C_DEEP_PURPLE = 0x673ab7
+C_INDIGO = 0x3f51b5
+C_LIGHT_BLUE = 0x03a9f4
+C_CYAN = 0x00bcd4
+C_TEAL = 0x009688
+C_LIGHT_GREEN = 0x8bc34a
+C_LIME = 0xcddc39
+C_YELLOW = 0xffeb3b
+C_AMBER = 0xffc107
+C_ORANGE = 0xff9800
+C_DEEP_ORANGE = 0xff5722
+C_BROWN = 0x795548
+C_BLUE_GREY = 0x607d8b
+C_GREY = 0x9e9e9e
+C_AQUA = 0x00ffff
+C_AQUAMARINE = 0x7fffd4
+C_AZURE = 0xf0ffff
+C_BEIGE = 0xf5f5dc
+C_BLUE_VIOLET = 0x8a2be2
+C_CADET_BLUE = 0x5f9ea0
+C_CHOCOLATE = 0xd2691e
+C_CORAL = 0xff7f50
+C_CRIMSON = 0xdc143c
 
 
 def has_alpha(color: int):
@@ -103,7 +103,7 @@ def ahex_to_rgba(color: int):
     return (color >> 16) & 0xff, (color >> 8) & 0xff, color & 0xff, (color >> 24) & 0xff
 
 
-def color_as_int(color: colorValue):
+def color_as_int(color: COLOR_TYPE):
     if isinstance(color, Sequence):
         if len(color) == 3:
             return rgb_to_hex(color)
@@ -132,7 +132,7 @@ def color_as_int(color: colorValue):
     return color
 
 
-def invert(color: colorValue, invert_alpha=False):
+def invert(color: COLOR_TYPE, invert_alpha=False):
     """
     Invert the source color to inverse color.
     For example: black color will invert to white and white to black
@@ -150,7 +150,7 @@ def invert(color: colorValue, invert_alpha=False):
     return set_alpha(~remove_alpha(color) & 0xffffff, alpha)
 
 
-def to_gray(color: colorValue):
+def to_gray(color: COLOR_TYPE):
     """
     Converts to specified color to shade of gray, based on which of shade of gray the specified color is closer to
     :param color: source color
@@ -166,7 +166,7 @@ def to_gray(color: colorValue):
     return rgba_to_ahex((segment, segment, segment, get_alpha(color)))
 
 
-def to_black_white(color: colorValue):
+def to_black_white(color: COLOR_TYPE):
     """
     Converts the specified color to black or white, based on which of them the specified color is closer to
     :param color: source color
@@ -183,7 +183,7 @@ def to_black_white(color: colorValue):
     return rgba_to_ahex((segment, segment, segment, get_alpha(color)))
 
 
-def to_readable_color(background_color: colorValue):
+def to_readable_color(background_color: COLOR_TYPE):
     """
     Get a black or white color that will be clearly visible on the specified background color
     :param background_color: source color for analysis
@@ -197,7 +197,7 @@ def to_readable_color(background_color: colorValue):
     return to_black_white(invert(background_color))
 
 
-def to_pygame_alpha_color(color: colorValue) -> tuple[int, int, int, int] | pg_color.Color | None:
+def to_pygame_alpha_color(color: COLOR_TYPE) -> tuple[int, int, int, int] | pg_color.Color | None:
     """
     Converting color from AHEX or HEX to HEXA (color format in pygame is HEXA)
     :param color: alpha format: AHEX, HEX, RGBA
@@ -227,40 +227,40 @@ def to_pygame_alpha_color(color: colorValue) -> tuple[int, int, int, int] | pg_c
 
 
 __all__ = (
-    'colorValue',
-    'ABSOLUTE_RED',
-    'ABSOLUTE_GREEN',
-    'ABSOLUTE_BLUE',
-    'BLACK',
-    'WHITE',
-    'RED',
-    'GREEN',
-    'BLUE',
-    'PINK',
-    'PURPLE',
-    'DEEP_PURPLE',
-    'INDIGO',
-    'LIGHT_BLUE',
-    'CYAN',
-    'TEAL',
-    'LIGHT_GREEN',
-    'LIME',
-    'YELLOW',
-    'AMBER',
-    'ORANGE',
-    'DEEP_ORANGE',
-    'BROWN',
-    'BLUE_GREY',
-    'GREY',
-    'AQUA',
-    'AQUAMARINE',
-    'AZURE',
-    'BEIGE',
-    'BLUE_VIOLET',
-    'CADET_BLUE',
-    'CHOCOLATE',
-    'CORAL',
-    'CRIMSON',
+    'COLOR_TYPE',
+    'C_ABSOLUTE_RED',
+    'C_ABSOLUTE_GREEN',
+    'C_ABSOLUTE_BLUE',
+    'C_BLACK',
+    'C_WHITE',
+    'C_RED',
+    'C_GREEN',
+    'C_BLUE',
+    'C_PINK',
+    'C_PURPLE',
+    'C_DEEP_PURPLE',
+    'C_INDIGO',
+    'C_LIGHT_BLUE',
+    'C_CYAN',
+    'C_TEAL',
+    'C_LIGHT_GREEN',
+    'C_LIME',
+    'C_YELLOW',
+    'C_AMBER',
+    'C_ORANGE',
+    'C_DEEP_ORANGE',
+    'C_BROWN',
+    'C_BLUE_GREY',
+    'C_GREY',
+    'C_AQUA',
+    'C_AQUAMARINE',
+    'C_AZURE',
+    'C_BEIGE',
+    'C_BLUE_VIOLET',
+    'C_CADET_BLUE',
+    'C_CHOCOLATE',
+    'C_CORAL',
+    'C_CRIMSON',
     'has_alpha',
     'get_alpha',
     'set_alpha',

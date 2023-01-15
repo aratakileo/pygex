@@ -2,7 +2,7 @@ from pygame.display import get_window_size as pg_win_get_size
 from pygex.gui.drawable import Drawable, ColorDrawable
 from pygex.text import SIZE_WRAP_CONTENT
 from pygame.surface import SurfaceType
-from pygex.color import colorValue
+from pygex.color import COLOR_TYPE
 from typing import Sequence
 
 
@@ -24,7 +24,7 @@ class View:
             pos: Sequence[float | int],
             padding: Sequence[int],
             content_gravity: int,
-            background_drawable_or_color: Drawable | colorValue
+            background_drawable_or_color: Drawable | COLOR_TYPE
     ):
         self.x, self.y = pos
         self.content_gravity = content_gravity
@@ -145,7 +145,7 @@ class View:
     def get_background_size(self):
         return self.get_background_width(), self.get_background_height()
 
-    def set_bg_drawable(self, drawable_or_color: Drawable | colorValue):
+    def set_bg_drawable(self, drawable_or_color: Drawable | COLOR_TYPE):
         if isinstance(drawable_or_color, Drawable):
             self._background_drawable = drawable_or_color
         else:
