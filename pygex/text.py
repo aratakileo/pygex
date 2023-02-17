@@ -311,7 +311,7 @@ class TextRenderer:
         self.render_as_multiline_content()
 
     def render_as_singleline_content(self):
-        """This method is fast for single line content"""
+        """This method is faster for the single line content"""
         if not self._parsed_queue:
             self.text_surface = None
             return
@@ -358,7 +358,7 @@ class TextRenderer:
                 spaces_number = 1
 
     def render_as_multiline_content(self):
-        """This method is slow for single line content"""
+        """This method is not optimized for the single line content"""
         if not self._parsed_queue:
             self.text_surface = None
             return
