@@ -74,3 +74,6 @@ class ButtonView(TextView):
     def flip(self):
         if self._interaction_status == END_INTERACTION:
             self._interaction_status = NO_INTERACTION
+
+
+__all__ = 'ButtonView',
