@@ -42,6 +42,8 @@ class Window:
         if get_input() is None:
             Input()
 
+        self._view_list = []
+
         self._clock = pg_Clock()
         self._fps_counter_start_time = time()
         self._fps_counter_num = 0
@@ -137,7 +139,7 @@ class Window:
     @property
     def vsync(self):
         return self._vsync
-    
+
     @vsync.setter
     def vsync(self, value: bool):
         self._vsync = value
@@ -170,6 +172,11 @@ class Window:
     def remove_flags(self, flags: int):
         self.flags &= ~flags
 
+    def add_view(self, view):
+        if view not in self._view_list:
+            self._view_list.append(view)
+            view._parent = self
+
     def take_screenshot(self, save_directory='./screenshots', successful_toast=True):
         if not isdir(save_directory):
             makedirs(save_directory)
@@ -194,11 +201,22 @@ class Window:
         elif e.type == WINDOWMOVED:
             self._pos = e.x, e.y
 
+        for view in self._view_list:
+            if 'process_event' in view.__dir__():
+                view.process_event(e)
+
         get_mouse().process_event(e)
         get_input().process_event(e)
 
     def flip(self, read_events=True):
+        for view in self._view_list:
+            view.render(pg_win_get_surface())
+
+            if 'flip' in view.__dir__():
+                view.flip()
+
         render_toasts(pg_win_get_surface())
+
         pg_display_flip()
         get_mouse().flip()
         get_input().flip()

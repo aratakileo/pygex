@@ -112,7 +112,7 @@ class View:
 
     def get_background_width(self):
         if self._width == SIZE_MATCH_PARENT:
-            if self._parent is None:
+            if self._parent is None or not isinstance(self._parent, View):
                 return pg_win_get_size()[0]
 
             if self._parent._width == SIZE_WRAP_CONTENT:
@@ -128,7 +128,7 @@ class View:
 
     def get_background_height(self):
         if self._height == SIZE_MATCH_PARENT:
-            if self._parent is None:
+            if self._parent is None or not isinstance(self._parent, View):
                 return pg_win_get_size()[1]
 
             if self._parent._height == SIZE_WRAP_CONTENT:
