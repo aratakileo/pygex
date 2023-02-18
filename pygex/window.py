@@ -43,6 +43,7 @@ class Window:
             Input()
 
         self._view_list = []
+        self._event_buffer = []
 
         self._clock = pg_Clock()
         self._fps_counter_start_time = time()
@@ -55,6 +56,7 @@ class Window:
         self._pos = pg_get_desktop_sizes()[0]
         self._pos = (self._pos[0] - self._size[0]) // 2, (self._pos[1] - self._size[1]) // 2
 
+        self.hold_event_buffer = False
         self.default_quit = True
         self.fps_limit: float | int | None = None
         self.bg_color: COLOR_TYPE | None = None
@@ -172,6 +174,9 @@ class Window:
     def remove_flags(self, flags: int):
         self.flags &= ~flags
 
+    def get_buffered_events(self) -> tuple[Event]:
+        return *self._event_buffer,
+
     def add_view(self, view):
         if view not in self._view_list:
             self._view_list.append(view)
@@ -208,7 +213,12 @@ class Window:
         get_mouse().process_event(e)
         get_input().process_event(e)
 
+        if self.hold_event_buffer:
+            self._event_buffer.append(e)
+
     def flip(self, read_events=True):
+        self._event_buffer = []
+
         for view in self._view_list:
             view.render(pg_win_get_surface())
 
