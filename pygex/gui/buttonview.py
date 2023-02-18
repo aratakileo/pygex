@@ -70,6 +70,14 @@ class ButtonView(TextView):
     def is_focused(self):
         return self._is_focused
 
+    def get_interaction_rect(self):
+        return Rect(
+            self.x,
+            self.y,
+            self.get_background_width(),
+            self.get_background_height(),
+        )
+
     def set_hint(
             self,
             text: str,
@@ -87,14 +95,6 @@ class ButtonView(TextView):
 
         self._hint.text = text
         self._hint.gravity = hint_gravity
-
-    def get_interaction_rect(self):
-        return Rect(0, 0, 0, 0) if self._content_surface_buffer is None else Rect(
-            self.x,
-            self.y,
-            self.get_background_width(),
-            self.get_background_height(),
-        )
 
     def process_event(self, e: Event):
         if self.visibility == VISIBILITY_GONE:
