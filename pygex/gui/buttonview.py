@@ -31,7 +31,8 @@ class ButtonView(TextView):
             text_paragraph_space: float | int = 0,
             font_or_font_size: FontType | int = DEFAULT_FONT_SIZE,
             background_drawable_or_color: Drawable | COLOR_TYPE = ColorDrawable(C_GREEN, 10),
-            font_antialiasing=True
+            font_antialiasing=True,
+            render_content_during_initialization=True
     ):
         super().__init__(
             text,
@@ -46,7 +47,8 @@ class ButtonView(TextView):
             text_paragraph_space,
             font_or_font_size,
             background_drawable_or_color,
-            font_antialiasing
+            font_antialiasing,
+            render_content_during_initialization
         )
 
         self._interaction_status = NO_INTERACTION
