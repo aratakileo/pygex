@@ -41,7 +41,7 @@ class InteractionDrawable(Drawable):
 
         self.effect_border_width = 2
         self.effect_alpha_value_difference_for_start_decreasing_effect_border_alpha_value = 80
-        self.alpha_decreasing_per_frame = 3
+        self.effect_alpha_decreasing_per_frame = 3
 
     def is_need_to_be_rendered(self):
         return self._is_in_process
@@ -62,26 +62,27 @@ class InteractionDrawable(Drawable):
         self._in_process_alpha_of_border = self._effect_color_rgba[-1]
 
     def flip(self):
+        """This method should be called every `flip()` call of custom View"""
         if self._is_in_process:
             if self._in_process_alpha_of_background > 0:
-                self._in_process_alpha_of_background -= self.alpha_decreasing_per_frame
+                self._in_process_alpha_of_background -= self.effect_alpha_decreasing_per_frame
 
             if self._in_process_alpha_of_background <= self._effect_color_rgba[-1] \
                     - self.effect_alpha_value_difference_for_start_decreasing_effect_border_alpha_value:
-                self._in_process_alpha_of_border -= self.alpha_decreasing_per_frame
+                self._in_process_alpha_of_border -= self.effect_alpha_decreasing_per_frame
 
         if self._in_process_alpha_of_border <= 0:
             self._is_in_process = False
 
     def render(self, size: Sequence[int]) -> SurfaceType | None:
-        # rendering or getting content from buffer for the output surface
+        # STEP 1: rendering or getting content from buffer for the output surface
         if size != self._content_buffered_size:
             self._content_buffered_size = size
             self._content_buffered_surface = self._content_drawable.render(size)
 
         output_surface = self._content_buffered_surface.copy()
 
-        # rendering effect on the output surface
+        # STEP 2: rendering effect on the output surface
         if self._interaction_status == IS_IN_INTERACTION:
             effect_surface = AlphaSurface(size)
             effect_surface.fill(to_pygame_alpha_color(self._effect_color))
@@ -90,8 +91,13 @@ class InteractionDrawable(Drawable):
             effect_surface = AlphaSurface(size)
 
             if self._in_process_alpha_of_background > 0:
+                # ATTENTION: In this case, the method of simply filling in the Surface is used, and not drawing
+                # a rounded rect, since the output Surface will be rounded later anyway
                 effect_surface.fill((*self._effect_color_rgba[:3], self._in_process_alpha_of_background))
 
+            # ATTENTION: this rect border (effect border) is rendered on a separate Surface, since when drawing rect
+            # with a color with transparency, the method will simply replace the color in the Surface with
+            # the specified color with transparency, and will not overlay it over the original Surface color
             pg_draw_rect(
                 effect_surface,
                 (*self._effect_color_rgba[:3], self._in_process_alpha_of_border),
@@ -106,7 +112,7 @@ class InteractionDrawable(Drawable):
 
             output_surface.blit(effect_surface, (0, 0))
 
-        # rounding and bordering the output surface
+        # STEP 3: rounding and bordering the output surface
         if self.has_border_radii():
             output_surface = round_corners(
                 output_surface,
