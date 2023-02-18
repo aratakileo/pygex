@@ -54,12 +54,13 @@ debug_text = '=========DEBUG MENU=========' \
     '\n - press [f11] to switch screen mode'
 
 debug_textview = pygex.gui.TextView(
-    '',
+    debug_text,
     text_color=pygex.color.C_WHITE,
     background_drawable_or_color=pygex.gui.drawable.ColorDrawable(
         0xaa000000,
         border_radius_or_radii=(0, 0, 0, 10)
-    )
+    ),
+    render_content_during_initialization=False
 )
 
 
