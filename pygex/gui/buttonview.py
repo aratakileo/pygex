@@ -1,15 +1,17 @@
 from pygex.gui.view import SIZE_WRAP_CONTENT, DEFAULT_PADDING, GRAVITY_CENTER_HORIZONTAL, GRAVITY_CENTER_VERTICAL
 from pygex.gui.drawable.interactiondrawable import InteractionDrawable, IS_NO_INTERACTION, IS_IN_INTERACTION
-from pygame.constants import MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP
+from pygame.constants import MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP, WINDOWLEAVE
 from pygex.gui.drawable.interactiondrawable import IS_END_OF_INTERACTION
 from pygex.gui.drawable.drawable import Drawable, ColorDrawable
 from pygex.gui.view import VISIBILITY_VISIBLE, VISIBILITY_GONE
+from pygame.display import get_window_size as pg_win_get_size
 from pygex.text import ALIGN_CENTER, DEFAULT_FONT_SIZE
 from pygex.color import COLOR_TYPE, C_WHITE, C_GREEN
 from pygame.mouse import get_pos as pg_mouse_get_pos
 from pygex.gui.textview import TextView
 from pygame.surface import SurfaceType
 from pygame.font import FontType
+from pygex.gui.hint import Hint
 from pygame.event import Event
 from pygame.rect import Rect
 from typing import Sequence
@@ -52,10 +54,14 @@ class ButtonView(TextView):
             render_content_during_initialization
         )
 
+        self._hint: Hint | None = None
+        self._hint_offset = 3
+        self._hint_anchor_is_mouse = False
+
         self._background_drawable_is_interaction_drawable = isinstance(self._background_drawable, InteractionDrawable)
         self._interaction_status = IS_NO_INTERACTION
         self._is_focused = False
-    
+
     @property
     def is_clicked(self):
         return self._interaction_status == IS_END_OF_INTERACTION
@@ -63,6 +69,24 @@ class ButtonView(TextView):
     @property
     def is_focused(self):
         return self._is_focused
+
+    def set_hint(
+            self,
+            text: str,
+            offset=3,
+            anchor_is_mouse=False,
+            hint_gravity: int = Hint.GRAVITY_CENTER_HORIZONTAL | Hint.GRAVITY_UNDER_CENTER
+    ):
+        self._hint_offset = offset
+        self._hint_anchor_is_mouse = anchor_is_mouse
+
+        if self._hint is None:
+            self._hint = Hint(text, gravity=hint_gravity)
+
+            return
+
+        self._hint.text = text
+        self._hint.gravity = hint_gravity
 
     def get_interaction_rect(self):
         return Rect(0, 0, 0, 0) if self._content_surface_buffer is None else Rect(
@@ -75,6 +99,12 @@ class ButtonView(TextView):
     def process_event(self, e: Event):
         if self.visibility == VISIBILITY_GONE:
             return
+
+        if e.type == WINDOWLEAVE:
+            # ATTENTION: This is necessary so that the focus is removed from the View when the mouse goes outside
+            # the window, while the View is at the window border, which is why the mouse coordinates are not updated
+            # and the events associated with it are no longer read
+            self._is_focused = False
 
         interaction_status_is_changed = False
 
@@ -99,10 +129,12 @@ class ButtonView(TextView):
 
         if self.visibility == VISIBILITY_GONE:
             self._interaction_status = IS_NO_INTERACTION
+            self._is_focused = False
 
             if self._background_drawable_is_interaction_drawable \
                     and self._background_drawable._interaction_status != IS_NO_INTERACTION:
                 self._background_drawable.set_interaction_status(IS_NO_INTERACTION, animate=False)
+                self._background_surface_buffer = self._background_drawable.render(self.get_background_size())
 
             return
 
@@ -128,6 +160,18 @@ class ButtonView(TextView):
             self._background_surface_buffer = self._background_drawable.render(self.get_background_size())
 
         super().render(surface)
+
+        if self._is_focused and self._hint is not None:
+            hint_pos_or_rect = (*pg_mouse_get_pos(), 25, 25) if self._hint_anchor_is_mouse else (
+                (self.x + self.get_background_width()) / 2,
+                self.y + self.get_background_height() + self._hint_offset
+            )
+
+            self._hint.render(
+                surface,
+                hint_pos_or_rect,
+                (0, 0, *pg_win_get_size())
+            )
 
 
 __all__ = 'ButtonView',
