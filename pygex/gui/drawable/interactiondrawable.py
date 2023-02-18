@@ -53,8 +53,8 @@ class InteractionDrawable(Drawable):
     def get_effect_color(self):
         return self._effect_color
 
-    def set_interaction_status(self, interaction_status: int):
-        if interaction_status == IS_NO_INTERACTION and self._interaction_status != IS_NO_INTERACTION:
+    def set_interaction_status(self, interaction_status: int, animate=True):
+        if interaction_status == IS_NO_INTERACTION and self._interaction_status != IS_NO_INTERACTION and animate:
             self._is_in_process = True
 
         self._interaction_status = interaction_status

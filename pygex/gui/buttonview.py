@@ -3,6 +3,7 @@ from pygex.gui.drawable.interactiondrawable import InteractionDrawable, IS_NO_IN
 from pygame.constants import MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP
 from pygex.gui.drawable.interactiondrawable import IS_END_OF_INTERACTION
 from pygex.gui.drawable.drawable import Drawable, ColorDrawable
+from pygex.gui.view import VISIBILITY_VISIBLE, VISIBILITY_GONE
 from pygex.text import ALIGN_CENTER, DEFAULT_FONT_SIZE
 from pygex.color import COLOR_TYPE, C_WHITE, C_GREEN
 from pygame.mouse import get_pos as pg_mouse_get_pos
@@ -67,6 +68,9 @@ class ButtonView(TextView):
         )
 
     def process_event(self, e: Event):
+        if self.visibility == VISIBILITY_GONE:
+            return
+
         interaction_status_is_changed = False
 
         if e.type == MOUSEMOTION:
@@ -85,6 +89,18 @@ class ButtonView(TextView):
                 self._background_surface_buffer = self._background_drawable.render(self.get_background_size())
 
     def flip(self):
+        # ATTENTION: if the View like a ButtonView will be added to the Window view list,
+        # then this method will call earlier than the render method
+
+        if self.visibility == VISIBILITY_GONE:
+            self._interaction_status = IS_NO_INTERACTION
+
+            if self._background_drawable_is_interaction_drawable \
+                    and self._background_drawable._interaction_status != IS_NO_INTERACTION:
+                self._background_drawable.set_interaction_status(IS_NO_INTERACTION, animate=False)
+
+            return
+
         if self._interaction_status == IS_END_OF_INTERACTION:
             self._interaction_status = IS_NO_INTERACTION
 
@@ -100,6 +116,9 @@ class ButtonView(TextView):
         self._background_drawable_is_interaction_drawable = isinstance(self._background_drawable, InteractionDrawable)
 
     def render(self, surface: SurfaceType):
+        if self.visibility != VISIBILITY_VISIBLE:
+            return
+
         if self._background_drawable_is_interaction_drawable and self._background_drawable.is_need_to_be_rendered():
             self._background_surface_buffer = self._background_drawable.render(self.get_background_size())
 

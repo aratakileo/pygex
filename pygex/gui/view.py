@@ -14,6 +14,10 @@ GRAVITY_BOTTOM = 1 << 1
 GRAVITY_CENTER_HORIZONTAL = 1 << 2
 GRAVITY_CENTER_VERTICAL = 1 << 3
 
+VISIBILITY_VISIBLE = 0
+VISIBILITY_INVISIBLE = 1
+VISIBILITY_GONE = 2
+
 SIZE_MATCH_PARENT = -1
 
 
@@ -28,6 +32,7 @@ class View:
     ):
         self.x, self.y = pos
         self.content_gravity = content_gravity
+        self.visibility = VISIBILITY_VISIBLE
 
         self._width, self._height = size
         self._padding = padding
@@ -116,7 +121,7 @@ class View:
                 return pg_win_get_size()[0]
 
             if self._parent._width == SIZE_WRAP_CONTENT:
-                #  if there is no such condition, there will be an infinite recursion
+                # if there is no such condition, there will be an infinite recursion
                 return self.get_min_width()
 
             return self._parent.get_background_width() - self._parent._padding[0] - self._parent._padding[2]
@@ -132,7 +137,7 @@ class View:
                 return pg_win_get_size()[1]
 
             if self._parent._height == SIZE_WRAP_CONTENT:
-                #  if there is no such condition, there will be an infinite recursion
+                # if there is no such condition, there will be an infinite recursion
                 return self.get_min_height()
 
             return self._parent.get_background_height() - self._parent._padding[1] - self._parent._padding[3]
@@ -164,6 +169,9 @@ class View:
         self._background_surface_buffer = self._background_drawable.render(self.get_background_size())
 
     def render(self, surface: SurfaceType):
+        if self.visibility != VISIBILITY_VISIBLE:
+            return
+
         if self._content_surface_buffer is None:
             self.render_content_surface()
 
@@ -204,6 +212,9 @@ __all__ = (
     'GRAVITY_BOTTOM',
     'GRAVITY_CENTER_HORIZONTAL',
     'GRAVITY_CENTER_VERTICAL',
+    'VISIBILITY_VISIBLE',
+    'VISIBILITY_INVISIBLE',
+    'VISIBILITY_GONE',
     'SIZE_WRAP_CONTENT',
     'SIZE_MATCH_PARENT',
     'View'

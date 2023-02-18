@@ -223,6 +223,8 @@ class Window:
             view.render(pg_win_get_surface())
 
             if 'flip' in view.__dir__():
+                # ATTENTION: the peculiarity is that the flip method is called before the render method is used in
+                # the ButtonView logic
                 view.flip()
 
         render_toasts(pg_win_get_surface())
