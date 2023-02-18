@@ -21,7 +21,8 @@ class TextView(View):
             text_paragraph_space: float | int = 0,
             font_or_font_size: FontType | int = DEFAULT_FONT_SIZE,
             background_drawable_or_color: Drawable | COLOR_TYPE = ...,
-            font_antialiasing=True
+            font_antialiasing=True,
+            render_content_during_initialization=True
     ):
         super().__init__(size, pos, padding, content_gravity, background_drawable_or_color)
 
@@ -36,6 +37,10 @@ class TextView(View):
             text_paragraph_space,
             font_antialiasing
         )
+
+        if render_content_during_initialization:
+            self.text_renderer.render()
+            self._content_surface_buffer = self.text_renderer.text_surface
 
     def set_text(self, text: str):
         self.text_renderer.set_text(text)
