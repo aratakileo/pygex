@@ -163,7 +163,7 @@ class ButtonView(TextView):
 
         if self._is_focused and self._hint is not None:
             hint_pos_or_rect = (*pg_mouse_get_pos(), 25, 25) if self._hint_anchor_is_mouse else (
-                (self.x + self.get_background_width()) / 2,
+                self.x + (self.get_background_width() / 2),
                 self.y + self.get_background_height() + self._hint_offset
             )
 
