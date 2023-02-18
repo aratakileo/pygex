@@ -1,5 +1,5 @@
+from pygex.gui.drawable.drawable import Drawable, ColorDrawable
 from pygame.display import get_window_size as pg_win_get_size
-from pygex.gui.drawable import Drawable, ColorDrawable
 from pygex.text import SIZE_WRAP_CONTENT
 from pygame.surface import SurfaceType
 from pygex.color import COLOR_TYPE
