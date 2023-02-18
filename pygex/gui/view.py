@@ -2,6 +2,7 @@ from pygex.gui.drawable.drawable import Drawable, ColorDrawable
 from pygame.display import get_window_size as pg_win_get_size
 from pygex.text import SIZE_WRAP_CONTENT
 from pygame.surface import SurfaceType
+from functools import cached_property
 from pygex.color import COLOR_TYPE
 from typing import Sequence
 
@@ -98,6 +99,14 @@ class View:
             self.render_content_surface()
             self.render_background_surface()
 
+    @cached_property
+    def get_min_width(self):
+        return 50
+
+    @cached_property
+    def get_min_height(self):
+        return 50
+
     def get_padding(self):
         return self._padding
 
@@ -109,24 +118,21 @@ class View:
         if padding != old_padding:
             self.render_background_surface()
 
-    def get_min_width(self):
-        return 50
-
-    def get_min_height(self):
-        return 50
-
     def get_background_width(self):
         if self._width == SIZE_MATCH_PARENT:
             if self._parent is None or not isinstance(self._parent, View):
                 return pg_win_get_size()[0]
 
             if self._parent._width == SIZE_WRAP_CONTENT:
-                # if there is no such condition, there will be an infinite recursion
-                return self.get_min_width()
+                # ATTENTION: if there is no such condition, there will be an infinite recursion
+                return self.get_min_width
 
             return self._parent.get_background_width() - self._parent._padding[0] - self._parent._padding[2]
 
         if self._width == SIZE_WRAP_CONTENT:
+            if self._content_surface_buffer is None:
+                return self.get_min_width
+
             return self._content_surface_buffer.get_width() + self._padding[0] + self._padding[2]
 
         return self._width
@@ -137,12 +143,15 @@ class View:
                 return pg_win_get_size()[1]
 
             if self._parent._height == SIZE_WRAP_CONTENT:
-                # if there is no such condition, there will be an infinite recursion
-                return self.get_min_height()
+                # ATTENTION: if there is no such condition, there will be an infinite recursion
+                return self.get_min_height
 
             return self._parent.get_background_height() - self._parent._padding[1] - self._parent._padding[3]
 
         if self._height == SIZE_WRAP_CONTENT:
+            if self._content_surface_buffer is None:
+                return self.get_min_height
+
             return self._content_surface_buffer.get_height() + self._padding[1] + self._padding[3]
 
         return self._height
@@ -189,6 +198,10 @@ class View:
             self.render_background_surface()
 
         content_x, content_y = self._padding[0], self._padding[1]
+
+        if self._content_surface_buffer is None:
+            return
+
         content_width, content_height = self._content_surface_buffer.get_size()
 
         if self.content_gravity & GRAVITY_RIGHT:
