@@ -54,10 +54,15 @@ class ButtonView(TextView):
 
         self._background_drawable_is_interaction_drawable = isinstance(self._background_drawable, InteractionDrawable)
         self._interaction_status = IS_NO_INTERACTION
-        self._focused = False
-
+        self._is_focused = False
+    
+    @property
     def is_clicked(self):
         return self._interaction_status == IS_END_OF_INTERACTION
+
+    @property
+    def is_focused(self):
+        return self._is_focused
 
     def get_interaction_rect(self):
         return Rect(0, 0, 0, 0) if self._content_surface_buffer is None else Rect(
@@ -74,12 +79,12 @@ class ButtonView(TextView):
         interaction_status_is_changed = False
 
         if e.type == MOUSEMOTION:
-            self._focused = self.get_interaction_rect().collidepoint(pg_mouse_get_pos())
-        elif e.type == MOUSEBUTTONDOWN and self._focused:
+            self._is_focused = self.get_interaction_rect().collidepoint(pg_mouse_get_pos())
+        elif e.type == MOUSEBUTTONDOWN and self._is_focused:
             self._interaction_status = IS_IN_INTERACTION
             interaction_status_is_changed = True
         elif e.type == MOUSEBUTTONUP and self._interaction_status == IS_IN_INTERACTION:
-            self._interaction_status = IS_END_OF_INTERACTION if self._focused else IS_NO_INTERACTION
+            self._interaction_status = IS_END_OF_INTERACTION if self._is_focused else IS_NO_INTERACTION
             interaction_status_is_changed = True
 
         if interaction_status_is_changed and self._background_drawable_is_interaction_drawable:
