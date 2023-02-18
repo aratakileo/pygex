@@ -29,7 +29,8 @@ class View:
             pos: Sequence[float | int],
             padding: Sequence[int],
             content_gravity: int,
-            background_drawable_or_color: Drawable | COLOR_TYPE
+            background_drawable_or_color: Drawable | COLOR_TYPE,
+            render_content_during_initialization: bool
     ):
         self.x, self.y = pos
         self.content_gravity = content_gravity
@@ -48,6 +49,9 @@ class View:
             self._background_drawable = background_drawable_or_color
         else:
             self._background_drawable = ColorDrawable(background_drawable_or_color)
+
+        if render_content_during_initialization:
+            self.render_content_surface()
 
     @property
     def pos(self):
@@ -159,13 +163,16 @@ class View:
     def get_background_size(self):
         return self.get_background_width(), self.get_background_height()
 
-    def set_bg_drawable(self, drawable_or_color: Drawable | COLOR_TYPE):
+    def set_background_drawable(self, drawable_or_color: Drawable | COLOR_TYPE):
         if isinstance(drawable_or_color, Drawable):
             self._background_drawable = drawable_or_color
         else:
             self._background_drawable = ColorDrawable(drawable_or_color)
 
         self.render_background_surface(force_render=True)
+
+    def get_background_drawable(self) -> Drawable | None:
+        return self._background_drawable
 
     def render_content_surface(self):
         raise RuntimeError('Method `View.render_content_surface()` is not initialized!')

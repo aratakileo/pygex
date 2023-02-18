@@ -24,7 +24,17 @@ class TextView(View):
             font_antialiasing=True,
             render_content_during_initialization=True
     ):
-        super().__init__(size, pos, padding, content_gravity, background_drawable_or_color)
+        super().__init__(
+            size,
+            pos,
+            padding,
+            content_gravity,
+            background_drawable_or_color,
+
+            # ATTENTION: If True, the Surface content is rendered here before all the attributes of the class
+            # are initialized, which is why the crash occurs
+            render_content_during_initialization=False
+        )
 
         self.text_renderer = TextRenderer(
             text,
@@ -39,8 +49,7 @@ class TextView(View):
         )
 
         if render_content_during_initialization:
-            self.text_renderer.render()
-            self._content_surface_buffer = self.text_renderer.text_surface
+            self.render_content_surface()
 
     def set_text(self, text: str):
         self.text_renderer.set_text(text)
@@ -66,7 +75,6 @@ class TextView(View):
 
     def render_content_surface(self):
         self.text_renderer.set_size(self.get_text_size())
-
         self._content_surface_buffer = self.text_renderer.text_surface
 
 

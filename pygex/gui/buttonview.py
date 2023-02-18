@@ -147,8 +147,8 @@ class ButtonView(TextView):
         if self._background_drawable_is_interaction_drawable:
             self._background_drawable.flip()
 
-    def set_bg_drawable(self, drawable_or_color: Drawable | COLOR_TYPE):
-        super().set_bg_drawable(drawable_or_color)
+    def set_background_drawable(self, drawable_or_color: Drawable | InteractionDrawable | COLOR_TYPE):
+        super().set_background_drawable(drawable_or_color)
 
         self._background_drawable_is_interaction_drawable = isinstance(self._background_drawable, InteractionDrawable)
 
