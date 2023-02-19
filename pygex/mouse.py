@@ -17,13 +17,9 @@ class Mouse:
 
         self._last_pos = pg_mouse_get_pos()
 
-        # ABOUT THIS VARIABLE:
-        # - the window position is necessary for `flip()` function to prevent a bug related
-        # to the difference between the maximum mouse position and the maximum position
-        # to the right or bottom of the window
-        # - the window initially appears in the center (by default)
-        # - storing and retrieving the window position separately in this class is necessary
-        # to avoid recursions with the module `window.py`
+        # ATTENTION: The default value specified in this variable is such, because the default window appears in
+        # the center of the screen. This variable is used in the `flip()` method and is needed to avoid infinite
+        # recursion with `window.py `
         self._win_pos = pg_get_desktop_sizes()[0]
         self._win_pos = (self._win_pos[0] - pg_win_get_size()[0]) // 2, (self._win_pos[1] - pg_win_get_size()[1]) // 2
 
@@ -163,9 +159,12 @@ class Mouse:
 
             offset_x = offset_y = 0
 
-            # ABOUT THIS TWO CONDITIONS:
-            # - when the right or bottom of the window becomes adjacent to the right or bottom of the desktop
-            # the difference between these values and the maximum mouse position is 6
+            # ATTENTION: when the right or bottom of the window becomes adjacent to the right or bottom of the desktop
+            # the difference between these values and the maximum mouse position is 6. Most likely, this offset
+            # is relative, and it will be different on another device, or on another operating system, the mouse
+            # behaves differently. Calculating this safe zone for the mouse is necessary, because for example,
+            # in full-screen mode, the mouse simply disappears off the screen without moving instantly to the other
+            # side. However, this safe zone does not work correctly if the user has more than one screen.
             if self._win_pos[0] >= desktopw - winw - 5:
                 offset_x = 6
 
