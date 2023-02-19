@@ -2,6 +2,7 @@ from pygex.text import ALIGN_LEFT, ALIGN_RIGHT, ALIGN_CENTER, ALIGN_BLOCK, DEFAU
 from pygex.gui.view import View, SIZE_WRAP_CONTENT, DEFAULT_PADDING, GRAVITY_LEFT, GRAVITY_TOP
 from pygex.gui.drawable.drawable import Drawable
 from pygex.color import COLOR_TYPE, C_BLACK
+from pygame.surface import SurfaceType
 from pygame.font import FontType
 from typing import Sequence
 
@@ -51,22 +52,12 @@ class TextView(View):
         if render_content_during_initialization:
             self.render_content_surface()
 
-    def set_text(self, text: str):
-        self.text_renderer.set_text(text)
-
-        self._content_surface_buffer = self.text_renderer.text_surface
-
-    def set_text_color(self, text_color: COLOR_TYPE):
-        self.text_renderer.set_color(text_color)
-
-        self._content_surface_buffer = self.text_renderer.text_surface
-
-    def apply_text_surface(self):
-        self._content_surface_buffer = self.text_renderer.text_surface
+    @property
+    def buffered_content_surface(self) -> SurfaceType | None:
+        return self.text_renderer.text_surface
 
     def render_content_surface(self):
         self.text_renderer.set_size(self.get_computed_content_size())
-        self._content_surface_buffer = self.text_renderer.text_surface
 
 
 __all__ = 'ALIGN_LEFT', 'ALIGN_RIGHT', 'ALIGN_CENTER', 'ALIGN_BLOCK', 'TextView',

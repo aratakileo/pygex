@@ -211,8 +211,7 @@ class Window:
             self._pos = e.x, e.y
 
         for view in self._view_list:
-            if 'process_event' in view.__dir__():
-                view.process_event(e)
+            view.process_event(e)
 
         get_mouse().process_event(e)
         get_input().process_event(e)
@@ -224,10 +223,8 @@ class Window:
         self._event_buffer = []
 
         for view in self._view_list:
-            if 'flip' in view.__dir__():
-                # ATTENTION: the peculiarity is that the flip method is called before the render method is used in
-                # the ButtonView logic
-                view.flip()
+            # ATTENTION: the peculiarity is that the flip method is called before the render method is used
+            view.flip()
 
         render_toasts(pg_win_get_surface())
 

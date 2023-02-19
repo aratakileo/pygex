@@ -1,9 +1,16 @@
+from pygex.gui.drawable.interactiondrawable import InteractionDrawable, IS_NO_INTERACTION, IS_IN_INTERACTION
+from pygame.constants import MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP, WINDOWLEAVE
+from pygex.gui.drawable.interactiondrawable import IS_END_OF_INTERACTION
 from pygex.gui.drawable.drawable import Drawable, ColorDrawable
 from pygame.display import get_window_size as pg_win_get_size
+from pygame.mouse import get_pos as pg_mouse_get_pos
 from pygex.text import SIZE_WRAP_CONTENT
 from pygame.surface import SurfaceType
 from functools import cached_property
 from pygex.color import COLOR_TYPE
+from pygex.gui.hint import Hint
+from pygame.event import Event
+from pygame.rect import Rect
 from typing import Sequence
 
 
@@ -35,20 +42,33 @@ class View:
         self.x, self.y = pos
         self.content_gravity = content_gravity
         self.visibility = VISIBILITY_VISIBLE
+        self.enabled = True
 
         self._width, self._height = size
         self._padding_left, self._padding_top, self._padding_right, self._padding_bottom = padding
 
         self._background_surface_buffer: SurfaceType | None = None
-        self._content_surface_buffer: SurfaceType | None = None
         self._parent: View | None = None
+
+        self._background_drawable_is_interaction_drawable = False
 
         if background_drawable_or_color is ...:
             self._background_drawable = None
         elif isinstance(background_drawable_or_color, Drawable):
             self._background_drawable = background_drawable_or_color
+            self._background_drawable_is_interaction_drawable = isinstance(
+                self._background_drawable,
+                InteractionDrawable
+            )
         else:
             self._background_drawable = ColorDrawable(background_drawable_or_color)
+
+        self._interaction_status = IS_NO_INTERACTION
+        self._is_focused = False
+
+        self._hint: Hint | None = None
+        self._hint_offset = 3
+        self._hint_anchor_is_mouse = False
 
         if render_content_during_initialization:
             self.render_content_surface()
@@ -179,6 +199,26 @@ class View:
     def padding_vertical(self) -> int:
         return self._padding_top + self._padding_bottom
 
+    @property
+    def is_clicked(self):
+        return self._interaction_status == IS_END_OF_INTERACTION
+
+    @property
+    def is_focused(self):
+        return self._is_focused
+
+    @property
+    def buffered_content_surface(self) -> SurfaceType | None:
+        return
+
+    def get_bounds(self):
+        return Rect(
+            self.x,
+            self.y,
+            self.get_computed_background_width(),
+            self.get_computed_background_height(),
+        )
+
     def get_computed_background_width(self):
         if self._width == SIZE_MATCH_PARENT:
             if self._parent is None or not isinstance(self._parent, View):
@@ -191,10 +231,10 @@ class View:
             return self._parent.get_computed_background_width() - self._parent.padding_horizontal
 
         if self._width == SIZE_WRAP_CONTENT:
-            if self._content_surface_buffer is None:
+            if self.buffered_content_surface is None:
                 return self.get_min_width
 
-            return self._content_surface_buffer.get_width() + self.padding_horizontal
+            return self.buffered_content_surface.get_width() + self.padding_horizontal
 
         return self._width
 
@@ -210,10 +250,10 @@ class View:
             return self._parent.get_computed_background_height() - self._parent.padding_vertical
 
         if self._height == SIZE_WRAP_CONTENT:
-            if self._content_surface_buffer is None:
+            if self.buffered_content_surface is None:
                 return self.get_min_height
 
-            return self._content_surface_buffer.get_height() + self.padding_vertical
+            return self.buffered_content_surface.get_height() + self.padding_vertical
 
         return self._height
 
@@ -233,19 +273,94 @@ class View:
     def get_computed_content_size(self):
         return self.get_computed_content_width(), self.get_computed_content_height()
 
-    def set_background_drawable(self, drawable_or_color: Drawable | COLOR_TYPE):
-        if isinstance(drawable_or_color, Drawable):
-            self._background_drawable = drawable_or_color
-        else:
-            self._background_drawable = ColorDrawable(drawable_or_color)
-
-        self.render_background_surface(force_render=True)
-
     def get_background_drawable(self) -> Drawable | None:
         return self._background_drawable
 
+    def set_background_drawable(self, drawable_or_color: Drawable | COLOR_TYPE):
+        if isinstance(drawable_or_color, Drawable):
+            self._background_drawable = drawable_or_color
+            self._background_drawable_is_interaction_drawable = isinstance(
+                self._background_drawable,
+                InteractionDrawable
+            )
+        else:
+            self._background_drawable = ColorDrawable(drawable_or_color)
+            self._background_drawable_is_interaction_drawable = False
+
+        self.render_background_surface(force_render=True)
+
+    def set_hint(
+            self,
+            text: str,
+            offset=3,
+            anchor_is_mouse=False,
+            hint_gravity: int = Hint.GRAVITY_CENTER_HORIZONTAL | Hint.GRAVITY_UNDER_CENTER
+    ):
+        self._hint_offset = offset
+        self._hint_anchor_is_mouse = anchor_is_mouse
+
+        if self._hint is None:
+            self._hint = Hint(text, gravity=hint_gravity)
+
+            return
+
+        self._hint.text = text
+        self._hint.gravity = hint_gravity
+
+    def process_event(self, e: Event):
+        if self.visibility == VISIBILITY_GONE or not self.enabled:
+            return
+
+        if e.type == WINDOWLEAVE:
+            # ATTENTION: This is necessary so that the focus is removed from the View when the mouse goes outside
+            # the window, while the View is at the window border, which is why the mouse coordinates are not updated
+            # and the events associated with it are no longer read
+            self._is_focused = False
+
+        interaction_status_is_changed = False
+
+        if e.type == MOUSEMOTION:
+            self._is_focused = self.get_bounds().collidepoint(pg_mouse_get_pos())
+        elif e.type == MOUSEBUTTONDOWN and self._is_focused:
+            self._interaction_status = IS_IN_INTERACTION
+            interaction_status_is_changed = True
+        elif e.type == MOUSEBUTTONUP and self._interaction_status == IS_IN_INTERACTION:
+            self._interaction_status = IS_END_OF_INTERACTION if self._is_focused else IS_NO_INTERACTION
+            interaction_status_is_changed = True
+
+        if interaction_status_is_changed and self._background_drawable_is_interaction_drawable:
+            self._background_drawable.set_interaction_status(self._interaction_status)
+
+            if self._interaction_status == IS_IN_INTERACTION:
+                self._background_surface_buffer = self._background_drawable.render(self.get_computed_background_size())
+
+    def flip(self):
+        # ATTENTION: if the View like a ButtonView will be added to the Window view list,
+        # then this method will call earlier than the render method
+
+        if self.visibility == VISIBILITY_GONE or not self.enabled:
+            self._interaction_status = IS_NO_INTERACTION
+            self._is_focused = False
+
+            if self._background_drawable_is_interaction_drawable \
+                    and self._background_drawable._interaction_status != IS_NO_INTERACTION:
+
+                self._background_drawable.set_interaction_status(IS_NO_INTERACTION, animate=False)
+                self._background_surface_buffer = self._background_drawable.render(self.get_computed_background_size())
+
+            return
+
+        if self._interaction_status == IS_END_OF_INTERACTION:
+            self._interaction_status = IS_NO_INTERACTION
+
+            if self._background_drawable_is_interaction_drawable:
+                self._background_drawable.set_interaction_status(self._interaction_status)
+
+        if self._background_drawable_is_interaction_drawable:
+            self._background_drawable.flip()
+
     def render_content_surface(self):
-        raise RuntimeError('Method `View.render_content_surface()` is not initialized!')
+        pass
 
     def render_background_surface(self, force_render=False):
         if self._background_drawable is None or not force_render and self._background_surface_buffer is not None \
@@ -258,7 +373,10 @@ class View:
         if self.visibility != VISIBILITY_VISIBLE:
             return
 
-        if self._content_surface_buffer is None:
+        if self._background_drawable_is_interaction_drawable and self._background_drawable.is_need_to_be_rendered:
+            self._background_surface_buffer = self._background_drawable.render(self.get_computed_background_size())
+
+        if self.buffered_content_surface is None:
             self.render_content_surface()
 
         if self._background_drawable is not None:
@@ -274,24 +392,33 @@ class View:
             self.render_content_surface()
             self.render_background_surface()
 
-        content_x, content_y = self._padding_left, self._padding_top
+        if self.buffered_content_surface is not None:
+            content_x, content_y = self._padding_left, self._padding_top
+            content_width, content_height = self.buffered_content_surface.get_size()
 
-        if self._content_surface_buffer is None:
-            return
+            if self.content_gravity & GRAVITY_RIGHT:
+                content_x = bg_width - content_width - self._padding_right
+            elif self.content_gravity & GRAVITY_CENTER_HORIZONTAL:
+                content_x = (bg_width - self.padding_horizontal - content_width) / 2 + self._padding_left
 
-        content_width, content_height = self._content_surface_buffer.get_size()
+            if self.content_gravity & GRAVITY_BOTTOM:
+                content_y = bg_height - content_height - self._padding_bottom
+            elif self.content_gravity & GRAVITY_CENTER_VERTICAL:
+                content_y = (bg_height - self.padding_vertical - content_height) / 2 + self._padding_top
 
-        if self.content_gravity & GRAVITY_RIGHT:
-            content_x = bg_width - content_width - self._padding_right
-        elif self.content_gravity & GRAVITY_CENTER_HORIZONTAL:
-            content_x = (bg_width - self.padding_horizontal - content_width) / 2 + self._padding_left
+            surface.blit(self.buffered_content_surface, (self.x + content_x, self.y + content_y))
 
-        if self.content_gravity & GRAVITY_BOTTOM:
-            content_y = bg_height - content_height - self._padding_bottom
-        elif self.content_gravity & GRAVITY_CENTER_VERTICAL:
-            content_y = (bg_height - self.padding_vertical - content_height) / 2 + self._padding_top
+        if self._is_focused and self._hint is not None:
+            hint_pos = pg_mouse_get_pos() if self._hint_anchor_is_mouse else (
+                self.x + (self.get_computed_background_width() / 2),
+                self.y + self.get_computed_background_height() + self._hint_offset
+            )
 
-        surface.blit(self._content_surface_buffer, (self.x + content_x, self.y + content_y))
+            self._hint.render(
+                surface,
+                hint_pos,
+                (0, 0, *pg_win_get_size())
+            )
 
 
 __all__ = (
