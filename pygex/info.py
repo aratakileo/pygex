@@ -1,1 +1,1 @@
-pygex_ver = '0.3'
+pygex_ver = '0.3.1'
