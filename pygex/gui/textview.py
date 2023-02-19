@@ -39,7 +39,7 @@ class TextView(View):
         self.text_renderer = TextRenderer(
             text,
             text_color,
-            self.get_text_size(),
+            self.get_computed_content_size(),
             font_or_font_size,
             text_align,
             text_line_spacing,
@@ -61,21 +61,11 @@ class TextView(View):
 
         self._content_surface_buffer = self.text_renderer.text_surface
 
-    def get_text_size(self):
-        return (
-            self._width if self._width == SIZE_WRAP_CONTENT else (
-                    self.get_computed_background_width() - self.padding_horizontal
-            ),
-            self._height if self._height == SIZE_WRAP_CONTENT else (
-                    self.get_computed_background_height() - self.padding_vertical
-            )
-        )
-
     def apply_text_surface(self):
         self._content_surface_buffer = self.text_renderer.text_surface
 
     def render_content_surface(self):
-        self.text_renderer.set_size(self.get_text_size())
+        self.text_renderer.set_size(self.get_computed_content_size())
         self._content_surface_buffer = self.text_renderer.text_surface
 
 

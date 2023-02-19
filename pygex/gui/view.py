@@ -220,6 +220,19 @@ class View:
     def get_computed_background_size(self):
         return self.get_computed_background_width(), self.get_computed_background_height()
 
+    def get_computed_content_width(self):
+        return self._width if self._width == SIZE_WRAP_CONTENT else (
+                self.get_computed_background_width() - self.padding_horizontal
+        )
+
+    def get_computed_content_height(self):
+        return self._height if self._height == SIZE_WRAP_CONTENT else (
+                self.get_computed_background_height() - self.padding_vertical
+        )
+
+    def get_computed_content_size(self):
+        return self.get_computed_content_width(), self.get_computed_content_height()
+
     def set_background_drawable(self, drawable_or_color: Drawable | COLOR_TYPE):
         if isinstance(drawable_or_color, Drawable):
             self._background_drawable = drawable_or_color
