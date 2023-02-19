@@ -22,59 +22,58 @@ class Mouse:
         # recursion with `window.py `
         self._win_pos = pg_get_desktop_sizes()[0]
         self._win_pos = (self._win_pos[0] - pg_win_get_size()[0]) // 2, (self._win_pos[1] - pg_win_get_size()[1]) // 2
+        self._button_statuses = [S_NOT_PRESSED] * 3
 
         self.flags = 0
-
-        self.button_statuses = [S_NOT_PRESSED] * 3
         self.wheel = (0, 0)
 
     @property
     def left_is_not_pressed(self):
-        return self.button_statuses[0] == S_NOT_PRESSED
+        return self._button_statuses[0] == S_NOT_PRESSED
 
     @property
     def left_is_down(self):
-        return self.button_statuses[0] == S_DOWN
+        return self._button_statuses[0] == S_DOWN
 
     @property
     def left_is_hold(self):
-        return self.button_statuses[0] == S_HOLD
+        return self._button_statuses[0] == S_HOLD
 
     @property
     def left_is_up(self):
-        return self.button_statuses[0] == S_UP
+        return self._button_statuses[0] == S_UP
 
     @property
     def middle_is_not_pressed(self):
-        return self.button_statuses[1] == S_NOT_PRESSED
+        return self._button_statuses[1] == S_NOT_PRESSED
 
     @property
     def middle_is_down(self):
-        return self.button_statuses[1] == S_DOWN
+        return self._button_statuses[1] == S_DOWN
 
     @property
     def middle_is_hold(self):
-        return self.button_statuses[1] == S_HOLD
+        return self._button_statuses[1] == S_HOLD
 
     @property
     def middle_is_up(self):
-        return self.button_statuses[1] == S_UP
+        return self._button_statuses[1] == S_UP
 
     @property
     def right_is_not_pressed(self):
-        return self.button_statuses[2] == S_NOT_PRESSED
+        return self._button_statuses[2] == S_NOT_PRESSED
 
     @property
     def right_is_down(self):
-        return self.button_statuses[2] == S_DOWN
+        return self._button_statuses[2] == S_DOWN
 
     @property
     def right_is_hold(self):
-        return self.button_statuses[2] == S_HOLD
+        return self._button_statuses[2] == S_HOLD
 
     @property
     def right_is_up(self):
-        return self.button_statuses[2] == S_UP
+        return self._button_statuses[2] == S_UP
 
     @property
     def is_wheel_up(self):
@@ -143,9 +142,9 @@ class Mouse:
 
         for i in range(2):
             if e.type == event_types[i]:
-                for k in range(len(self.button_statuses)):
+                for k in range(len(self._button_statuses)):
                     if e.button == k + 1:
-                        self.button_statuses[k] = statuses[i]
+                        self._button_statuses[k] = statuses[i]
 
         if e.type == WINDOWMOVED:
             self._win_pos = e.x, e.y
@@ -181,11 +180,11 @@ class Mouse:
             elif self.y <= 0:
                 self.y = winh
 
-        for i in range(len(self.button_statuses)):
-            if self.button_statuses[i] == S_DOWN:
-                self.button_statuses[i] = S_HOLD
-            elif self.button_statuses[i] == S_UP:
-                self.button_statuses[i] = S_NOT_PRESSED
+        for i in range(len(self._button_statuses)):
+            if self._button_statuses[i] == S_DOWN:
+                self._button_statuses[i] = S_HOLD
+            elif self._button_statuses[i] == S_UP:
+                self._button_statuses[i] = S_NOT_PRESSED
 
         self.wheel = (0, 0)
         self._last_pos = pg_mouse_get_pos()
