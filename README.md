@@ -36,6 +36,9 @@ This module include:
 - `python >= 3.10`
 - `pygame >= 2.0.1`
 
+Optional:
+- `cv2` (`opencv-python`)
+
 ### How to install `pygex`
 To install `pygex` of [current version](#preview) just use this command
 ```
