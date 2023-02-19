@@ -74,8 +74,8 @@ class ButtonView(TextView):
         return Rect(
             self.x,
             self.y,
-            self.get_background_width(),
-            self.get_background_height(),
+            self.get_computed_background_width(),
+            self.get_computed_background_height(),
         )
 
     def set_hint(
@@ -121,7 +121,7 @@ class ButtonView(TextView):
             self._background_drawable.set_interaction_status(self._interaction_status)
 
             if self._interaction_status == IS_IN_INTERACTION:
-                self._background_surface_buffer = self._background_drawable.render(self.get_background_size())
+                self._background_surface_buffer = self._background_drawable.render(self.get_computed_background_size())
 
     def flip(self):
         # ATTENTION: if the View like a ButtonView will be added to the Window view list,
@@ -134,7 +134,7 @@ class ButtonView(TextView):
             if self._background_drawable_is_interaction_drawable \
                     and self._background_drawable._interaction_status != IS_NO_INTERACTION:
                 self._background_drawable.set_interaction_status(IS_NO_INTERACTION, animate=False)
-                self._background_surface_buffer = self._background_drawable.render(self.get_background_size())
+                self._background_surface_buffer = self._background_drawable.render(self.get_computed_background_size())
 
             return
 
@@ -157,14 +157,14 @@ class ButtonView(TextView):
             return
 
         if self._background_drawable_is_interaction_drawable and self._background_drawable.is_need_to_be_rendered():
-            self._background_surface_buffer = self._background_drawable.render(self.get_background_size())
+            self._background_surface_buffer = self._background_drawable.render(self.get_computed_background_size())
 
         super().render(surface)
 
         if self._is_focused and self._hint is not None:
             hint_pos_or_rect = (*pg_mouse_get_pos(), 25, 25) if self._hint_anchor_is_mouse else (
-                self.x + (self.get_background_width() / 2),
-                self.y + self.get_background_height() + self._hint_offset
+                self.x + (self.get_computed_background_width() / 2),
+                self.y + self.get_computed_background_height() + self._hint_offset
             )
 
             self._hint.render(

@@ -15,6 +15,7 @@ Use examples:
 
 Demo project:
 ![image](https://user-images.githubusercontent.com/83653555/219899773-66055e2a-9379-4c72-b6ee-60dbd70f56f9.png)
+
 ```py
 from pygex.info import pygex_ver
 import pygame
@@ -92,7 +93,7 @@ while True:
     debug_textview.set_text(debug_text % (pygex_ver, f'{window.fps:.3f}', window.fps_limit))
 
     if debug_button.x == 5 and debug_textview.visibility == pygex.gui.VISIBILITY_VISIBLE:
-        debug_button.x += debug_textview.get_background_width()
+        debug_button.x += debug_textview.get_computed_background_width()
 
     if debug_button.is_clicked:
         open_or_close_debug_menu()
@@ -110,7 +111,6 @@ while True:
             fullscreen_toast.cancel()
 
     window.flip()
-
 ```
 
 <!--

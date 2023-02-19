@@ -63,11 +63,12 @@ class TextView(View):
 
     def get_text_size(self):
         return (
-            self._width if self._width == SIZE_WRAP_CONTENT
-            else (self.get_background_width() - self._padding[0] - self._padding[2]),
-
-            self._height if self._height == SIZE_WRAP_CONTENT
-            else (self.get_background_height() - self._padding[1] - self._padding[3])
+            self._width if self._width == SIZE_WRAP_CONTENT else (
+                    self.get_computed_background_width() - self.padding_horizontal
+            ),
+            self._height if self._height == SIZE_WRAP_CONTENT else (
+                    self.get_computed_background_height() - self.padding_vertical
+            )
         )
 
     def apply_text_surface(self):
