@@ -24,7 +24,7 @@ class InteractionDrawable(Drawable):
             if content is None:
                 border_radius_or_radii = -1
             else:
-                border_radius_or_radii = content.get_radii()
+                border_radius_or_radii = content.radii
 
         super().__init__(border_radius_or_radii, border_width, border_color)
 
@@ -43,22 +43,25 @@ class InteractionDrawable(Drawable):
         self.effect_alpha_value_difference_for_start_decreasing_effect_border_alpha_value = 80
         self.effect_alpha_decreasing_per_frame = 3
 
+    @property
     def is_need_to_be_rendered(self):
         return self._is_in_process
 
-    def set_effect_color(self, effect_color: COLOR_TYPE):
-        self._effect_color = effect_color
-        self._effect_color_rgba = ahex_to_rgba(color_as_int(effect_color))
-
-    def get_effect_color(self):
+    @property
+    def effect_color(self):
         return self._effect_color
 
-    def set_content(self, content: Drawable):
+    @effect_color.setter
+    def effect_color(self, new_effect_color: COLOR_TYPE):
+        self._effect_color = new_effect_color
+        self._effect_color_rgba = ahex_to_rgba(color_as_int(new_effect_color))
+
+    def get_content_drawable(self):
+        return self._content_drawable
+
+    def set_content_drawable(self, content: Drawable):
         self._content_drawable = content
         self._content_buffered_size = (-1, -1)
-
-    def get_content(self):
-        return self._content_drawable
 
     def set_interaction_status(self, interaction_status: int, animate=True):
         if interaction_status == IS_NO_INTERACTION and self._interaction_status != IS_NO_INTERACTION and animate:
@@ -120,7 +123,7 @@ class InteractionDrawable(Drawable):
             output_surface.blit(effect_surface, (0, 0))
 
         # STEP 3: rounding and bordering the output surface
-        if self.has_border_radii():
+        if self.has_border_radii:
             output_surface = round_corners(
                 output_surface,
                 self.border_top_left_radius,

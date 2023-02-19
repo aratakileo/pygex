@@ -66,8 +66,8 @@ debug_textview = pygex.gui.TextView(
 
 
 debug_button = pygex.gui.ButtonView('[!]', pos=(5, 5), render_content_during_initialization=False)
-debug_button.get_background_drawable().get_content().set_border_radius(90)
-debug_button.get_background_drawable().get_content().color = pygex.color.C_RED | 0xaa000000
+debug_button.get_background_drawable().get_content_drawable().set_border_radius(90)
+debug_button.get_background_drawable().get_content_drawable().color = pygex.color.C_RED | 0xaa000000
 debug_button.set_hint(
     'Close debug menu',
     hint_gravity=pygex.gui.Hint.GRAVITY_LEFT | pygex.gui.Hint.GRAVITY_UNDER_CENTER
@@ -94,6 +94,8 @@ while True:
 
     if debug_button.x == 5 and debug_textview.visibility == pygex.gui.VISIBILITY_VISIBLE:
         debug_button.x += debug_textview.get_computed_background_width()
+
+    window.render_views()
 
     if debug_button.is_clicked:
         open_or_close_debug_menu()

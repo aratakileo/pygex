@@ -10,11 +10,12 @@ class Drawable:
         if isinstance(border_radius_or_radii, int):
             self.set_border_radius(border_radius_or_radii)
         else:
-            self.set_radii(border_radius_or_radii)
+            self.radii = border_radius_or_radii
 
         self.border_width = border_width
         self.border_color = border_color
 
+    @property
     def has_border_radii(self):
         return (
             self.border_top_left_radius,
@@ -23,7 +24,8 @@ class Drawable:
             self.border_bottom_right_radius
         ) != (-1, -1, -1, -1)
 
-    def get_radii(self):
+    @property
+    def radii(self):
         return (
             self.border_top_left_radius,
             self.border_top_right_radius,
@@ -31,13 +33,14 @@ class Drawable:
             self.border_bottom_right_radius
         )
 
-    def set_radii(self, radii: Sequence[int]):
+    @radii.setter
+    def radii(self, new_radii: Sequence[int]):
         (
             self.border_top_left_radius,
             self.border_top_right_radius,
             self.border_bottom_left_radius,
             self.border_bottom_right_radius
-        ) = radii
+        ) = new_radii
 
     def set_border_radius(self, radius: int):
         self.border_top_left_radius = radius
@@ -69,7 +72,7 @@ class LayerDrawable(Drawable):
         for layer in self.layers[1:]:
             output_surface.blit(layer.render(size), (0, 0))
 
-        if self.has_border_radii():
+        if self.has_border_radii:
             output_surface = round_corners(
                 output_surface,
                 self.border_top_left_radius,
@@ -154,7 +157,7 @@ class GradientDrawable(Drawable):
     def render(self, size: Sequence[int]) -> SurfaceType:
         output_surface = gradient(size, self.colors, self.is_vertical)
 
-        if self.has_border_radii():
+        if self.has_border_radii:
             output_surface = round_corners(
                 output_surface,
                 self.border_top_left_radius,

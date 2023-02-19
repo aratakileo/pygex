@@ -156,7 +156,7 @@ class ButtonView(TextView):
         if self.visibility != VISIBILITY_VISIBLE:
             return
 
-        if self._background_drawable_is_interaction_drawable and self._background_drawable.is_need_to_be_rendered():
+        if self._background_drawable_is_interaction_drawable and self._background_drawable.is_need_to_be_rendered:
             self._background_surface_buffer = self._background_drawable.render(self.get_computed_background_size())
 
         super().render(surface)
