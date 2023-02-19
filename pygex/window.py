@@ -182,7 +182,7 @@ class Window:
             self._view_list.append(view)
             view._parent = self
 
-    def take_screenshot(self, save_directory='./screenshots', successful_toast=True):
+    def take_screenshot(self, save_directory='./screenshots', show_successful_toast=True):
         if not isdir(save_directory):
             makedirs(save_directory)
 
@@ -194,11 +194,15 @@ class Window:
             save_directory + '/' + file_name
         )
 
-        if successful_toast:
+        if show_successful_toast:
             self.show_toast(f'Screenshot "{file_name}" saved!')
 
     def show_toast(self, text, delay=Toast.SHORT_DELAY):
         return Toast(text, delay).show()
+
+    def render_views(self):
+        for view in self._view_list:
+            view.render(pg_win_get_surface())
 
     def process_event(self, e: Event):
         if self.default_quit and e.type == QUIT:
@@ -220,8 +224,6 @@ class Window:
         self._event_buffer = []
 
         for view in self._view_list:
-            view.render(pg_win_get_surface())
-
             if 'flip' in view.__dir__():
                 # ATTENTION: the peculiarity is that the flip method is called before the render method is used in
                 # the ButtonView logic
