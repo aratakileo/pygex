@@ -7,113 +7,16 @@ Extended library for pygame users
 - [How to install `pygex`](#how-to-install-pygex)
 
 ### Preview
-Current development version: `0.3` (the same version will be [installed](#how-to-install-pygex))
+
+![](https://github.com/TeaCondemns/pygex/releases/download/v0.3/preview.gif)
+
+[[Run this demo project]](https://github.com/teacondemns/pygex/releases/tag/v0.3)
+
+Current development version: `0.3.1` (the same version will be [installed](#how-to-install-pygex))
 
 Use examples:
 - [Drawing application](https://github.com/teacondemns/vector-paint)
 - [Bezier curve editor](https://github.com/teacondemns/bezier-curve)
-
-Demo project:
-![image](https://user-images.githubusercontent.com/83653555/219899773-66055e2a-9379-4c72-b6ee-60dbd70f56f9.png)
-
-```py
-from pygex.info import pygex_ver
-import pygame
-import pygex
-
-
-window = pygex.Window()
-window.bg_color = 0xffffff
-window.fps_limit = 120
-
-fullscreen_toast = pygex.Toast('To exit full screen press [F11]')
-
-some_textview = pygex.gui.TextView(
-    'Um... Excuse me? What you actually doing in my house? Please leave now!',
-    size=(pygex.gui.SIZE_MATCH_PARENT, pygex.gui.SIZE_MATCH_PARENT),
-    text_line_spacing=-2,
-    text_align=pygex.gui.ALIGN_CENTER,
-    content_gravity=pygex.gui.GRAVITY_CENTER_HORIZONTAL | pygex.gui.GRAVITY_CENTER_VERTICAL,
-    text_color=0xcaf0f8,
-    font_or_font_size=50,
-    background_drawable_or_color=pygex.gui.drawable.GradientDrawable(
-        (0xcaf0f8, 0x00b4d8, 0xcaf0f8),
-        border_width=10,
-        border_color=0xcaf0f8,
-        is_vertical=True
-    )
-)
-some_textview.render_content_surface()
-
-debug_text = '=========DEBUG MENU=========' \
-    '\n - pygex: v%s' \
-    '\n - %s/%ifps' \
-    '\n\n' \
-    '\n=========SHORTCUTS==========' \
-    '\n - press [f1] to take screenshot' \
-    '\n - press [f2] to show/hide this menu' \
-    '\n - press [f11] to switch screen mode'
-
-debug_textview = pygex.gui.TextView(
-    debug_text,
-    text_color=pygex.color.C_WHITE,
-    background_drawable_or_color=pygex.gui.drawable.ColorDrawable(
-        0xaa000000,
-        border_radius_or_radii=(0, 0, 0, 10)
-    ),
-    render_content_during_initialization=False
-)
-
-
-debug_button = pygex.gui.ButtonView('[!]', pos=(5, 5), render_content_during_initialization=False)
-debug_button.get_background_drawable().get_content_drawable().set_border_radius(90)
-debug_button.get_background_drawable().get_content_drawable().color = pygex.color.C_RED | 0xaa000000
-debug_button.set_hint(
-    'Close debug menu',
-    hint_gravity=pygex.gui.Hint.GRAVITY_LEFT | pygex.gui.Hint.GRAVITY_UNDER_CENTER
-)
-
-
-def open_or_close_debug_menu():
-    if debug_textview.visibility == pygex.gui.VISIBILITY_GONE:
-        debug_textview.visibility = pygex.gui.VISIBILITY_VISIBLE
-        debug_button.set_hint('Close debug menu')
-    elif debug_textview.visibility == pygex.gui.VISIBILITY_VISIBLE:
-        debug_textview.visibility = pygex.gui.VISIBILITY_GONE
-        debug_button.set_hint('Open debug menu')
-        debug_button.x = 5
-
-
-window.add_view(some_textview)
-window.add_view(debug_textview)
-window.add_view(debug_button)
-
-
-while True:
-    debug_textview.set_text(debug_text % (pygex_ver, f'{window.fps:.3f}', window.fps_limit))
-
-    if debug_button.x == 5 and debug_textview.visibility == pygex.gui.VISIBILITY_VISIBLE:
-        debug_button.x += debug_textview.get_computed_background_width()
-
-    window.render_views()
-
-    if debug_button.is_clicked:
-        open_or_close_debug_menu()
-
-    if window.input.is_up(pygame.K_F1):
-        window.take_screenshot()
-    elif window.input.is_up(pygame.K_F2):
-        open_or_close_debug_menu()
-    elif window.input.is_up(pygame.K_F11):
-        window.fullscreen = not window.fullscreen
-
-        if window.fullscreen:
-            fullscreen_toast.show()
-        else:
-            fullscreen_toast.cancel()
-
-    window.flip()
-```
 
 <!--
 This module include:
@@ -180,6 +83,6 @@ python3 -m pip install pygame --pre
 ```
 </details>
 
-[[Look for previous version]](https://github.com/teacondemns/pygex/releases/tag/v0.2.dev3)
+[[Look for previous version]](https://github.com/teacondemns/pygex/releases/tag/v0.3)
 
 [[Look for other versions]](https://github.com/teacondemns/pygex/releases)
