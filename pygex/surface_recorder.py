@@ -11,7 +11,7 @@ try:
     from os.path import isdir
     from time import time
 
-    temp_file_name = '#pygex.temp.avi.resource#.avi'
+    _TEMP_FILE_NAME = '#pygex.temp.avi.resource#.avi'
 
 
     class SurfaceRecorder:
@@ -21,15 +21,25 @@ try:
             self._fourcc = cv_get_fourcc(*'XVID')
             self._video_fps = float(video_fps)
             self._video_size = video_size
+            self._recorded_content_frames = 0
 
         @property
         def is_recording(self):
             return self._is_recording
 
+        @property
+        def has_content(self):
+            return self._recorded_content_frames > 0
+
+        @property
+        def recorded_content_frames(self):
+            return self._recorded_content_frames
+
         def start_record(self):
+            self._recorded_content_frames = 0
             self._is_recording = True
             self._video_resource = cv_new_video_writer(
-                temp_file_name,
+                _TEMP_FILE_NAME,
                 self._fourcc,
                 self._video_fps,
                 self._video_size
@@ -52,6 +62,8 @@ try:
                 )
             )
 
+            self._recorded_content_frames += 1
+
         def stop_record(self):
             self._is_recording = False
 
@@ -64,7 +76,7 @@ try:
             file_name = 'record_' + datetime.now().strftime("%d-%m-%Y-%H-%M-%S-%f") + '_'
             file_name += pg_win_get_caption()[0].lower().replace(" ", "_") + '.avi'
 
-            rename(temp_file_name, save_directory + '/' + file_name)
+            rename(_TEMP_FILE_NAME, save_directory + '/' + file_name)
 
 
     __all__ = 'SurfaceRecorder',
