@@ -1,5 +1,5 @@
+from pygex.gui.view import View, DEFAULT_SIZE, DEFAULT_PADDING, DEFAULT_POSITION, DEFAULT_GRAVITY
 from pygex.text import ALIGN_LEFT, ALIGN_RIGHT, ALIGN_CENTER, ALIGN_BLOCK, DEFAULT_FONT_SIZE, TextRenderer
-from pygex.gui.view import View, SIZE_WRAP_CONTENT, DEFAULT_PADDING, GRAVITY_LEFT, GRAVITY_TOP
 from pygex.gui.drawable.drawable import Drawable
 from pygex.color import COLOR_TYPE, C_BLACK
 from pygame.surface import SurfaceType
@@ -12,10 +12,10 @@ class TextView(View):
             self,
             text: str,
             text_color: COLOR_TYPE = C_BLACK,
-            size: Sequence[int] = (SIZE_WRAP_CONTENT, SIZE_WRAP_CONTENT),
-            pos: Sequence[float | int] = (0, 0),
+            size: Sequence[int] = DEFAULT_SIZE,
+            pos: Sequence[float | int] = DEFAULT_POSITION,
             padding: Sequence[int] = DEFAULT_PADDING,
-            content_gravity=GRAVITY_LEFT | GRAVITY_TOP,
+            content_gravity=DEFAULT_GRAVITY,
             text_align=ALIGN_LEFT,
             text_line_spacing: float | int = 0,
             text_lines_number: int = ...,
