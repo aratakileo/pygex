@@ -1,4 +1,4 @@
-from pygex.color import COLOR_TYPE, to_pygame_alpha_color, C_BLACK
+from pygex.color import TYPE_COLOR, to_pygame_alpha_color, COLOR_BLACK
 from pygex.image import AlphaSurface, gradient, round_corners
 from pygame.draw import rect as pg_draw_rect
 from pygame.surface import SurfaceType
@@ -6,7 +6,7 @@ from typing import Sequence
 
 
 class Drawable:
-    def __init__(self, border_radius_or_radii: int | Sequence[int], border_width: int, border_color: COLOR_TYPE):
+    def __init__(self, border_radius_or_radii: int | Sequence[int], border_width: int, border_color: TYPE_COLOR):
         if isinstance(border_radius_or_radii, int):
             self.set_border_radius(border_radius_or_radii)
         else:
@@ -58,7 +58,7 @@ class LayerDrawable(Drawable):
             layers: Sequence[Drawable],
             border_radius_or_radii: int | Sequence[int] = -1,
             border_width: int = 0,
-            border_color: COLOR_TYPE = C_BLACK
+            border_color: TYPE_COLOR = COLOR_BLACK
     ):
         super().__init__(border_radius_or_radii, border_width, border_color)
         self.layers = layers
@@ -100,10 +100,10 @@ class LayerDrawable(Drawable):
 class ColorDrawable(Drawable):
     def __init__(
             self,
-            color: COLOR_TYPE,
+            color: TYPE_COLOR,
             border_radius_or_radii: int | Sequence[int] = -1,
             border_width: int = 0,
-            border_color: COLOR_TYPE = C_BLACK
+            border_color: TYPE_COLOR = COLOR_BLACK
     ):
         super().__init__(border_radius_or_radii, border_width, border_color)
 
@@ -143,11 +143,11 @@ class ColorDrawable(Drawable):
 class GradientDrawable(Drawable):
     def __init__(
             self,
-            colors: Sequence[COLOR_TYPE],
+            colors: Sequence[TYPE_COLOR],
             is_vertical=False,
             border_radius_or_radii: int | Sequence[int] = -1,
             border_width: int = 0,
-            border_color: COLOR_TYPE = C_BLACK
+            border_color: TYPE_COLOR = COLOR_BLACK
     ):
         super().__init__(border_radius_or_radii, border_width, border_color)
 

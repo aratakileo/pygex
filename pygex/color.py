@@ -1,42 +1,50 @@
 from pygame import color as pg_color
 from typing import Sequence
 
-COLOR_TYPE = pg_color.Color | int | str | Sequence[int]
+TYPE_COLOR = pg_color.Color | int | str | Sequence[int]
 
 
-C_ABSOLUTE_RED = 0xff0000
-C_ABSOLUTE_GREEN = 0x00ff00
-C_ABSOLUTE_BLUE = 0x0000ff
-C_BLACK = 0x000000
-C_WHITE = 0xffffff
-C_RED = 0xf44336
-C_GREEN = 0x4caf50
-C_BLUE = 0x2196f3
-C_PINK = 0xe91e63
-C_PURPLE = 0x9c27b0
-C_DEEP_PURPLE = 0x673ab7
-C_INDIGO = 0x3f51b5
-C_LIGHT_BLUE = 0x03a9f4
-C_CYAN = 0x00bcd4
-C_TEAL = 0x009688
-C_LIGHT_GREEN = 0x8bc34a
-C_LIME = 0xcddc39
-C_YELLOW = 0xffeb3b
-C_AMBER = 0xffc107
-C_ORANGE = 0xff9800
-C_DEEP_ORANGE = 0xff5722
-C_BROWN = 0x795548
-C_BLUE_GREY = 0x607d8b
-C_GREY = 0x9e9e9e
-C_AQUA = 0x00ffff
-C_AQUAMARINE = 0x7fffd4
-C_AZURE = 0xf0ffff
-C_BEIGE = 0xf5f5dc
-C_BLUE_VIOLET = 0x8a2be2
-C_CADET_BLUE = 0x5f9ea0
-C_CHOCOLATE = 0xd2691e
-C_CORAL = 0xff7f50
-C_CRIMSON = 0xdc143c
+COLOR_ABSOLUTE_RED = 0xff0000
+COLOR_ABSOLUTE_GREEN = 0x00ff00
+COLOR_ABSOLUTE_BLUE = 0x0000ff
+COLOR_BLACK = 0x000000
+COLOR_WHITE = 0xffffff
+COLOR_RED = 0xf44336
+COLOR_GREEN = 0x4caf50
+COLOR_BLUE = 0x2196f3
+COLOR_PINK = 0xe91e63
+COLOR_PURPLE = 0x9c27b0
+COLOR_DEEP_PURPLE = 0x673ab7
+COLOR_INDIGO = 0x3f51b5
+COLOR_LIGHT_BLUE = 0x03a9f4
+COLOR_CYAN = 0x00bcd4
+COLOR_TEAL = 0x009688
+COLOR_LIGHT_GREEN = 0x8bc34a
+COLOR_LIME = 0xcddc39
+COLOR_YELLOW = 0xffeb3b
+COLOR_AMBER = 0xffc107
+COLOR_ORANGE = 0xff9800
+COLOR_DEEP_ORANGE = 0xff5722
+COLOR_BROWN = 0x795548
+COLOR_BLUE_GREY = 0x607d8b
+COLOR_GREY = 0x9e9e9e
+COLOR_AQUA = 0x00ffff
+COLOR_AQUAMARINE = 0x7fffd4
+COLOR_AZURE = 0xf0ffff
+COLOR_BEIGE = 0xf5f5dc
+COLOR_BLUE_VIOLET = 0x8a2be2
+COLOR_CADET_BLUE = 0x5f9ea0
+COLOR_CHOCOLATE = 0xd2691e
+COLOR_CORAL = 0xff7f50
+COLOR_CRIMSON = 0xdc143c
+
+
+COLOR_TRANSPARENT = -1
+"""
+This color means that the element for which it was used is transparent, and at the code level, with some exceptions,
+an element of this color is simply not rendered. This color exists only in AHEX format and if try to convert
+to other formats, such as RGBA, HEXA, etc., then nothing will come out and the value None will be returned.
+"""
 
 
 def has_alpha(color: int):
@@ -44,6 +52,9 @@ def has_alpha(color: int):
     Checking if color has alpha channel (works only for AHEX or HEX)
     :param color: alpha format AHEX or HEX
     """
+    if color == COLOR_TRANSPARENT:
+        return False
+
     return color > 0xffffff
 
 
@@ -52,6 +63,9 @@ def get_alpha(color: int):
     Checking if color has alpha channel (works only for AHEX or HEX)
     :param color: alpha format AHEX or HEX
     """
+    if color == COLOR_TRANSPARENT:
+        return 0
+
     return color >> 24
 
 
@@ -61,6 +75,9 @@ def set_alpha(color: int, alpha: int):
     :param alpha: value from 0x00 to 0xff
     :param color: alpha format AHEX or HEX
     """
+    if color == COLOR_TRANSPARENT:
+        return COLOR_TRANSPARENT
+
     return (alpha & 0xff) << 24 | color
 
 
@@ -69,6 +86,9 @@ def remove_alpha(color: int):
     Checking if color has alpha channel (works only for AHEX or HEX)
     :param color: alpha format AHEX or HEX
     """
+    if color == COLOR_TRANSPARENT:
+        return COLOR_TRANSPARENT
+
     return color & ~0xff000000
 
 
@@ -92,18 +112,27 @@ def argb_to_ahex(color: Sequence[int] | pg_color.Color):
 
 
 def hex_to_hexa(color: int, alpha: int = 0xff):
+    if color == COLOR_TRANSPARENT:
+        return COLOR_TRANSPARENT
+
     return color << 8 | alpha
 
 
 def ahex_to_hexa(color: int):
+    if color == COLOR_TRANSPARENT:
+        return
+
     return remove_alpha(color) << 8 | get_alpha(color)
 
 
 def ahex_to_rgba(color: int):
+    if color == COLOR_TRANSPARENT:
+        return
+
     return (color >> 16) & 0xff, (color >> 8) & 0xff, color & 0xff, (color >> 24) & 0xff
 
 
-def color_as_int(color: COLOR_TYPE):
+def color_as_int(color: TYPE_COLOR):
     if isinstance(color, Sequence):
         if len(color) == 3:
             return rgb_to_hex(color)
@@ -132,7 +161,7 @@ def color_as_int(color: COLOR_TYPE):
     return color
 
 
-def invert(color: COLOR_TYPE, invert_alpha=False):
+def invert(color: TYPE_COLOR, invert_alpha=False):
     """
     Invert the source color to inverse color.
     For example: black color will invert to white and white to black
@@ -142,6 +171,9 @@ def invert(color: COLOR_TYPE, invert_alpha=False):
     if color is None:
         return None
 
+    if color == COLOR_TRANSPARENT:
+        return COLOR_TRANSPARENT
+
     alpha = get_alpha(color)
 
     if invert_alpha:
@@ -150,7 +182,7 @@ def invert(color: COLOR_TYPE, invert_alpha=False):
     return set_alpha(~remove_alpha(color) & 0xffffff, alpha)
 
 
-def to_gray(color: COLOR_TYPE):
+def to_gray(color: TYPE_COLOR):
     """
     Converts to specified color to shade of gray, based on which of shade of gray the specified color is closer to
     :param color: source color
@@ -161,12 +193,15 @@ def to_gray(color: COLOR_TYPE):
     if color is None:
         return None
 
+    if color == COLOR_TRANSPARENT:
+        return COLOR_TRANSPARENT
+
     segment = (((color >> 16) & 0xff) * 299 + ((color >> 8) & 0xff) * 587 + (color & 0xff) * 114) // 1000
 
     return rgba_to_ahex((segment, segment, segment, get_alpha(color)))
 
 
-def to_black_white(color: COLOR_TYPE):
+def to_black_white(color: TYPE_COLOR):
     """
     Converts the specified color to black or white, based on which of them the specified color is closer to
     :param color: source color
@@ -177,13 +212,16 @@ def to_black_white(color: COLOR_TYPE):
     if color is None:
         return None
 
+    if color == COLOR_TRANSPARENT:
+        return COLOR_TRANSPARENT
+
     segment = to_gray(color) & 0xff
     segment = 0x00 if segment < 0x7f else 0xff
 
     return rgba_to_ahex((segment, segment, segment, get_alpha(color)))
 
 
-def to_readable_color(background_color: COLOR_TYPE):
+def to_readable_color(background_color: TYPE_COLOR):
     """
     Get a black or white color that will be clearly visible on the specified background color
     :param background_color: source color for analysis
@@ -194,15 +232,21 @@ def to_readable_color(background_color: COLOR_TYPE):
     if background_color is None:
         return None
 
+    if background_color == COLOR_TRANSPARENT:
+        return COLOR_TRANSPARENT
+
     return to_black_white(invert(background_color))
 
 
-def to_pygame_alpha_color(color: COLOR_TYPE) -> tuple[int, int, int, int] | pg_color.Color | None:
+def to_pygame_alpha_color(color: TYPE_COLOR) -> tuple[int, int, int, int] | pg_color.Color | None:
     """
     Converting color from AHEX or HEX to HEXA (color format in pygame is HEXA)
     :param color: alpha format: AHEX, HEX, RGBA
     """
     if isinstance(color, int):
+        if color == COLOR_TRANSPARENT:
+            return
+
         if has_alpha(color):
             return ahex_to_rgba(color)
 
@@ -227,40 +271,41 @@ def to_pygame_alpha_color(color: COLOR_TYPE) -> tuple[int, int, int, int] | pg_c
 
 
 __all__ = (
-    'COLOR_TYPE',
-    'C_ABSOLUTE_RED',
-    'C_ABSOLUTE_GREEN',
-    'C_ABSOLUTE_BLUE',
-    'C_BLACK',
-    'C_WHITE',
-    'C_RED',
-    'C_GREEN',
-    'C_BLUE',
-    'C_PINK',
-    'C_PURPLE',
-    'C_DEEP_PURPLE',
-    'C_INDIGO',
-    'C_LIGHT_BLUE',
-    'C_CYAN',
-    'C_TEAL',
-    'C_LIGHT_GREEN',
-    'C_LIME',
-    'C_YELLOW',
-    'C_AMBER',
-    'C_ORANGE',
-    'C_DEEP_ORANGE',
-    'C_BROWN',
-    'C_BLUE_GREY',
-    'C_GREY',
-    'C_AQUA',
-    'C_AQUAMARINE',
-    'C_AZURE',
-    'C_BEIGE',
-    'C_BLUE_VIOLET',
-    'C_CADET_BLUE',
-    'C_CHOCOLATE',
-    'C_CORAL',
-    'C_CRIMSON',
+    'TYPE_COLOR',
+    'COLOR_ABSOLUTE_RED',
+    'COLOR_ABSOLUTE_GREEN',
+    'COLOR_ABSOLUTE_BLUE',
+    'COLOR_BLACK',
+    'COLOR_WHITE',
+    'COLOR_RED',
+    'COLOR_GREEN',
+    'COLOR_BLUE',
+    'COLOR_PINK',
+    'COLOR_PURPLE',
+    'COLOR_DEEP_PURPLE',
+    'COLOR_INDIGO',
+    'COLOR_LIGHT_BLUE',
+    'COLOR_CYAN',
+    'COLOR_TEAL',
+    'COLOR_LIGHT_GREEN',
+    'COLOR_LIME',
+    'COLOR_YELLOW',
+    'COLOR_AMBER',
+    'COLOR_ORANGE',
+    'COLOR_DEEP_ORANGE',
+    'COLOR_BROWN',
+    'COLOR_BLUE_GREY',
+    'COLOR_GREY',
+    'COLOR_AQUA',
+    'COLOR_AQUAMARINE',
+    'COLOR_AZURE',
+    'COLOR_BEIGE',
+    'COLOR_BLUE_VIOLET',
+    'COLOR_CADET_BLUE',
+    'COLOR_CHOCOLATE',
+    'COLOR_CORAL',
+    'COLOR_CRIMSON',
+    'COLOR_TRANSPARENT',
     'has_alpha',
     'get_alpha',
     'set_alpha',

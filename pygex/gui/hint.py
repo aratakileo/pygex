@@ -1,4 +1,4 @@
-from pygex.color import COLOR_TYPE, to_pygame_alpha_color, to_readable_color
+from pygex.color import TYPE_COLOR, to_pygame_alpha_color, to_readable_color, COLOR_BLACK
 from pygame.draw import rect as draw_rect
 from pygame.surface import SurfaceType
 from pygex.image import AlphaSurface
@@ -22,8 +22,8 @@ class Hint:
     def __init__(
             self,
             text,
-            text_color: COLOR_TYPE = ...,
-            bg_color: COLOR_TYPE = 0xaa000000,
+            text_color: TYPE_COLOR = ...,
+            bg_color: TYPE_COLOR = COLOR_BLACK | 0xaa000000,
             gravity=GRAVITY_CENTER_HORIZONTAL | GRAVITY_UNDER_CENTER,
             strict_fit_in_bounds=True
     ):

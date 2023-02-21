@@ -9,7 +9,7 @@ from pygame.event import get as get_events
 from pygame.time import Clock as pg_Clock
 from pygex.input import get_input, Input
 from pygex.mouse import get_mouse, Mouse
-from pygex.color import COLOR_TYPE
+from pygex.color import TYPE_COLOR
 from pygame.event import Event
 from datetime import datetime
 from typing import Sequence
@@ -59,7 +59,7 @@ class Window:
         self.hold_event_buffer = False
         self.default_quit = True
         self.fps_limit: float | int | None = None
-        self.bg_color: COLOR_TYPE | None = None
+        self.bg_color: TYPE_COLOR | None = None
 
         if fullscreen:
             self.fullscreen = True

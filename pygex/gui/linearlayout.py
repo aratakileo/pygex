@@ -1,6 +1,6 @@
 from pygex.gui.view import View, DEFAULT_PADDING, DEFAULT_SIZE, DEFAULT_POSITION, DEFAULT_GRAVITY
 from pygex.gui.drawable.drawable import Drawable
-from pygex.color import COLOR_TYPE
+from pygex.color import TYPE_COLOR
 from pygame.event import Event
 from typing import Sequence
 
@@ -14,7 +14,7 @@ class LinearLayout(View):
             pos: Sequence[float | int] = DEFAULT_POSITION,
             padding: Sequence[int] = DEFAULT_PADDING,
             content_gravity: int = DEFAULT_GRAVITY,
-            background_drawable_or_color: Drawable | COLOR_TYPE = None,
+            background_drawable_or_color: Drawable | TYPE_COLOR = None,
             render_content_during_initialization: bool = True
     ):
         super().__init__(

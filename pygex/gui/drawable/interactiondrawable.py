@@ -1,4 +1,4 @@
-from pygex.color import COLOR_TYPE, to_pygame_alpha_color, C_BLACK, C_WHITE, ahex_to_rgba, color_as_int
+from pygex.color import TYPE_COLOR, to_pygame_alpha_color, COLOR_BLACK, COLOR_WHITE, ahex_to_rgba, color_as_int
 from pygex.image import round_corners, AlphaSurface
 from pygex.gui.drawable.drawable import Drawable
 from pygame.draw import rect as pg_draw_rect
@@ -15,10 +15,10 @@ class InteractionDrawable(Drawable):
     def __init__(
             self,
             content: Drawable = None,
-            effect_color: COLOR_TYPE = C_WHITE | 0x96000000,
+            effect_color: TYPE_COLOR = COLOR_WHITE | 0x96000000,
             border_radius_or_radii: int | Sequence[int] = ...,
             border_width: int = 0,
-            border_color: COLOR_TYPE = C_BLACK
+            border_color: TYPE_COLOR = COLOR_BLACK
     ):
         if border_radius_or_radii is ...:
             if content is None:
@@ -52,7 +52,7 @@ class InteractionDrawable(Drawable):
         return self._effect_color
 
     @effect_color.setter
-    def effect_color(self, new_effect_color: COLOR_TYPE):
+    def effect_color(self, new_effect_color: TYPE_COLOR):
         self._effect_color = new_effect_color
         self._effect_color_rgba = ahex_to_rgba(color_as_int(new_effect_color))
 

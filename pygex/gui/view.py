@@ -7,7 +7,7 @@ from pygame.mouse import get_pos as pg_mouse_get_pos
 from pygex.text import SIZE_WRAP_CONTENT
 from pygame.surface import SurfaceType
 from functools import cached_property
-from pygex.color import COLOR_TYPE
+from pygex.color import TYPE_COLOR
 from pygex.gui.hint import Hint
 from pygame.event import Event
 from pygame.rect import Rect
@@ -39,7 +39,7 @@ class View:
             pos: Sequence[float | int],
             padding: Sequence[int],
             content_gravity: int,
-            background_drawable_or_color: Drawable | COLOR_TYPE,
+            background_drawable_or_color: Drawable | TYPE_COLOR,
             render_content_during_initialization: bool
     ):
         self.x, self.y = pos
@@ -279,7 +279,7 @@ class View:
     def get_background_drawable(self) -> Drawable | None:
         return self._background_drawable
 
-    def set_background_drawable(self, drawable_or_color: Drawable | COLOR_TYPE):
+    def set_background_drawable(self, drawable_or_color: Drawable | TYPE_COLOR):
         if isinstance(drawable_or_color, Drawable):
             self._background_drawable = drawable_or_color
             self._background_drawable_is_interaction_drawable = isinstance(
