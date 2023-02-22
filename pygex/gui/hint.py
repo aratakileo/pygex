@@ -1,4 +1,4 @@
-from pygex.color import TYPE_COLOR, to_pygame_alpha_color, to_readable_color, COLOR_BLACK
+from pygex.color import TYPE_COLOR, as_rgba, to_readable_color, COLOR_BLACK
 from pygame.draw import rect as draw_rect
 from pygame.surface import SurfaceType
 from pygex.image import AlphaSurface
@@ -108,7 +108,7 @@ class Hint:
         border_radii = (self.border_radius_or_radii,) if isinstance(self.border_radius_or_radii, int) \
             else (-1, *self.border_radius_or_radii)
 
-        draw_rect(box_surface, to_pygame_alpha_color(self.bg_color), (0, 0, boxw, boxh), 0, *border_radii)
+        draw_rect(box_surface, as_rgba(self.bg_color), (0, 0, boxw, boxh), 0, *border_radii)
 
         surface.blit(box_surface, (box_x, box_y))
         surface.blit(text_surface, (box_x + self.padding, box_y + self.padding))

@@ -92,7 +92,7 @@ def remove_alpha(color: int):
     return color & ~0xff000000
 
 
-def from_hex(color: str):
+def parse_hex(color: str):
     if color.startswith('#'):
         color = color[1:]
 
@@ -132,44 +132,15 @@ def ahex_to_rgba(color: int):
     return (color >> 16) & 0xff, (color >> 8) & 0xff, color & 0xff, (color >> 24) & 0xff
 
 
-def color_as_int(color: TYPE_COLOR):
-    if isinstance(color, Sequence):
-        if len(color) == 3:
-            return rgb_to_hex(color)
-
-        if len(color) == 4:
-            return rgba_to_ahex(color)
-
-        return None
-
-    if isinstance(color, str):
-        if isinstance(color, str):
-            if color.startswith('#'):
-                if len(color) == 7:
-                    return rgb_to_hex(from_hex(color))
-
-                if len(color) == 9:
-                    return rgba_to_ahex(from_hex(color))
-
-                return None
-
-            color = pg_color.Color(color)
-
-    if isinstance(color, pg_color.Color):
-        return rgba_to_ahex(color)
-
-    return color
-
-
 def invert(color: TYPE_COLOR, invert_alpha=False):
     """
     Invert the source color to inverse color.
     For example: black color will invert to white and white to black
     """
-    color = color_as_int(color)
+    color = as_ahex(color)
 
     if color is None:
-        return None
+        return
 
     if color == COLOR_TRANSPARENT:
         return COLOR_TRANSPARENT
@@ -188,10 +159,10 @@ def to_gray(color: TYPE_COLOR):
     :param color: source color
     :return: shade of gray
     """
-    color = color_as_int(color)
+    color = as_ahex(color)
 
     if color is None:
-        return None
+        return
 
     if color == COLOR_TRANSPARENT:
         return COLOR_TRANSPARENT
@@ -207,10 +178,10 @@ def to_black_white(color: TYPE_COLOR):
     :param color: source color
     :return: black or white color
     """
-    color = color_as_int(color)
+    color = as_ahex(color)
 
     if color is None:
-        return None
+        return
 
     if color == COLOR_TRANSPARENT:
         return COLOR_TRANSPARENT
@@ -227,10 +198,10 @@ def to_readable_color(background_color: TYPE_COLOR):
     :param background_color: source color for analysis
     :return: black or white color
     """
-    background_color = color_as_int(background_color)
+    background_color = as_ahex(background_color)
 
     if background_color is None:
-        return None
+        return
 
     if background_color == COLOR_TRANSPARENT:
         return COLOR_TRANSPARENT
@@ -238,11 +209,45 @@ def to_readable_color(background_color: TYPE_COLOR):
     return to_black_white(invert(background_color))
 
 
-def to_pygame_alpha_color(color: TYPE_COLOR) -> tuple[int, int, int, int] | pg_color.Color | None:
+def as_ahex(color: TYPE_COLOR):
     """
-    Converting color from AHEX or HEX to RGBA, because the only color format that pygame reads correctly
-    is RGBA or pygame.Color
-    :param color: alpha format: AHEX, HEX, RGBA
+    This function can be used for converting any color to supportable color for pygex
+    :param color: any of: AHEX, HEX, RGBA, pygame.Color
+    :return: AHEX as int
+    """
+    if isinstance(color, Sequence):
+        if len(color) == 3:
+            return rgb_to_hex(color)
+
+        if len(color) == 4:
+            return rgba_to_ahex(color)
+
+        return
+
+    if isinstance(color, str):
+        if isinstance(color, str):
+            if color.startswith('#'):
+                if len(color) == 7:
+                    return rgb_to_hex(parse_hex(color))
+
+                if len(color) == 9:
+                    return rgba_to_ahex(parse_hex(color))
+
+                return
+
+            color = pg_color.Color(color)
+
+    if isinstance(color, pg_color.Color):
+        return rgba_to_ahex(color)
+
+    return color
+
+
+def as_rgba(color: TYPE_COLOR) -> tuple[int, int, int, int] | pg_color.Color | None:
+    """
+    This function can be used for converting any color to supportable color for pygame
+    :param color: any of: AHEX, HEX, RGBA, pygame.Color
+    :return: RGBA as tuple or pygame.Color
     """
     if isinstance(color, int):
         if color == COLOR_TRANSPARENT:
@@ -254,17 +259,17 @@ def to_pygame_alpha_color(color: TYPE_COLOR) -> tuple[int, int, int, int] | pg_c
         return ahex_to_rgba(color | 0xff << 24)
 
     if isinstance(color, Sequence) and len(color) < 4:
-        return *color, 255  # converting rgb to rgba
+        return *color, 0xff  # converting rgb to rgba
 
     if isinstance(color, str):
         if color.startswith('#'):
             if len(color) == 7:
-                return from_hex(color)
+                return parse_hex(color)
 
             if len(color) == 9:
-                return from_hex(color)
+                return parse_hex(color)
 
-            return None
+            return
 
         return pg_color.Color(color)
 
@@ -310,17 +315,17 @@ __all__ = (
     'has_alpha',
     'get_alpha',
     'set_alpha',
-    'from_hex',
+    'parse_hex',
     'rgb_to_hex',
     'rgba_to_ahex',
     'argb_to_ahex',
     'hex_to_hexa',
     'ahex_to_hexa',
     'ahex_to_rgba',
-    'color_as_int',
     'invert',
     'to_gray',
     'to_black_white',
-    'to_pygame_alpha_color',
+    'as_ahex',
+    'as_rgba',
     'to_readable_color'
 )

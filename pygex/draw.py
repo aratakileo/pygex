@@ -1,5 +1,5 @@
 from pygame.draw import line as pg_draw_line, rect as pg_draw_rect, ellipse as pg_draw_ellipse
-from pygex.color import TYPE_COLOR, COLOR_TRANSPARENT, to_pygame_alpha_color
+from pygex.color import TYPE_COLOR, COLOR_TRANSPARENT, as_rgba
 from pygame.rect import Rect as pg_Rect
 from pygame.surface import SurfaceType
 from pygex.image import AlphaSurface
@@ -67,7 +67,7 @@ def rect(
         rect_for_render = _rect
 
     if color != COLOR_TRANSPARENT:
-        color = to_pygame_alpha_color(color)
+        color = as_rgba(color)
 
         if draw_like_ellipse:
             pg_draw_ellipse(surface_for_render, color, rect_for_render)
@@ -75,7 +75,7 @@ def rect(
             pg_draw_rect(surface_for_render, color, rect_for_render, 0, -1, *border_radii)
 
     if border_color != COLOR_TRANSPARENT and border_width > 0:
-        border_color = to_pygame_alpha_color(border_color)
+        border_color = as_rgba(border_color)
 
         if draw_like_ellipse:
             pg_draw_ellipse(surface_for_render, border_color, rect_for_render, border_width)

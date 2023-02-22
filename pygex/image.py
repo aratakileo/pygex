@@ -1,7 +1,7 @@
 from pygame.image import frombuffer as pg_image_frombuffer, tostring as pg_image_tostring
 from PIL import Image as PillowImage, ImageFilter as PillowImageFilter
 from pygame.transform import smoothscale as pg_smoothscale
-from pygex.color import TYPE_COLOR, to_pygame_alpha_color
+from pygex.color import TYPE_COLOR, as_rgba
 from pygame.surface import Surface, SurfaceType
 from pygame.draw import rect as pg_draw_rect
 from pygame.constants import SRCALPHA
@@ -74,7 +74,7 @@ def gradient(size: Sequence[int], colors: Sequence[TYPE_COLOR], is_vertical=Fals
     colors_line_surface = Surface((1, len(colors)) if is_vertical else (len(colors), 1), SRCALPHA, 32)
 
     for i in range(len(colors)):
-        colors_line_surface.set_at((0, i) if is_vertical else (i, 0), to_pygame_alpha_color(colors[i]))
+        colors_line_surface.set_at((0, i) if is_vertical else (i, 0), as_rgba(colors[i]))
 
     return pg_smoothscale(colors_line_surface, size)
 

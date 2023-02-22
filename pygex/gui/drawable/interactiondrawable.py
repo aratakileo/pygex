@@ -1,4 +1,4 @@
-from pygex.color import TYPE_COLOR, COLOR_TRANSPARENT, COLOR_WHITE, ahex_to_rgba, color_as_int, to_pygame_alpha_color
+from pygex.color import TYPE_COLOR, COLOR_TRANSPARENT, COLOR_WHITE, ahex_to_rgba, as_ahex, as_rgba
 from pygex.image import round_corners, AlphaSurface
 from pygex.gui.drawable.drawable import Drawable
 from pygex.draw import rect as draw_rect
@@ -68,7 +68,7 @@ class FadingDrawable(InteractionDrawable):
         super().__init__(content, border_radius_or_radii, border_width, border_color)
 
         self._effect_color = effect_color
-        self._effect_color_rgba = ahex_to_rgba(color_as_int(effect_color))
+        self._effect_color_rgba = ahex_to_rgba(as_ahex(effect_color))
         self._in_process_alpha_of_background = self._effect_color_rgba[-1]
         self._in_process_alpha_of_border = self._effect_color_rgba[-1]
 
@@ -83,7 +83,7 @@ class FadingDrawable(InteractionDrawable):
     @effect_color.setter
     def effect_color(self, new_effect_color: TYPE_COLOR):
         self._effect_color = new_effect_color
-        self._effect_color_rgba = ahex_to_rgba(color_as_int(new_effect_color))
+        self._effect_color_rgba = ahex_to_rgba(as_ahex(new_effect_color))
 
     def set_interaction_status(self, interaction_status: int, animate=True):
         if interaction_status == IS_NO_INTERACTION and self._interaction_status != IS_NO_INTERACTION and animate:
@@ -117,7 +117,7 @@ class FadingDrawable(InteractionDrawable):
         # STEP 2: rendering effect on the output surface
         if self._interaction_status == IS_IN_INTERACTION:
             effect_surface = AlphaSurface(size)
-            effect_surface.fill(to_pygame_alpha_color(self._effect_color))
+            effect_surface.fill(as_rgba(self._effect_color))
             output_surface.blit(effect_surface, (0, 0))
         elif self._is_in_process:
             effect_surface = AlphaSurface(size)

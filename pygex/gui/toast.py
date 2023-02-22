@@ -1,4 +1,4 @@
-from pygex.color import TYPE_COLOR, to_pygame_alpha_color, to_readable_color, COLOR_BLACK
+from pygex.color import TYPE_COLOR, as_rgba, to_readable_color, COLOR_BLACK
 from pygame.display import get_window_size as pg_win_get_size
 from pygame.draw import rect as pg_draw_rect
 from pygame.surface import SurfaceType
@@ -77,7 +77,7 @@ def render(surface: SurfaceType):
     border_radii = (toast.border_radius_or_radii,) if isinstance(toast.border_radius_or_radii, int) \
         else (-1, *toast.border_radius_or_radii)
 
-    pg_draw_rect(box_surface, to_pygame_alpha_color(toast.bg_color), (0, 0, boxw, boxh), 0, *border_radii)
+    pg_draw_rect(box_surface, as_rgba(toast.bg_color), (0, 0, boxw, boxh), 0, *border_radii)
 
     surface.blit(box_surface, (box_x, box_y))
     surface.blit(text_surface, (box_x + toast.padding, box_y + toast.padding))
