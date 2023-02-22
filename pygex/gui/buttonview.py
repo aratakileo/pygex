@@ -1,5 +1,5 @@
 from pygex.gui.view import DEFAULT_SIZE, DEFAULT_PADDING, DEFAULT_POSITION, GRAVITY_CENTER_HORIZONTAL
-from pygex.color import TYPE_COLOR, COLOR_WHITE, COLOR_GREEN, to_readable_color
+from pygex.color import TYPE_COLOR, COLOR_WHITE, COLOR_GREEN, to_readable_color, replace_alpha
 from pygex.gui.drawable.interactiondrawable import FadingDrawable
 from pygex.gui.drawable.drawable import Drawable, ColorDrawable
 from pygex.text import ALIGN_CENTER, DEFAULT_FONT_SIZE
@@ -30,7 +30,7 @@ class ButtonView(TextView):
         if not isinstance(background_drawable_or_color, Drawable):
             background_drawable_or_color = FadingDrawable(
                 ColorDrawable(background_drawable_or_color, 10),
-                effect_color=(to_readable_color(background_drawable_or_color) & ~0xff000000) | 0x96000000
+                effect_color=replace_alpha(to_readable_color(background_drawable_or_color), 0x96)
             )
 
         super().__init__(
@@ -54,7 +54,7 @@ class ButtonView(TextView):
         if not isinstance(drawable_or_color, Drawable):
             drawable_or_color = FadingDrawable(
                 ColorDrawable(drawable_or_color, 10),
-                effect_color=(to_readable_color(drawable_or_color) & ~0xff000000) | 0x96000000
+                effect_color=replace_alpha(to_readable_color(drawable_or_color), 0x96)
             )
-        
+
         super().set_background_drawable(drawable_or_color)
