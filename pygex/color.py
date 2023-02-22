@@ -92,6 +92,10 @@ def remove_alpha(color: int):
     return color & ~0xff000000
 
 
+def replace_alpha(color: int, new_alpha: int):
+    return (color & ~0xff000000) | (new_alpha & 0xff) << 24
+
+
 def parse_hex(color: str):
     if color.startswith('#'):
         color = color[1:]
@@ -315,6 +319,7 @@ __all__ = (
     'has_alpha',
     'get_alpha',
     'set_alpha',
+    'replace_alpha',
     'parse_hex',
     'rgb_to_hex',
     'rgba_to_ahex',
