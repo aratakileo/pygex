@@ -240,7 +240,8 @@ def to_readable_color(background_color: TYPE_COLOR):
 
 def to_pygame_alpha_color(color: TYPE_COLOR) -> tuple[int, int, int, int] | pg_color.Color | None:
     """
-    Converting color from AHEX or HEX to HEXA (color format in pygame is HEXA)
+    Converting color from AHEX or HEX to RGBA, because the only color format that pygame reads correctly
+    is RGBA or pygame.Color
     :param color: alpha format: AHEX, HEX, RGBA
     """
     if isinstance(color, int):
