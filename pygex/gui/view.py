@@ -55,7 +55,7 @@ class View:
 
         self._background_drawable_is_interaction_drawable = False
 
-        if background_drawable_or_color == COLOR_TRANSPARENT:
+        if background_drawable_or_color is None or background_drawable_or_color == COLOR_TRANSPARENT:
             self._background_drawable = None
         elif isinstance(background_drawable_or_color, Drawable):
             self._background_drawable = background_drawable_or_color
@@ -279,13 +279,16 @@ class View:
     def get_background_drawable(self) -> Drawable | None:
         return self._background_drawable
 
-    def set_background_drawable(self, drawable_or_color: Drawable | TYPE_COLOR):
+    def set_background_drawable(self, drawable_or_color: Drawable | TYPE_COLOR | None):
         if isinstance(drawable_or_color, Drawable):
             self._background_drawable = drawable_or_color
             self._background_drawable_is_interaction_drawable = isinstance(
                 self._background_drawable,
                 InteractionDrawable
             )
+        elif drawable_or_color is None or drawable_or_color == COLOR_TRANSPARENT:
+            self._background_drawable = None
+            self._background_drawable_is_interaction_drawable = False
         else:
             self._background_drawable = ColorDrawable(drawable_or_color)
             self._background_drawable_is_interaction_drawable = False
