@@ -28,10 +28,7 @@ class ButtonView(TextView):
             render_content_during_initialization=True
     ):
         if not isinstance(background_drawable_or_color, Drawable):
-            background_drawable_or_color = FadingDrawable(
-                ColorDrawable(background_drawable_or_color, 10),
-                effect_color=replace_alpha(to_readable_color(background_drawable_or_color), 0x96)
-            )
+            background_drawable_or_color = ButtonFadingDrawable(background_drawable_or_color)
 
         super().__init__(
             text,
@@ -52,9 +49,16 @@ class ButtonView(TextView):
 
     def set_background_drawable(self, drawable_or_color: Drawable | TYPE_COLOR):
         if not isinstance(drawable_or_color, Drawable):
-            drawable_or_color = FadingDrawable(
-                ColorDrawable(drawable_or_color, 10),
-                effect_color=replace_alpha(to_readable_color(drawable_or_color), 0x96)
-            )
+            drawable_or_color = ButtonFadingDrawable(drawable_or_color)
 
         super().set_background_drawable(drawable_or_color)
+
+
+def ButtonFadingDrawable(color: TYPE_COLOR, border_radius_or_radii: int | Sequence[int] = 10, effect_alpha=0x96):
+    return FadingDrawable(
+        ColorDrawable(color, border_radius_or_radii),
+        effect_color=replace_alpha(to_readable_color(color), effect_alpha)
+    )
+
+
+__all__ = 'ButtonView', 'ButtonFadingDrawable'
