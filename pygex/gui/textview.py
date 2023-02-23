@@ -1,7 +1,7 @@
 from pygex.gui.view import View, DEFAULT_SIZE, DEFAULT_PADDING, DEFAULT_POSITION, DEFAULT_GRAVITY
 from pygex.text import ALIGN_LEFT, ALIGN_RIGHT, ALIGN_CENTER, ALIGN_BLOCK, DEFAULT_FONT_SIZE, TextRenderer
+from pygex.color import TYPE_COLOR, COLOR_BLACK, COLOR_TRANSPARENT
 from pygex.gui.drawable.drawable import Drawable
-from pygex.color import TYPE_COLOR, COLOR_BLACK
 from pygame.surface import SurfaceType
 from pygame.font import FontType
 from typing import Sequence
@@ -21,7 +21,7 @@ class TextView(View):
             text_lines_number: int = ...,
             text_paragraph_space: float | int = 0,
             font_or_font_size: FontType | int = DEFAULT_FONT_SIZE,
-            background_drawable_or_color: Drawable | TYPE_COLOR = ...,
+            background_drawable_or_color: Drawable | TYPE_COLOR = COLOR_TRANSPARENT,
             font_antialiasing=True,
             render_content_during_initialization=True
     ):

@@ -1,11 +1,10 @@
 from pygex.gui.view import View, DEFAULT_PADDING, DEFAULT_SIZE, DEFAULT_POSITION, DEFAULT_GRAVITY
+from pygex.color import TYPE_COLOR, COLOR_TRANSPARENT
 from pygex.gui.drawable.drawable import Drawable
-from pygex.color import TYPE_COLOR
 from pygame.event import Event
 from typing import Sequence
 
 
-# TODO: describe a `copy()` function for `Drawable` and after may be describe a constant `DEFAULT_BACKGROUND_DRAWABLE`, and use it like default value for `background_drawable_or_color` like `DEFAULT_BACKGROUND_DRAWABLE.copy()`
 class LinearLayout(View):
     def __init__(
             self,
@@ -14,7 +13,7 @@ class LinearLayout(View):
             pos: Sequence[float | int] = DEFAULT_POSITION,
             padding: Sequence[int] = DEFAULT_PADDING,
             content_gravity: int = DEFAULT_GRAVITY,
-            background_drawable_or_color: Drawable | TYPE_COLOR = None,
+            background_drawable_or_color: Drawable | TYPE_COLOR = COLOR_TRANSPARENT,
             render_content_during_initialization: bool = True
     ):
         super().__init__(

@@ -3,11 +3,11 @@ from pygame.constants import MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP, WINDOW
 from pygex.gui.drawable.interactiondrawable import IS_END_OF_INTERACTION
 from pygex.gui.drawable.drawable import Drawable, ColorDrawable
 from pygame.display import get_window_size as pg_win_get_size
+from pygex.color import TYPE_COLOR, COLOR_TRANSPARENT
 from pygame.mouse import get_pos as pg_mouse_get_pos
 from pygex.text import SIZE_WRAP_CONTENT
 from pygame.surface import SurfaceType
 from functools import cached_property
-from pygex.color import TYPE_COLOR
 from pygex.gui.hint import Hint
 from pygame.event import Event
 from pygame.rect import Rect
@@ -55,7 +55,7 @@ class View:
 
         self._background_drawable_is_interaction_drawable = False
 
-        if background_drawable_or_color is ...:
+        if background_drawable_or_color == COLOR_TRANSPARENT:
             self._background_drawable = None
         elif isinstance(background_drawable_or_color, Drawable):
             self._background_drawable = background_drawable_or_color
