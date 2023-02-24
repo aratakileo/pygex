@@ -6,9 +6,9 @@ from pygame.surface import SurfaceType
 from typing import Sequence
 
 
-IS_NO_INTERACTION = 0
-IS_IN_INTERACTION = 1
-IS_END_OF_INTERACTION = 2
+INTERACTION_STATE_NO_INTERACTION = 0
+INTERACTION_STATE_IN_INTERACTION = 1
+INTERACTION_STATE_END_OF_INTERACTION = 2
 
 
 class InteractionDrawable(Drawable):
@@ -28,7 +28,7 @@ class InteractionDrawable(Drawable):
         super().__init__(border_radius_or_radii, border_width, border_color)
 
         self._is_in_process = False
-        self._interaction_status = IS_NO_INTERACTION
+        self._interaction_state = INTERACTION_STATE_NO_INTERACTION
 
         self._content_drawable = content
         self._content_buffered_size = (-1, -1)
@@ -45,11 +45,12 @@ class InteractionDrawable(Drawable):
         self._content_drawable = content
         self._content_buffered_size = (-1, -1)
 
-    def set_interaction_status(self, interaction_status: int, animate=True):
-        if interaction_status == IS_NO_INTERACTION and self._interaction_status != IS_NO_INTERACTION and animate:
+    def set_interaction_state(self, interaction_status: int, animate=True):
+        if interaction_status == INTERACTION_STATE_NO_INTERACTION \
+                and self._interaction_state != INTERACTION_STATE_NO_INTERACTION and animate:
             self._is_in_process = True
 
-        self._interaction_status = interaction_status
+        self._interaction_state = interaction_status
 
     def flip(self):
         """This method should be called every `flip()` call of custom View"""
@@ -85,11 +86,12 @@ class FadingDrawable(InteractionDrawable):
         self._effect_color = new_effect_color
         self._effect_color_rgba = ahex_to_rgba(as_ahex(new_effect_color))
 
-    def set_interaction_status(self, interaction_status: int, animate=True):
-        if interaction_status == IS_NO_INTERACTION and self._interaction_status != IS_NO_INTERACTION and animate:
+    def set_interaction_state(self, interaction_state: int, animate=True):
+        if interaction_state == INTERACTION_STATE_NO_INTERACTION \
+                and self._interaction_state != INTERACTION_STATE_NO_INTERACTION and animate:
             self._is_in_process = True
 
-        self._interaction_status = interaction_status
+        self._interaction_state = interaction_state
         self._in_process_alpha_of_background = self._effect_color_rgba[-1]
         self._in_process_alpha_of_border = self._effect_color_rgba[-1]
 
@@ -115,7 +117,7 @@ class FadingDrawable(InteractionDrawable):
         output_surface = self._content_buffered_surface.copy()
 
         # STEP 2: rendering effect on the output surface
-        if self._interaction_status == IS_IN_INTERACTION:
+        if self._interaction_state == INTERACTION_STATE_IN_INTERACTION:
             effect_surface = AlphaSurface(size)
             effect_surface.fill(as_rgba(self._effect_color))
             output_surface.blit(effect_surface, (0, 0))
@@ -165,4 +167,10 @@ class FadingDrawable(InteractionDrawable):
         return output_surface
 
 
-__all__ = 'InteractionDrawable', 'FadingDrawable', 'IS_NO_INTERACTION', 'IS_IN_INTERACTION', 'IS_END_OF_INTERACTION'
+__all__ = (
+    'InteractionDrawable',
+    'FadingDrawable',
+    'INTERACTION_STATE_NO_INTERACTION',
+    'INTERACTION_STATE_IN_INTERACTION',
+    'INTERACTION_STATE_END_OF_INTERACTION'
+)

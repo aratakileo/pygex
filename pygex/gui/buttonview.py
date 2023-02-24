@@ -25,7 +25,7 @@ class ButtonView(TextView):
             font_or_font_size: FontType | int = DEFAULT_FONT_SIZE,
             background_drawable_or_color: Drawable | TYPE_COLOR = COLOR_GREEN,
             font_antialiasing=True,
-            render_content_during_initialization=True
+            prerender_during_initialization=True
     ):
         if not isinstance(background_drawable_or_color, Drawable):
             background_drawable_or_color = ButtonFadingDrawable(background_drawable_or_color)
@@ -44,7 +44,7 @@ class ButtonView(TextView):
             font_or_font_size,
             background_drawable_or_color,
             font_antialiasing,
-            render_content_during_initialization
+            prerender_during_initialization
         )
 
     def set_background_drawable(self, drawable_or_color: Drawable | TYPE_COLOR):

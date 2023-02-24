@@ -4,6 +4,7 @@ from pygame.display import get_caption as pg_win_get_caption, init as pg_display
 from pygame.constants import QUIT, FULLSCREEN, RESIZABLE, WINDOWMOVED
 from pygame.display import get_desktop_sizes as pg_get_desktop_sizes
 from pygex.gui.toast import Toast, render as render_toasts
+from pygame.mouse import get_pos as pg_mouse_get_pos
 from pygame.image import save as pg_save_image
 from pygame.event import get as get_events
 from pygame.time import Clock as pg_Clock
@@ -202,7 +203,7 @@ class Window:
 
     def render_views(self):
         for view in self._view_list:
-            view.render(pg_win_get_surface())
+            view.render(pg_win_get_surface(), 0, 0, pg_win_get_size())
 
     def process_event(self, e: Event):
         if self.default_quit and e.type == QUIT:
@@ -211,7 +212,7 @@ class Window:
             self._pos = e.x, e.y
 
         for view in self._view_list:
-            view.process_event(e)
+            view.process_event(e, *pg_mouse_get_pos())
 
         get_mouse().process_event(e)
         get_input().process_event(e)
