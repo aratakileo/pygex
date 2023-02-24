@@ -151,6 +151,9 @@ class LinearLayout(View):
                 offsetted_mouse_y - next_children_y_off
             ) or process_event_for_self
 
+            if view.visibility == VISIBILITY_GONE:
+                continue
+
             if self._orientation == ORIENTATION_HORIZONTAL:
                 next_children_x_off += step
             else:
@@ -181,6 +184,9 @@ class LinearLayout(View):
 
         for view, step in zip(self._views, self._buffered_oriented_view_steps):
             view.render(self._buffered_content_surface, next_children_x_off, next_children_y_off, (width, height))
+
+            if view.visibility == VISIBILITY_GONE:
+                continue
 
             if self._orientation == ORIENTATION_HORIZONTAL:
                 next_children_x_off += step
