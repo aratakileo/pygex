@@ -99,9 +99,14 @@ class View:
 
         self._width = value
 
-        if value != old_width:
-            self.render_content_surface()
-            self.render_background_surface()
+        if value == old_width:
+            return
+
+        self.render_content_surface()
+        self.render_background_surface()
+
+        if 'rebufferize_sizes_for_view' in self._parent.__dir__():
+            self._parent.rebufferize_sizes_for_view(self)
 
     @property
     def height(self):
@@ -113,9 +118,14 @@ class View:
 
         self._height = value
 
-        if value != old_height:
-            self.render_content_surface()
-            self.render_background_surface()
+        if value == old_height:
+            return
+
+        self.render_content_surface()
+        self.render_background_surface()
+
+        if 'rebufferize_sizes_for_view' in self._parent.__dir__():
+            self._parent.rebufferize_sizes_for_view(self)
 
     @size.setter
     def size(self, value: Sequence[int]):
@@ -123,9 +133,14 @@ class View:
 
         self._width, self._height = value
 
-        if value != old_size:
-            self.render_content_surface()
-            self.render_background_surface()
+        if value == old_size:
+            return
+
+        self.render_content_surface()
+        self.render_background_surface()
+
+        if 'rebufferize_sizes_for_view' in self._parent.__dir__():
+            self._parent.rebufferize_sizes_for_view(self)
 
     @cached_property
     def min_width(self):

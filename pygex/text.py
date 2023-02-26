@@ -60,6 +60,10 @@ class TextRenderer:
             self.parse_text()
             self.render()
 
+            return True
+
+        return False
+
     def get_text(self):
         return self._text
 
