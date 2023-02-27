@@ -37,7 +37,8 @@ This module include:
 - `pygame >= 2.0.1`
 
 Optional:
-- `cv2` (`opencv-python`)
+- `PIL >= 9.0` (`Pillow >= 9.0`) - for piece of `image.py`
+- `cv2` (`opencv-python`) - for `surface_recorder.py`
 
 ### How to install `pygex`
 To install `pygex` of [current version](#preview) just use this command
