@@ -1,5 +1,4 @@
 from pygame.image import frombuffer as pg_image_frombuffer, tostring as pg_image_tostring
-from PIL import Image as PillowImage, ImageFilter as PillowImageFilter
 from pygame.transform import smoothscale as pg_smoothscale
 from pygex.color import TYPE_COLOR, as_rgba
 from pygame.surface import Surface, SurfaceType
@@ -12,21 +11,26 @@ def AlphaSurface(size: Sequence[int], flags: int = 0):
     return Surface(size, flags | SRCALPHA, 32)
 
 
-def pillow_to_pygame(source_surface: PillowImage):
-    return pg_image_frombuffer(source_surface.tobytes(), source_surface.size, 'RGBA')
+try:
+    from PIL import Image as PillowImage, ImageFilter as PillowImageFilter
+
+    def pillow_to_pygame(source_surface: PillowImage):
+        return pg_image_frombuffer(source_surface.tobytes(), source_surface.size, 'RGBA')
 
 
-def pygame_to_pillow(source_surface: SurfaceType):
-    return PillowImage.frombytes('RGBA', source_surface.get_size(), pg_image_tostring(source_surface, 'RGBA'))
+    def pygame_to_pillow(source_surface: SurfaceType):
+        return PillowImage.frombytes('RGBA', source_surface.get_size(), pg_image_tostring(source_surface, 'RGBA'))
 
 
-def blur(source_surface: SurfaceType, radius: int):
-    """
-    Gaussian blur
-    :param source_surface: source Surface
-    :param radius: blur radius
-    """
-    return pillow_to_pygame(pygame_to_pillow(source_surface).filter(PillowImageFilter.GaussianBlur(radius)))
+    def blur(source_surface: SurfaceType, radius: int):
+        """
+        Gaussian blur
+        :param source_surface: source Surface
+        :param radius: blur radius
+        """
+        return pillow_to_pygame(pygame_to_pillow(source_surface).filter(PillowImageFilter.GaussianBlur(radius)))
+except ImportError:
+    pass
 
 
 def cutout_by_mask(source_surface: SurfaceType, mask: SurfaceType):
