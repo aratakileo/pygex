@@ -6,13 +6,14 @@ from pygex.gui.drawable.drawable import Drawable, ColorDrawable
 from pygame.display import get_window_size as pg_win_get_size
 from pygex.color import TYPE_COLOR, COLOR_TRANSPARENT
 from pygame.mouse import get_pos as pg_mouse_get_pos
+from pygex.interface import FlipInterface
 from pygex.text import SIZE_WRAP_CONTENT
 from pygame.surface import SurfaceType
 from functools import cached_property
-from pygex.gui.hint import Hint
 from pygame.event import Event
 from pygame.rect import Rect
 from typing import Sequence
+from pygex.gui import hint
 
 
 GRAVITY_TOP_LEFT = GRAVITY_LEFT = GRAVITY_TOP = 0
@@ -36,7 +37,10 @@ DEFAULT_POSITION = (0,) * 2
 DEFAULT_GRAVITY = GRAVITY_TOP_LEFT
 
 
-class View:
+# TODO: create fun `clear_buffer` add add to `Window.remove_view`
+
+
+class View(FlipInterface):
     def __init__(
             self,
             size: Sequence[int],
@@ -69,7 +73,7 @@ class View:
         self._interaction_state = INTERACTION_STATE_NO_INTERACTION
         self._is_focused = False
 
-        self._hint: Hint | None = None
+        self._hint: hint.Hint | None = None
         self._hint_offset = 3
         self._hint_anchor_is_mouse = False
 
@@ -393,13 +397,13 @@ class View:
             text: str,
             offset=3,
             anchor_is_mouse=False,
-            hint_gravity: int = Hint.GRAVITY_CENTER_HORIZONTAL | Hint.GRAVITY_UNDER_CENTER
+            hint_gravity: int = hint.GRAVITY_CENTER_HORIZONTAL | hint.GRAVITY_UNDER_CENTER
     ):
         self._hint_offset = offset
         self._hint_anchor_is_mouse = anchor_is_mouse
 
         if self._hint is None:
-            self._hint = Hint(text, gravity=hint_gravity)
+            self._hint = hint.Hint(text, gravity=hint_gravity)
 
             return
 

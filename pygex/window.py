@@ -7,6 +7,7 @@ from pygex.gui.toast import Toast, render as render_toasts
 from pygame.mouse import get_pos as pg_mouse_get_pos
 from pygame.image import save as pg_save_image
 from pygame.event import get as get_events
+from pygex.interface import FlipInterface
 from pygame.time import Clock as pg_Clock
 from pygex.input import get_input, Input
 from pygex.mouse import get_mouse, Mouse
@@ -19,7 +20,7 @@ from os import makedirs
 from time import time
 
 
-class Window:
+class Window(FlipInterface):
     def __init__(
             self,
             size: Sequence[int] = (800, 600),
@@ -43,6 +44,7 @@ class Window:
         if get_input() is None:
             Input()
 
+        self._flip_interfaces: list[FlipInterface] = []
         self._view_list = []
         self._event_buffer = []
 
@@ -183,6 +185,19 @@ class Window:
             self._view_list.append(view)
             view._parent = self
 
+    def remove_view(self, view):
+        if view in self._view_list:
+            self._view_list.remove(view)
+            view._parent = None
+
+    def add_flip_interface(self, flip_interface: FlipInterface):
+        if flip_interface not in self._flip_interfaces:
+            self._flip_interfaces.append(flip_interface)
+
+    def remove_flip_interface(self, flip_interface: FlipInterface):
+        if flip_interface in self._flip_interfaces:
+            self._flip_interfaces.remove(flip_interface)
+
     def take_screenshot(self, save_directory='./screenshots', show_successful_toast=True):
         if not isdir(save_directory):
             makedirs(save_directory)
@@ -222,6 +237,9 @@ class Window:
 
     def flip(self, read_events=True):
         self._event_buffer = []
+
+        for flip_interface in self._flip_interfaces:
+            flip_interface.flip()
 
         for view in self._view_list:
             # ATTENTION: the peculiarity is that the flip method is called before the render method is used

@@ -7,18 +7,18 @@ from pygame.rect import RectType
 from pygame.font import FontType
 from typing import Sequence
 
+GRAVITY_LEFT = GRAVITY_TOP = 0
+GRAVITY_RIGHT = 1 << 0
+GRAVITY_BOTTOM = 1 << 1
+GRAVITY_CENTER_HORIZONTAL = 1 << 2
+GRAVITY_CENTER_VERTICAL = 1 << 3
+GRAVITY_LEFT_OF_CENTER = 1 << 4
+GRAVITY_OVER_CENTER = 1 << 5
+GRAVITY_RIGHT_OF_CENTER = 1 << 6
+GRAVITY_UNDER_CENTER = 1 << 7
+
 
 class Hint:
-    GRAVITY_LEFT = GRAVITY_TOP = 0
-    GRAVITY_RIGHT = 1 << 0
-    GRAVITY_BOTTOM = 1 << 1
-    GRAVITY_CENTER_HORIZONTAL = 1 << 2
-    GRAVITY_CENTER_VERTICAL = 1 << 3
-    GRAVITY_LEFT_OF_CENTER = 1 << 4
-    GRAVITY_OVER_CENTER = 1 << 5
-    GRAVITY_RIGHT_OF_CENTER = 1 << 6
-    GRAVITY_UNDER_CENTER = 1 << 7
-
     def __init__(
             self,
             text,
@@ -58,15 +58,15 @@ class Hint:
 
         box_x, box_y = anchor_rect_or_point[:2]
 
-        is_gravity_left_of_center = self.gravity & Hint.GRAVITY_LEFT_OF_CENTER
-        is_gravity_right_of_center = self.gravity & Hint.GRAVITY_RIGHT_OF_CENTER
+        is_gravity_left_of_center = self.gravity & GRAVITY_LEFT_OF_CENTER
+        is_gravity_right_of_center = self.gravity & GRAVITY_RIGHT_OF_CENTER
 
-        is_gravity_over_center = self.gravity & Hint.GRAVITY_OVER_CENTER
-        is_gravity_under_center = self.gravity & Hint.GRAVITY_UNDER_CENTER
+        is_gravity_over_center = self.gravity & GRAVITY_OVER_CENTER
+        is_gravity_under_center = self.gravity & GRAVITY_UNDER_CENTER
 
-        if self.gravity & Hint.GRAVITY_RIGHT:
+        if self.gravity & GRAVITY_RIGHT:
             box_x += anchor_rect_or_point[2] - textw - self.padding * 2
-        elif self.gravity & Hint.GRAVITY_CENTER_HORIZONTAL:
+        elif self.gravity & GRAVITY_CENTER_HORIZONTAL:
             box_x += (anchor_rect_or_point[2] - textw) / 2 - self.padding * 2
         elif is_gravity_left_of_center:
             box_x -= textw + self.padding * 2
@@ -78,9 +78,9 @@ class Hint:
         elif is_gravity_left_of_center and box_x <= 0:
             box_x = anchor_rect_or_point[0] + anchor_rect_or_point[2]
 
-        if self.gravity & Hint.GRAVITY_BOTTOM:
+        if self.gravity & GRAVITY_BOTTOM:
             box_y += anchor_rect_or_point[3] - texth - self.padding * 2
-        elif self.gravity & Hint.GRAVITY_CENTER_VERTICAL:
+        elif self.gravity & GRAVITY_CENTER_VERTICAL:
             box_y += (anchor_rect_or_point[3] - texth) / 2 - self.padding * 2
         elif is_gravity_over_center:
             box_y -= texth + self.padding * 2
@@ -114,4 +114,16 @@ class Hint:
         surface.blit(text_surface, (box_x + self.padding, box_y + self.padding))
 
 
-__all__ = 'Hint',
+__all__ = (
+    'GRAVITY_LEFT',
+    'GRAVITY_TOP',
+    'GRAVITY_LEFT_OF_CENTER',
+    'GRAVITY_BOTTOM',
+    'GRAVITY_RIGHT',
+    'GRAVITY_RIGHT_OF_CENTER',
+    'GRAVITY_CENTER_HORIZONTAL',
+    'GRAVITY_CENTER_VERTICAL',
+    'GRAVITY_OVER_CENTER',
+    'GRAVITY_UNDER_CENTER',
+    'Hint'
+)
