@@ -51,6 +51,37 @@ to other formats, such as RGBA, HEXA, etc., then nothing will come out and the v
 """
 
 
+class GRADIENT_WITCHING_HOUR:
+    FIRST_COLOR = 0xc31432
+    LAST_COLOR = 0x240b36
+
+    TUPLE = (FIRST_COLOR, LAST_COLOR)
+
+
+class GRADIENT_WIRETAP:
+    FIRST_COLOR = 0x8a2387
+    MIDDLE_COLOR = 0xe94057
+    LAST_COLOR = 0xf27121
+
+    TUPLE = (FIRST_COLOR, MIDDLE_COLOR, LAST_COLOR)
+
+
+class GRADIENT_RASTAFARI:
+    FIRST_COLOR = 0x1e9600
+    MIDDLE_COLOR = 0xfff200
+    LAST_COLOR = COLOR_ABSOLUTE_RED
+
+    TUPLE = (FIRST_COLOR, MIDDLE_COLOR, LAST_COLOR)
+
+
+class GRADIENT_JSHINE:
+    FIRST_COLOR = 0x12c2e9
+    MIDDLE_COLOR = 0xc471ed
+    LAST_COLOR = 0xf64f59
+
+    TUPLE = (FIRST_COLOR, MIDDLE_COLOR, LAST_COLOR)
+
+
 def has_alpha(color: int):
     """
     Checking if color has alpha channel (works only for AHEX or HEX)
@@ -323,6 +354,10 @@ __all__ = (
     'COLOR_CORAL',
     'COLOR_CRIMSON',
     'COLOR_TRANSPARENT',
+    'GRADIENT_WITCHING_HOUR',
+    'GRADIENT_JSHINE',
+    'GRADIENT_WIRETAP',
+    'GRADIENT_RASTAFARI',
     'has_alpha',
     'get_alpha',
     'set_alpha',
