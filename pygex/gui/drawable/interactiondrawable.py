@@ -1,8 +1,10 @@
-from pygex.color import TYPE_COLOR, COLOR_TRANSPARENT, COLOR_WHITE, ahex_to_rgba, as_ahex, as_rgba
+from pygex.color import TYPE_COLOR, COLOR_TRANSPARENT, COLOR_WHITE, ahex_to_rgba, as_ahex, as_rgba, to_readable_color
+from pygex.gui.drawable.drawable import Drawable, ColorDrawable
 from pygex.image import round_corners, AlphaSurface
-from pygex.gui.drawable.drawable import Drawable
+from pygex.interface import FlipInterface
 from pygex.draw import rect as draw_rect
 from pygame.surface import SurfaceType
+from pygex.color import replace_alpha
 from typing import Sequence
 
 
@@ -11,7 +13,7 @@ INTERACTION_STATE_IN_INTERACTION = 1
 INTERACTION_STATE_END_OF_INTERACTION = 2
 
 
-class InteractionDrawable(Drawable):
+class InteractionDrawable(Drawable, FlipInterface):
     def __init__(
             self,
             content: Drawable,
@@ -34,6 +36,16 @@ class InteractionDrawable(Drawable):
         self._content_buffered_size = (-1, -1)
         self._content_buffered_surface: SurfaceType | None = None
 
+    @staticmethod
+    def from_color_content(
+            color: TYPE_COLOR,
+            border_radius_or_radii: int | Sequence[int] = 0
+    ):
+        if color == COLOR_TRANSPARENT:
+            return
+
+        return InteractionDrawable(ColorDrawable(color, border_radius_or_radii))
+
     @property
     def is_need_to_be_rendered(self):
         return self._is_in_process
@@ -51,10 +63,6 @@ class InteractionDrawable(Drawable):
             self._is_in_process = True
 
         self._interaction_state = interaction_status
-
-    def flip(self):
-        """This method should be called every `flip()` call of custom View"""
-        pass
 
 
 class FadingDrawable(InteractionDrawable):
@@ -76,6 +84,26 @@ class FadingDrawable(InteractionDrawable):
         self.effect_border_width = 2
         self.effect_alpha_value_difference_for_start_decreasing_effect_border_alpha_value = 80
         self.effect_alpha_decreasing_per_frame = 3
+
+    @staticmethod
+    def from_color_content(
+            color: TYPE_COLOR,
+            border_radius_or_radii: int | Sequence[int] = 0,
+            effect_color: TYPE_COLOR = ...,
+            effect_alpha: int = ...
+    ):
+        if color == COLOR_TRANSPARENT:
+            return
+
+        if effect_color is ...:
+            if effect_alpha is ...:
+                effect_alpha = 0x96
+
+            effect_color = replace_alpha(to_readable_color(color), effect_alpha)
+        elif effect_alpha is not ...:
+            effect_color = replace_alpha(as_ahex(effect_color), effect_alpha)
+
+        return FadingDrawable(ColorDrawable(color, border_radius_or_radii), effect_color)
 
     @property
     def effect_color(self):

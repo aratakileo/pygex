@@ -361,6 +361,7 @@ __all__ = (
     'has_alpha',
     'get_alpha',
     'set_alpha',
+    'remove_alpha',
     'replace_alpha',
     'parse_hex',
     'rgb_to_hex',

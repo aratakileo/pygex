@@ -1,9 +1,10 @@
-from pygex.color import COLOR_RED, COLOR_WHITE, COLOR_BLACK, COLOR_DEEP_PURPLE, set_alpha
+from pygex.color import COLOR_RED, COLOR_WHITE, COLOR_BLACK, COLOR_GREEN, set_alpha
 from pygex.gui.view import NO_PADDING, VISIBILITY_VISIBLE, VISIBILITY_GONE
 from pygex.gui.linearlayout import LinearLayout, ORIENTATION_HORIZONTAL
-from pygex.gui.buttonview import ButtonView, ButtonFadingDrawable
-from pygex.gui.drawable import ColorDrawable
+from pygex.gui.drawable.interactiondrawable import FadingDrawable
+from pygex.gui.drawable.drawable import ColorDrawable
 from pygame.version import ver as pygame_ver
+from pygex.gui.buttonview import ButtonView
 from pygex.interface import FlipInterface
 from pygex.gui.textview import TextView
 from pygex.info import ver as pygex_ver
@@ -28,6 +29,9 @@ DEBUG_TEXT = 'DEBUG INFO:' \
 
 class DebugPanel(FlipInterface):
     def __init__(self, window: Window, is_demonstration_mode=False, is_visible=True):
+        self.is_showed_button_state_drawable = FadingDrawable.from_color_content(COLOR_RED, 90)
+        self.is_hided_button_state_drawable = FadingDrawable.from_color_content(COLOR_GREEN, 90)
+
         self.debug_textview = TextView(
             DEBUG_TEXT,
             text_color=COLOR_WHITE,
@@ -42,10 +46,7 @@ class DebugPanel(FlipInterface):
             'X',
             size=(25,) * 2,
             margin=(5,) + (0,) * 3,
-            background_drawable_or_color=ButtonFadingDrawable(
-                COLOR_RED,
-                border_radius_or_radii=90
-            ),
+            background_drawable_or_color=self.is_showed_button_state_drawable,
             prerender_during_initialization=False
         )
         self.close_button.set_hint(
@@ -98,17 +99,11 @@ class DebugPanel(FlipInterface):
                 self.debug_textview.visibility = VISIBILITY_VISIBLE
 
                 self.close_button.set_text('X')
-                self.close_button.set_background_drawable(ButtonFadingDrawable(
-                    COLOR_RED,
-                    border_radius_or_radii=90
-                ))
+                self.close_button.set_background_drawable(self.is_showed_button_state_drawable)
                 self.close_button.set_hint('Close debug menu')
             elif self.debug_textview.visibility == VISIBILITY_VISIBLE:
                 self.debug_textview.visibility = VISIBILITY_GONE
 
                 self.close_button.set_text('O')
-                self.close_button.set_background_drawable(ButtonFadingDrawable(
-                    COLOR_DEEP_PURPLE,
-                    border_radius_or_radii=90
-                ))
+                self.close_button.set_background_drawable(self.is_hided_button_state_drawable)
                 self.close_button.set_hint('Open debug menu')

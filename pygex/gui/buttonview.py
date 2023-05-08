@@ -1,8 +1,8 @@
-from pygex.color import TYPE_COLOR, COLOR_WHITE, COLOR_GREEN, COLOR_TRANSPARENT, to_readable_color, replace_alpha
 from pygex.gui.view import DEFAULT_SIZE, DEFAULT_PADDING, DEFAULT_POSITION, GRAVITY_CENTER, DEFAULT_MARGIN
 from pygex.gui.drawable.interactiondrawable import FadingDrawable
-from pygex.gui.drawable.drawable import Drawable, ColorDrawable
+from pygex.color import TYPE_COLOR, COLOR_WHITE, COLOR_GREEN
 from pygex.text import ALIGN_CENTER, DEFAULT_FONT_SIZE
+from pygex.gui.drawable.drawable import Drawable
 from pygex.gui.textview import TextView
 from pygame.font import FontType
 from typing import Sequence
@@ -28,7 +28,7 @@ class ButtonView(TextView):
             prerender_during_initialization=True
     ):
         if not isinstance(background_drawable_or_color, Drawable):
-            background_drawable_or_color = ButtonFadingDrawable(background_drawable_or_color)
+            background_drawable_or_color = FadingDrawable.from_color_content(background_drawable_or_color, 10)
 
         super().__init__(
             text,
@@ -50,19 +50,9 @@ class ButtonView(TextView):
 
     def set_background_drawable(self, drawable_or_color: Drawable | TYPE_COLOR):
         if not isinstance(drawable_or_color, Drawable):
-            drawable_or_color = ButtonFadingDrawable(drawable_or_color)
+            drawable_or_color = FadingDrawable.from_color_content(drawable_or_color, 10)
 
         super().set_background_drawable(drawable_or_color)
 
 
-def ButtonFadingDrawable(color: TYPE_COLOR, border_radius_or_radii: int | Sequence[int] = 10, effect_alpha=0x96):
-    if color == COLOR_TRANSPARENT:
-        return
-
-    return FadingDrawable(
-        ColorDrawable(color, border_radius_or_radii),
-        effect_color=replace_alpha(to_readable_color(color), effect_alpha)
-    )
-
-
-__all__ = 'ButtonView', 'ButtonFadingDrawable'
+__all__ = 'ButtonView'
