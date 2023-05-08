@@ -5,9 +5,9 @@ from pygex.gui.drawable.interactiondrawable import FadingDrawable
 from pygex.gui.drawable.drawable import ColorDrawable
 from pygame.version import ver as pygame_ver
 from pygex.gui.buttonview import ButtonView
-from pygex.interface import FlipInterface
 from pygex.gui.textview import TextView
 from pygex.info import ver as pygex_ver
+from pygex.interface import Flippable
 from platform import python_version
 from pygame.constants import K_F2
 from pygex.window import Window
@@ -27,7 +27,7 @@ DEBUG_TEXT = 'DEBUG INFO:' \
     '\n[f11] - switch screen mode'
 
 
-class DebugPanel(FlipInterface):
+class DebugPanel(Flippable):
     def __init__(self, window: Window, is_demonstration_mode=False, is_visible=True):
         self.is_showed_button_state_drawable = FadingDrawable.from_color_content(COLOR_RED, 90)
         self.is_hided_button_state_drawable = FadingDrawable.from_color_content(COLOR_GREEN, 90)

@@ -7,10 +7,10 @@ from pygex.gui.toast import Toast, render as render_toasts
 from pygame.mouse import get_pos as pg_mouse_get_pos
 from pygame.image import save as pg_save_image
 from pygame.event import get as get_events
-from pygex.interface import FlipInterface
 from pygame.time import Clock as pg_Clock
 from pygex.input import get_input, Input
 from pygex.mouse import get_mouse, Mouse
+from pygex.interface import Flippable
 from pygex.color import TYPE_COLOR
 from pygame.event import Event
 from datetime import datetime
@@ -20,7 +20,7 @@ from os import makedirs
 from time import time
 
 
-class Window(FlipInterface):
+class Window(Flippable):
     def __init__(
             self,
             size: Sequence[int] = (800, 600),
@@ -44,7 +44,7 @@ class Window(FlipInterface):
         if get_input() is None:
             Input()
 
-        self._flip_interfaces: list[FlipInterface] = []
+        self._flip_interfaces: list[Flippable] = []
         self._view_list = []
         self._event_buffer = []
 
@@ -190,11 +190,11 @@ class Window(FlipInterface):
             self._view_list.remove(view)
             view._parent = None
 
-    def add_flip_interface(self, flip_interface: FlipInterface):
+    def add_flip_interface(self, flip_interface: Flippable):
         if flip_interface not in self._flip_interfaces:
             self._flip_interfaces.append(flip_interface)
 
-    def remove_flip_interface(self, flip_interface: FlipInterface):
+    def remove_flip_interface(self, flip_interface: Flippable):
         if flip_interface in self._flip_interfaces:
             self._flip_interfaces.remove(flip_interface)
 

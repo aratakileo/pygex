@@ -1,5 +1,5 @@
-class FlipInterface:
+class Flippable:
     def flip(self): ...
 
 
-__all__ = 'FlipInterface',
+__all__ = 'Flippable',

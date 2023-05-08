@@ -1,10 +1,10 @@
 from pygex.color import TYPE_COLOR, COLOR_TRANSPARENT, COLOR_WHITE, ahex_to_rgba, as_ahex, as_rgba, to_readable_color
 from pygex.gui.drawable.drawable import Drawable, ColorDrawable
 from pygex.image import round_corners, AlphaSurface
-from pygex.interface import FlipInterface
 from pygex.draw import rect as draw_rect
 from pygame.surface import SurfaceType
 from pygex.color import replace_alpha
+from pygex.interface import Flippable
 from typing import Sequence
 
 
@@ -13,7 +13,7 @@ INTERACTION_STATE_IN_INTERACTION = 1
 INTERACTION_STATE_END_OF_INTERACTION = 2
 
 
-class InteractionDrawable(Drawable, FlipInterface):
+class InteractionDrawable(Drawable, Flippable):
     def __init__(
             self,
             content: Drawable,

@@ -6,10 +6,10 @@ from pygex.gui.drawable.drawable import Drawable, ColorDrawable
 from pygame.display import get_window_size as pg_win_get_size
 from pygex.color import TYPE_COLOR, COLOR_TRANSPARENT
 from pygame.mouse import get_pos as pg_mouse_get_pos
-from pygex.interface import FlipInterface
 from pygex.text import SIZE_WRAP_CONTENT
 from pygame.surface import SurfaceType
 from functools import cached_property
+from pygex.interface import Flippable
 from pygame.event import Event
 from pygame.rect import Rect
 from typing import Sequence
@@ -40,7 +40,7 @@ DEFAULT_GRAVITY = GRAVITY_TOP_LEFT
 # TODO: create fun `clear_buffer` add add to `Window.remove_view`
 
 
-class View(FlipInterface):
+class View(Flippable):
     def __init__(
             self,
             size: Sequence[int],
