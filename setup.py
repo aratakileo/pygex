@@ -5,7 +5,7 @@ except ImportError:
 
 setup(
     name='pygex',
-    version='0.3.2',
+    version='0.3.3',
     packages=['pygex', 'pygex.gui', 'pygex.gui.drawable'],
     url='https://github.com/teacondemns/pygex',
     install_requires=['pygame>=2.0.1'],

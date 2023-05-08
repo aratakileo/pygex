@@ -12,7 +12,7 @@ Extended library for pygame users
 
 [[Run this demo project]](https://github.com/teacondemns/pygex/releases/tag/v0.3.2)
 
-Current development version: `0.3.2` (the same version will be [installed](#how-to-install-pygex))
+Current development version: `0.3.3` (the same version will be [installed](#how-to-install-pygex))
 
 Use examples:
 - [Drawing application](https://github.com/teacondemns/vector-paint)
