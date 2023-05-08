@@ -1,4 +1,4 @@
-from pygex.gui.view import View, DEFAULT_SIZE, DEFAULT_PADDING, DEFAULT_POSITION, DEFAULT_GRAVITY
+from pygex.gui.view import View, DEFAULT_SIZE, DEFAULT_PADDING, DEFAULT_POSITION, DEFAULT_GRAVITY, DEFAULT_MARGIN
 from pygex.text import ALIGN_LEFT, ALIGN_RIGHT, ALIGN_CENTER, ALIGN_BLOCK, DEFAULT_FONT_SIZE, TextRenderer
 from pygex.color import TYPE_COLOR, COLOR_BLACK, COLOR_TRANSPARENT
 from pygex.gui.drawable.drawable import Drawable
@@ -15,6 +15,7 @@ class TextView(View):
             size: Sequence[int] = DEFAULT_SIZE,
             pos: Sequence[float | int] = DEFAULT_POSITION,
             padding: Sequence[int] = DEFAULT_PADDING,
+            margin: Sequence[int] = DEFAULT_MARGIN,
             content_gravity=DEFAULT_GRAVITY,
             text_align=ALIGN_LEFT,
             text_line_spacing: float | int = 0,
@@ -29,6 +30,7 @@ class TextView(View):
             size,
             pos,
             padding,
+            margin,
             content_gravity,
             background_drawable_or_color,
 

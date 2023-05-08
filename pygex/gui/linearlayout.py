@@ -1,8 +1,8 @@
 from pygex.gui.view import View, DEFAULT_PADDING, DEFAULT_SIZE, DEFAULT_POSITION, DEFAULT_GRAVITY, SIZE_WRAP_CONTENT
 from pygex.gui.view import GRAVITY_RIGHT, GRAVITY_BOTTOM, GRAVITY_CENTER_HORIZONTAL, GRAVITY_CENTER_VERTICAL
+from pygex.gui.view import VISIBILITY_GONE, DEFAULT_MARGIN
 from pygex.color import TYPE_COLOR, COLOR_TRANSPARENT
 from pygex.gui.drawable.drawable import Drawable
-from pygex.gui.view import VISIBILITY_GONE
 from pygame.surface import SurfaceType
 from pygex.image import AlphaSurface
 from pygame.event import Event
@@ -23,6 +23,7 @@ class LinearLayout(View):
             size: Sequence[int] = DEFAULT_SIZE,
             pos: Sequence[float | int] = DEFAULT_POSITION,
             padding: Sequence[int] = DEFAULT_PADDING,
+            margin: Sequence[int] = DEFAULT_MARGIN,
             content_gravity: int = DEFAULT_GRAVITY,
             background_drawable_or_color: Drawable | TYPE_COLOR = COLOR_TRANSPARENT,
             prerender_during_initialization: bool = True
@@ -31,6 +32,7 @@ class LinearLayout(View):
             size,
             pos,
             padding,
+            margin,
             content_gravity,
             background_drawable_or_color,
             prerender_during_initialization=False
@@ -52,7 +54,7 @@ class LinearLayout(View):
                 self._views.remove(view)
                 continue
 
-            view_background_computed_size = view.get_computed_background_size()
+            view_background_computed_size = view.get_computed_background_size(apply_margin=True)
 
             self._buffered_view_sizes.append(view_background_computed_size)
             self._buffered_views_oriented_total_width += view_background_computed_size[0]
@@ -107,7 +109,7 @@ class LinearLayout(View):
             return
 
         view_index = self._views.index(view)
-        view_background_computed_size = view.get_computed_background_size()
+        view_background_computed_size = view.get_computed_background_size(apply_margin=True)
         buffered_view_background_computed_size = self._buffered_view_sizes[view_index]
 
         self._buffered_views_oriented_total_width += (
@@ -134,7 +136,7 @@ class LinearLayout(View):
         view._parent = self
         self._views.append(view)
 
-        view_background_computed_size = view.get_computed_background_size()
+        view_background_computed_size = view.get_computed_background_size(apply_margin=True)
 
         self._buffered_view_sizes.append(view_background_computed_size)
         self._buffered_views_oriented_total_width += view_background_computed_size[0]
@@ -178,17 +180,17 @@ class LinearLayout(View):
 
         return self.get_computed_background_height() - self.padding_vertical
 
-    def get_computed_background_width(self):
+    def get_computed_background_width(self, apply_margin=False):
         if self._width == SIZE_WRAP_CONTENT:
             return self.get_computed_content_width() + self.padding_horizontal
 
-        return super().get_computed_background_width()
+        return super().get_computed_background_width(apply_margin)
 
-    def get_computed_background_height(self):
+    def get_computed_background_height(self, apply_margin=False):
         if self._height == SIZE_WRAP_CONTENT:
             return self.get_computed_content_height() + self.padding_vertical
 
-        return super().get_computed_background_width()
+        return super().get_computed_background_width(apply_margin)
 
     def process_event(self, e: Event, offsetted_mouse_x: int, offsetted_mouse_y: int) -> bool:
         if self.visibility == VISIBILITY_GONE or not self.enabled:
@@ -288,9 +290,9 @@ class LinearLayout(View):
                 continue
 
             if self._orientation == ORIENTATION_HORIZONTAL:
-                next_children_x_off += view_size[0]
+                next_children_x_off += view_size[0] + view._margin_right
             else:
-                next_children_y_off += view_size[1]
+                next_children_y_off += view_size[1] + view._margin_bottom
 
 
 __all__ = 'LinearLayout', 'ORIENTATION_HORIZONTAL', 'ORIENTATION_VERTICAL'

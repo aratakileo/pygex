@@ -1,9 +1,8 @@
 from pygex.color import TYPE_COLOR, COLOR_WHITE, COLOR_GREEN, COLOR_TRANSPARENT, to_readable_color, replace_alpha
-from pygex.gui.view import DEFAULT_SIZE, DEFAULT_PADDING, DEFAULT_POSITION, GRAVITY_CENTER_HORIZONTAL
+from pygex.gui.view import DEFAULT_SIZE, DEFAULT_PADDING, DEFAULT_POSITION, GRAVITY_CENTER, DEFAULT_MARGIN
 from pygex.gui.drawable.interactiondrawable import FadingDrawable
 from pygex.gui.drawable.drawable import Drawable, ColorDrawable
 from pygex.text import ALIGN_CENTER, DEFAULT_FONT_SIZE
-from pygex.gui.view import GRAVITY_CENTER_VERTICAL
 from pygex.gui.textview import TextView
 from pygame.font import FontType
 from typing import Sequence
@@ -17,7 +16,8 @@ class ButtonView(TextView):
             size: Sequence[int] = DEFAULT_SIZE,
             pos: Sequence[float | int] = DEFAULT_POSITION,
             padding: Sequence[int] = DEFAULT_PADDING,
-            content_gravity=GRAVITY_CENTER_HORIZONTAL | GRAVITY_CENTER_VERTICAL,
+            margin: Sequence[int] = DEFAULT_MARGIN,
+            content_gravity=GRAVITY_CENTER,
             text_align=ALIGN_CENTER,
             text_line_spacing: float | int = 0,
             text_lines_number: int = ...,
@@ -36,6 +36,7 @@ class ButtonView(TextView):
             size,
             pos,
             padding,
+            margin,
             content_gravity,
             text_align,
             text_line_spacing,

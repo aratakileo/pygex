@@ -29,7 +29,7 @@ VISIBILITY_GONE = 2
 
 SIZE_MATCH_PARENT = -1
 
-NO_PADDING = (0,) * 4
+DEFAULT_MARGIN = NO_PADDING = (0,) * 4
 DEFAULT_PADDING = (8,) * 4
 DEFAULT_SIZE = (SIZE_WRAP_CONTENT, SIZE_WRAP_CONTENT)
 DEFAULT_POSITION = (0,) * 2
@@ -42,12 +42,14 @@ class View:
             size: Sequence[int],
             pos: Sequence[float | int],
             padding: Sequence[int],
+            margin: Sequence[int],
             content_gravity: int,
             background_drawable_or_color: Drawable | TYPE_COLOR,
             prerender_during_initialization: bool
     ):
         self._width, self._height = size
         self._padding_left, self._padding_top, self._padding_right, self._padding_bottom = padding
+        self._margin_left, self._margin_top, self._margin_right, self._margin_bottom = margin
 
         self._background_drawable_is_interaction_drawable = False
         self._background_surface_buffer: SurfaceType | None = None
@@ -221,6 +223,75 @@ class View:
     def padding_vertical(self) -> int:
         return self._padding_top + self._padding_bottom
 
+
+    @property
+    def margin_left(self) -> int:
+        return self._margin_left
+
+    @margin_left.setter
+    def margin_left(self, new_value: int):
+        old_value = self._margin_left
+        self._margin_left = new_value
+
+        if new_value != old_value:
+            self.render_background_surface(force_render=True)
+
+    @property
+    def margin_top(self) -> int:
+        return self._margin_top
+
+    @margin_top.setter
+    def margin_top(self, new_value: int):
+        old_value = self._margin_top
+        self._margin_top = new_value
+
+        if new_value != old_value:
+            self.render_background_surface(force_render=True)
+
+    @property
+    def margin_right(self) -> int:
+        return self._margin_right
+
+    @margin_right.setter
+    def margin_right(self, new_value: int):
+        old_value = self._margin_right
+        self._margin_right = new_value
+
+        if new_value != old_value:
+            self.render_background_surface(force_render=True)
+
+    @property
+    def margin_bottom(self) -> int:
+        return self._margin_bottom
+
+    @margin_bottom.setter
+    def margin_bottom(self, new_value: int):
+        old_value = self._margin_bottom
+        self._margin_bottom = new_value
+
+        if new_value != old_value:
+            self.render_background_surface(force_render=True)
+
+    @property
+    def margin(self) -> tuple[int]:
+        return self._margin_left, self._margin_top, self._margin_right, self._margin_bottom
+
+    @margin.setter
+    def margin(self, new_value: Sequence[int]):
+        old_value = self._margin_left, self._margin_top, self._margin_right, self._margin_bottom
+        self._margin_left, self._margin_top, self._margin_right, self._margin_bottom = new_value
+
+        if new_value != old_value:
+            self.render_background_surface(force_render=True)
+
+    @property
+    def margin_horizontal(self) -> int:
+        return self._margin_left + self._margin_right
+
+    @property
+    def margin_vertical(self) -> int:
+        return self._margin_top + self._margin_bottom
+
     @property
     def is_clicked(self):
         return self._interaction_state == INTERACTION_STATE_END_OF_INTERACTION
@@ -235,8 +306,8 @@ class View:
 
     def get_bounds(self):
         return Rect(
-            self.x,
-            self.y,
+            self.x + self._margin_left,
+            self.y + self._margin_top,
             self.get_computed_background_width(),
             self.get_computed_background_height(),
         )
@@ -254,46 +325,49 @@ class View:
     def get_computed_content_size(self):
         return self.get_computed_content_width(), self.get_computed_content_height()
 
-    def get_computed_background_width(self):
+    def get_computed_background_width(self, apply_margin=False):
         if self._width == SIZE_MATCH_PARENT:
             if self._parent is None or not isinstance(self._parent, View):
-                return pg_win_get_size()[0]
+                return pg_win_get_size()[0] - self.margin_horizontal
 
             if self._parent._width == SIZE_WRAP_CONTENT:
                 # ATTENTION: if there is no such condition, there will be an infinite recursion
-                return self.min_width
+                return self.min_width + self.margin_horizontal
 
-            return self._parent.get_computed_background_width() - self._parent.padding_horizontal
+            return self._parent.get_computed_background_width() - self._parent.padding_horizontal \
+                - self.margin_horizontal
 
         if self._width == SIZE_WRAP_CONTENT:
             if self.buffered_content_surface is None:
-                return self.min_width
+                return self.min_width + self.margin_horizontal * apply_margin
 
-            return self.buffered_content_surface.get_width() + self.padding_horizontal
+            return self.buffered_content_surface.get_width() + self.padding_horizontal \
+                + self.margin_horizontal * apply_margin
 
-        return self._width
+        return self._width + self.margin_horizontal * apply_margin
 
-    def get_computed_background_height(self):
+    def get_computed_background_height(self, apply_margin=False):
         if self._height == SIZE_MATCH_PARENT:
             if self._parent is None or not isinstance(self._parent, View):
-                return pg_win_get_size()[1]
+                return pg_win_get_size()[1] - self.margin_vertical
 
             if self._parent._height == SIZE_WRAP_CONTENT:
                 # ATTENTION: if there is no such condition, there will be an infinite recursion
-                return self.min_height
+                return self.min_height + self.margin_vertical
 
-            return self._parent.get_computed_background_height() - self._parent.padding_vertical
+            return self._parent.get_computed_background_height() - self._parent.padding_vertical - self.margin_vertical
 
         if self._height == SIZE_WRAP_CONTENT:
             if self.buffered_content_surface is None:
-                return self.min_height
+                return self.min_height + self.margin_vertical * apply_margin
 
-            return self.buffered_content_surface.get_height() + self.padding_vertical
+            return self.buffered_content_surface.get_height() + self.padding_vertical \
+                + self.margin_vertical * apply_margin
 
-        return self._height
+        return self._height + self.margin_vertical * apply_margin
 
-    def get_computed_background_size(self):
-        return self.get_computed_background_width(), self.get_computed_background_height()
+    def get_computed_background_size(self, apply_margin=False):
+        return self.get_computed_background_width(apply_margin), self.get_computed_background_height(apply_margin)
 
     def get_background_drawable(self) -> Drawable | None:
         return self._background_drawable
@@ -417,7 +491,7 @@ class View:
         if self.visibility != VISIBILITY_VISIBLE:
             return
 
-        render_x, render_y = self.x + x_off, self.y + y_off
+        render_x, render_y = self.x + x_off + self._margin_left, self.y + y_off + self._margin_top
 
         if self._background_drawable_is_interaction_drawable and self._background_drawable.is_need_to_be_rendered:
             self._background_surface_buffer = self._background_drawable.render(self.get_computed_background_size())
@@ -469,6 +543,7 @@ class View:
 
 __all__ = (
     'NO_PADDING',
+    'DEFAULT_MARGIN',
     'DEFAULT_PADDING',
     'DEFAULT_SIZE',
     'DEFAULT_POSITION',
