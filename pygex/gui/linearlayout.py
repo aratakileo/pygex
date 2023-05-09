@@ -8,8 +8,6 @@ from pygex.image import AlphaSurface
 from pygame.event import Event
 from typing import Sequence
 
-# TODO: margin support needs to be added
-
 
 ORIENTATION_HORIZONTAL = 0
 ORIENTATION_VERTICAL = 1
@@ -77,11 +75,11 @@ class LinearLayout(View):
         return self._orientation
 
     @orientation.setter
-    def orientation(self, value: int):
-        old_orientation = self._orientation
-        self._orientation = value
+    def orientation(self, new_value: int):
+        old_value = self._orientation
+        self._orientation = new_value
 
-        if old_orientation != value:
+        if old_value != new_value:
             self.render_content_surface()
 
     @property
