@@ -25,6 +25,7 @@ class Window(Flippable):
             self,
             size: Sequence[int] = (800, 600),
             title='Pygex window',
+            fps_limit: float | int | None = None,
             fullscreen=False,
             resizable=True,
             vsync=False,
@@ -61,7 +62,7 @@ class Window(Flippable):
 
         self.hold_event_buffer = False
         self.default_quit = True
-        self.fps_limit: float | int | None = None
+        self.fps_limit = fps_limit
         self.bg_color: TYPE_COLOR | None = None
 
         if fullscreen:
