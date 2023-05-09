@@ -68,6 +68,8 @@ class TextView(View):
         if isinstance(self._parent, View):
             self._parent.render_content_surface()
 
+        self.render_background_surface()
+
     @property
     def buffered_content_surface(self) -> SurfaceType | None:
         return self.text_renderer.text_surface

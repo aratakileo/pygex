@@ -19,7 +19,7 @@ DEBUG_TEXT = 'DEBUG INFO:' \
     '\nv%s pygame' \
     '\nv%s python' \
     '\n%sfps' \
-    '\n\nis preview mode - %s' \
+    '\n\nis demonstration mode - %s' \
     '\n\n' \
     '\nSHORTCUTS:' \
     '\n[f1] - take screenshot' \
@@ -45,12 +45,13 @@ class DebugPanel(Flippable):
         self.close_button = ButtonView(
             'X',
             size=(25,) * 2,
-            margin=(5,) + (0,) * 3,
+            padding=NO_PADDING,
+            margin=(5,) * 2 + (0,) * 2,
             background_drawable_or_color=self.is_showed_button_state_drawable,
             prerender_during_initialization=False
         )
         self.close_button.set_hint(
-            'Close debug menu',
+            'Close debug info',
             hint_gravity=hint.GRAVITY_LEFT | hint.GRAVITY_UNDER_CENTER
         )
 
@@ -94,16 +95,21 @@ class DebugPanel(Flippable):
             '\n[f5] - start/stop window record' if self.is_demonstration_mode else ''
         ))
 
+        # self.debug_textview.render_background_surface(True)
+
         if self.close_button.is_clicked or window.input.is_up(K_F2):
             if self.debug_textview.visibility == VISIBILITY_GONE:
                 self.debug_textview.visibility = VISIBILITY_VISIBLE
 
                 self.close_button.set_text('X')
                 self.close_button.set_background_drawable(self.is_showed_button_state_drawable)
-                self.close_button.set_hint('Close debug menu')
+                self.close_button.set_hint('Close debug info')
             elif self.debug_textview.visibility == VISIBILITY_VISIBLE:
                 self.debug_textview.visibility = VISIBILITY_GONE
 
                 self.close_button.set_text('O')
                 self.close_button.set_background_drawable(self.is_hided_button_state_drawable)
-                self.close_button.set_hint('Open debug menu')
+                self.close_button.set_hint('Open debug info')
+
+
+__all__ = 'DebugPanel',
