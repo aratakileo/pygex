@@ -9,8 +9,8 @@ from pygex.gui.textview import TextView
 from pygex.info import ver as pygex_ver
 from pygex.interface import Flippable
 from platform import python_version
+from pygex.window import get_window
 from pygame.constants import K_F2
-from pygex.window import Window
 from pygex.gui import hint
 
 
@@ -28,7 +28,7 @@ DEBUG_TEXT = 'DEBUG INFO:' \
 
 
 class DebugPanel(Flippable):
-    def __init__(self, window: Window, is_demonstration_mode=False, hide=False):
+    def __init__(self, hide=True, is_demonstration_mode=False):
         self.is_showed_button_state_drawable = FadingDrawable.from_color_content(COLOR_RED, 90)
         self.is_hided_button_state_drawable = FadingDrawable.from_color_content(COLOR_GREEN, 90)
 
@@ -60,8 +60,6 @@ class DebugPanel(Flippable):
             padding=NO_PADDING,
             orientation=ORIENTATION_HORIZONTAL
         )
-        
-        self.window = window
         self.is_demonstration_mode = is_demonstration_mode
 
         self.apply_on_screen()
@@ -74,7 +72,7 @@ class DebugPanel(Flippable):
         return self.debug_textview.visibility == VISIBILITY_VISIBLE
 
     def apply_on_screen(self):
-        window = self.window
+        window = get_window()
 
         if window.has_flippable(self):
             window.remove_view(self.container_linearlayout)
@@ -84,8 +82,10 @@ class DebugPanel(Flippable):
         window.add_flippable(self)
 
     def remove_from_screen(self):
-        self.window.remove_view(self.container_linearlayout)
-        self.window.remove_flippable(self)
+        window = get_window()
+
+        window.remove_view(self.container_linearlayout)
+        window.remove_flippable(self)
 
     def show(self):
         self.debug_textview.visibility = VISIBILITY_VISIBLE
@@ -102,7 +102,7 @@ class DebugPanel(Flippable):
         self.close_button.set_hint('Open debug info')
     
     def flip(self):
-        window = self.window
+        window = get_window()
         
         self.debug_textview.set_text(DEBUG_TEXT % (
             pygex_ver,
