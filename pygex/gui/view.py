@@ -37,9 +37,6 @@ DEFAULT_POSITION = (0,) * 2
 DEFAULT_GRAVITY = GRAVITY_TOP_LEFT
 
 
-# TODO: create fun `clear_buffer` add add to `Window.remove_view`
-
-
 class View(Flippable):
     def __init__(
             self,
