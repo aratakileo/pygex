@@ -21,7 +21,7 @@ class TextRenderer:
             self,
             text: str,
             color: TYPE_COLOR,
-            size: Sequence[int] = (SIZE_WRAP_CONTENT, SIZE_WRAP_CONTENT),
+            size: Sequence[int] = (SIZE_WRAP_CONTENT,) * 2,
             font_or_font_size: FontType | int = DEFAULT_FONT_SIZE,
             align=ALIGN_LEFT,
             line_spacing: float | int = 0,

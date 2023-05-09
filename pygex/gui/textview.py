@@ -55,6 +55,10 @@ class TextView(View):
             self.render_content_surface()
             self.render_background_surface()
 
+    @property
+    def text(self):
+        return self.text_renderer._text
+
     def set_text(self, text: str):
         old_size = (-1, -1) if self.text_renderer.text_surface is None else self.text_renderer.text_surface.get_size()
 
