@@ -54,7 +54,7 @@ class LinearLayout(View):
                 self._views.remove(view)
                 continue
 
-            view_background_computed_size = view.get_computed_background_size(apply_margin=True)
+            view_background_computed_size = view.get_computed_background_size(apply_margin=True, apply_visibility=True)
 
             self._buffered_view_sizes.append(view_background_computed_size)
             self._buffered_views_oriented_total_width += view_background_computed_size[0]
@@ -109,7 +109,7 @@ class LinearLayout(View):
             return
 
         view_index = self._views.index(view)
-        view_background_computed_size = view.get_computed_background_size(apply_margin=True)
+        view_background_computed_size = view.get_computed_background_size(apply_margin=True, apply_visibility=True)
         buffered_view_background_computed_size = self._buffered_view_sizes[view_index]
 
         self._buffered_views_oriented_total_width += (
@@ -136,7 +136,7 @@ class LinearLayout(View):
         view._parent = self
         self._views.append(view)
 
-        view_background_computed_size = view.get_computed_background_size(apply_margin=True)
+        view_background_computed_size = view.get_computed_background_size(apply_margin=True, apply_visibility=True)
 
         self._buffered_view_sizes.append(view_background_computed_size)
         self._buffered_views_oriented_total_width += view_background_computed_size[0]
@@ -180,20 +180,26 @@ class LinearLayout(View):
 
         return self.get_computed_background_height() - self.padding_vertical
 
-    def get_computed_background_width(self, apply_margin=False):
+    def get_computed_background_width(self, apply_margin=False, apply_visibility=False):
+        if apply_visibility and self._visibility == VISIBILITY_GONE:
+            return 0
+
         if self._width == SIZE_WRAP_CONTENT:
             return self.get_computed_content_width() + self.padding_horizontal
 
         return super().get_computed_background_width(apply_margin)
 
-    def get_computed_background_height(self, apply_margin=False):
+    def get_computed_background_height(self, apply_margin=False, apply_visibility=False):
+        if apply_visibility and self._visibility == VISIBILITY_GONE:
+            return 0
+
         if self._height == SIZE_WRAP_CONTENT:
             return self.get_computed_content_height() + self.padding_vertical
 
         return super().get_computed_background_width(apply_margin)
 
     def process_event(self, e: Event, offsetted_mouse_x: int, offsetted_mouse_y: int) -> bool:
-        if self.visibility == VISIBILITY_GONE or not self.enabled:
+        if self._visibility == VISIBILITY_GONE or not self.enabled:
             return True
 
         process_event_for_self = True

@@ -69,6 +69,7 @@ class View(Flippable):
 
         self._interaction_state = INTERACTION_STATE_NO_INTERACTION
         self._is_focused = False
+        self._visibility = VISIBILITY_VISIBLE
 
         self._hint: hint.Hint | None = None
         self._hint_offset = 3
@@ -76,12 +77,23 @@ class View(Flippable):
 
         self.x, self.y = pos
         self.content_gravity = content_gravity
-        self.visibility = VISIBILITY_VISIBLE
         self.enabled = True
 
         if prerender_during_initialization:
             self.render_content_surface()
             self.render_background_surface()
+
+    @property
+    def visibility(self):
+        return self._visibility
+
+    @visibility.setter
+    def visibility(self, new_value: int):
+        old_value = self._visibility
+        self._visibility = new_value
+
+        if old_value != new_value:
+            self.apply_size_changes_to_parent()
 
     @property
     def pos(self):
@@ -94,6 +106,19 @@ class View(Flippable):
     @property
     def size(self):
         return self._width, self._height
+
+    @size.setter
+    def size(self, value: Sequence[int]):
+        old_size = self._width, self._height
+
+        self._width, self._height = value
+
+        if value == old_size:
+            return
+
+        self.render_content_surface()
+        self.render_background_surface()
+        self.apply_size_changes_to_parent()
 
     @property
     def width(self):
@@ -110,9 +135,7 @@ class View(Flippable):
 
         self.render_content_surface()
         self.render_background_surface()
-
-        if 'rebufferize_sizes_for_view' in self._parent.__dir__():
-            self._parent.rebufferize_sizes_for_view(self)
+        self.apply_size_changes_to_parent()
 
     @property
     def height(self):
@@ -129,24 +152,7 @@ class View(Flippable):
 
         self.render_content_surface()
         self.render_background_surface()
-
-        if 'rebufferize_sizes_for_view' in self._parent.__dir__():
-            self._parent.rebufferize_sizes_for_view(self)
-
-    @size.setter
-    def size(self, value: Sequence[int]):
-        old_size = self._width, self._height
-
-        self._width, self._height = value
-
-        if value == old_size:
-            return
-
-        self.render_content_surface()
-        self.render_background_surface()
-
-        if 'rebufferize_sizes_for_view' in self._parent.__dir__():
-            self._parent.rebufferize_sizes_for_view(self)
+        self.apply_size_changes_to_parent()
 
     @cached_property
     def min_width(self):
@@ -165,8 +171,11 @@ class View(Flippable):
         old_value = self._padding_left
         self._padding_left = new_value
 
-        if new_value != old_value:
-            self.render_background_surface(force_render=True)
+        if new_value == old_value:
+            return
+
+        self.render_background_surface(force_render=True)
+        self.apply_size_changes_to_parent()
 
     @property
     def padding_top(self) -> int:
@@ -177,8 +186,11 @@ class View(Flippable):
         old_value = self._padding_top
         self._padding_top = new_value
 
-        if new_value != old_value:
-            self.render_background_surface(force_render=True)
+        if new_value == old_value:
+            return
+
+        self.render_background_surface(force_render=True)
+        self.apply_size_changes_to_parent()
 
     @property
     def padding_right(self) -> int:
@@ -189,8 +201,11 @@ class View(Flippable):
         old_value = self._padding_right
         self._padding_right = new_value
 
-        if new_value != old_value:
-            self.render_background_surface(force_render=True)
+        if new_value == old_value:
+            return
+
+        self.render_background_surface(force_render=True)
+        self.apply_size_changes_to_parent()
 
     @property
     def padding_bottom(self) -> int:
@@ -201,11 +216,14 @@ class View(Flippable):
         old_value = self._padding_bottom
         self._padding_bottom = new_value
 
-        if new_value != old_value:
-            self.render_background_surface(force_render=True)
+        if new_value == old_value:
+            return
+
+        self.render_background_surface(force_render=True)
+        self.apply_size_changes_to_parent()
 
     @property
-    def padding(self) -> tuple[int]:
+    def padding(self) -> tuple[int, int, int, int]:
         return self._padding_left, self._padding_top, self._padding_right, self._padding_bottom
 
     @padding.setter
@@ -213,8 +231,11 @@ class View(Flippable):
         old_value = self._padding_left, self._padding_top, self._padding_right, self._padding_bottom
         self._padding_left, self._padding_top, self._padding_right, self._padding_bottom = new_value
 
-        if new_value != old_value:
-            self.render_background_surface(force_render=True)
+        if new_value == old_value:
+            return
+
+        self.render_background_surface(force_render=True)
+        self.apply_size_changes_to_parent()
 
     @property
     def padding_horizontal(self) -> int:
@@ -234,8 +255,11 @@ class View(Flippable):
         old_value = self._margin_left
         self._margin_left = new_value
 
-        if new_value != old_value:
-            self.render_background_surface(force_render=True)
+        if new_value == old_value:
+            return
+
+        self.render_background_surface(force_render=True)
+        self.apply_size_changes_to_parent()
 
     @property
     def margin_top(self) -> int:
@@ -246,8 +270,11 @@ class View(Flippable):
         old_value = self._margin_top
         self._margin_top = new_value
 
-        if new_value != old_value:
-            self.render_background_surface(force_render=True)
+        if new_value == old_value:
+            return
+
+        self.render_background_surface(force_render=True)
+        self.apply_size_changes_to_parent()
 
     @property
     def margin_right(self) -> int:
@@ -258,8 +285,11 @@ class View(Flippable):
         old_value = self._margin_right
         self._margin_right = new_value
 
-        if new_value != old_value:
-            self.render_background_surface(force_render=True)
+        if new_value == old_value:
+            return
+
+        self.render_background_surface(force_render=True)
+        self.apply_size_changes_to_parent()
 
     @property
     def margin_bottom(self) -> int:
@@ -270,11 +300,14 @@ class View(Flippable):
         old_value = self._margin_bottom
         self._margin_bottom = new_value
 
-        if new_value != old_value:
-            self.render_background_surface(force_render=True)
+        if new_value == old_value:
+            return
+
+        self.render_background_surface(force_render=True)
+        self.apply_size_changes_to_parent()
 
     @property
-    def margin(self) -> tuple[int]:
+    def margin(self) -> tuple[int, int, int, int]:
         return self._margin_left, self._margin_top, self._margin_right, self._margin_bottom
 
     @margin.setter
@@ -282,8 +315,11 @@ class View(Flippable):
         old_value = self._margin_left, self._margin_top, self._margin_right, self._margin_bottom
         self._margin_left, self._margin_top, self._margin_right, self._margin_bottom = new_value
 
-        if new_value != old_value:
-            self.render_background_surface(force_render=True)
+        if new_value == old_value:
+            return
+
+        self.render_background_surface(force_render=True)
+        self.apply_size_changes_to_parent()
 
     @property
     def margin_horizontal(self) -> int:
@@ -326,7 +362,10 @@ class View(Flippable):
     def get_computed_content_size(self):
         return self.get_computed_content_width(), self.get_computed_content_height()
 
-    def get_computed_background_width(self, apply_margin=False):
+    def get_computed_background_width(self, apply_margin=False, apply_visibility=False):
+        if apply_visibility and self._visibility == VISIBILITY_GONE:
+            return 0
+
         if self._width == SIZE_MATCH_PARENT:
             if self._parent is None or not isinstance(self._parent, View):
                 return pg_win_get_size()[0] - self.margin_horizontal
@@ -347,7 +386,10 @@ class View(Flippable):
 
         return self._width + self.margin_horizontal * apply_margin
 
-    def get_computed_background_height(self, apply_margin=False):
+    def get_computed_background_height(self, apply_margin=False, apply_visibility=False):
+        if apply_visibility and self._visibility == VISIBILITY_GONE:
+            return 0
+
         if self._height == SIZE_MATCH_PARENT:
             if self._parent is None or not isinstance(self._parent, View):
                 return pg_win_get_size()[1] - self.margin_vertical
@@ -367,7 +409,10 @@ class View(Flippable):
 
         return self._height + self.margin_vertical * apply_margin
 
-    def get_computed_background_size(self, apply_margin=False):
+    def get_computed_background_size(self, apply_margin=False, apply_visibility=False):
+        if apply_visibility and self._visibility == VISIBILITY_GONE:
+            return 0, 0
+
         return self.get_computed_background_width(apply_margin), self.get_computed_background_height(apply_margin)
 
     def get_background_drawable(self) -> Drawable | None:
@@ -407,8 +452,12 @@ class View(Flippable):
         self._hint.text = text
         self._hint.gravity = hint_gravity
 
+    def apply_size_changes_to_parent(self):
+        if 'rebufferize_sizes_for_view' in self._parent.__dir__():
+            self._parent.rebufferize_sizes_for_view(self)
+
     def process_event(self, e: Event, offsetted_mouse_x: int, offsetted_mouse_y: int) -> bool:
-        if self.visibility == VISIBILITY_GONE or not self.enabled:
+        if self._visibility == VISIBILITY_GONE or not self.enabled:
             return True
 
         if e.type == WINDOWLEAVE:
@@ -451,7 +500,7 @@ class View(Flippable):
         # ATTENTION: if the View like a ButtonView will be added to the Window view list,
         # then this method will call earlier than the render method
 
-        if self.visibility == VISIBILITY_GONE or not self.enabled:
+        if self._visibility == VISIBILITY_GONE or not self.enabled:
             self._interaction_state = INTERACTION_STATE_NO_INTERACTION
             self._is_focused = False
 
@@ -489,7 +538,7 @@ class View(Flippable):
             self._parent.render_content_surface()
 
     def render(self, surface: SurfaceType, x_off: float | int, y_off: float | int, parent_size: Sequence[int]):
-        if self.visibility != VISIBILITY_VISIBLE:
+        if self._visibility != VISIBILITY_VISIBLE:
             return
 
         render_x, render_y = self.x + x_off + self._margin_left, self.y + y_off + self._margin_top
