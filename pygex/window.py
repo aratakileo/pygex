@@ -44,7 +44,7 @@ class Window(Flippable):
         if get_input() is None:
             Input()
 
-        self._flip_interfaces: list[Flippable] = []
+        self._flippable_list: list[Flippable] = []
         self._view_list = []
         self._event_buffer = []
 
@@ -190,13 +190,19 @@ class Window(Flippable):
             self._view_list.remove(view)
             view._parent = None
 
-    def add_flip_interface(self, flip_interface: Flippable):
-        if flip_interface not in self._flip_interfaces:
-            self._flip_interfaces.append(flip_interface)
+    def has_view(self, view):
+        return view in self._view_list
 
-    def remove_flip_interface(self, flip_interface: Flippable):
-        if flip_interface in self._flip_interfaces:
-            self._flip_interfaces.remove(flip_interface)
+    def add_flippable(self, flippable: Flippable):
+        if flippable not in self._flippable_list:
+            self._flippable_list.append(flippable)
+
+    def remove_flippable(self, flippable: Flippable):
+        if flippable in self._flippable_list:
+            self._flippable_list.remove(flippable)
+
+    def has_flippable(self, flippable: Flippable):
+        return flippable in self._flippable_list
 
     def take_screenshot(self, save_directory='./screenshots', show_successful_toast=True):
         if not isdir(save_directory):
@@ -238,8 +244,8 @@ class Window(Flippable):
     def flip(self, read_events=True):
         self._event_buffer = []
 
-        for flip_interface in self._flip_interfaces:
-            flip_interface.flip()
+        for flippable in self._flippable_list:
+            flippable.flip()
 
         for view in self._view_list:
             # ATTENTION: the peculiarity is that the flip method is called before the render method is used

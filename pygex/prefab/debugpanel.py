@@ -74,12 +74,18 @@ class DebugPanel(Flippable):
         return self.debug_textview.visibility == VISIBILITY_VISIBLE
 
     def apply_on_screen(self):
-        self.window.add_view(self.container_linearlayout)
-        self.window.add_flip_interface(self)
+        window = self.window
+
+        if window.has_flippable(self):
+            window.remove_view(self.container_linearlayout)
+            window.remove_flippable(self)
+        
+        window.add_view(self.container_linearlayout)
+        window.add_flippable(self)
 
     def remove_from_screen(self):
         self.window.remove_view(self.container_linearlayout)
-        self.window.remove_flip_interface(self)
+        self.window.remove_flippable(self)
 
     def show(self):
         self.debug_textview.visibility = VISIBILITY_VISIBLE
