@@ -28,7 +28,7 @@ DEBUG_TEXT = 'DEBUG INFO:' \
 
 
 class DebugPanel(Flippable):
-    def __init__(self, window: Window, is_demonstration_mode=False, is_visible=True):
+    def __init__(self, window: Window, is_demonstration_mode=False, hide=False):
         self.is_showed_button_state_drawable = FadingDrawable.from_color_content(COLOR_RED, 90)
         self.is_hided_button_state_drawable = FadingDrawable.from_color_content(COLOR_GREEN, 90)
 
@@ -66,8 +66,12 @@ class DebugPanel(Flippable):
 
         self.apply_on_screen()
 
-        if not is_visible:
+        if hide:
             self.hide()
+
+    @property
+    def is_showing(self):
+        return self.debug_textview.visibility == VISIBILITY_VISIBLE
 
     def apply_on_screen(self):
         self.window.add_view(self.container_linearlayout)
@@ -78,10 +82,18 @@ class DebugPanel(Flippable):
         self.window.remove_flip_interface(self)
 
     def show(self):
-        self.container_linearlayout.visibility = VISIBILITY_VISIBLE
+        self.debug_textview.visibility = VISIBILITY_VISIBLE
+
+        self.close_button.set_text('X')
+        self.close_button.set_background_drawable(self.is_showed_button_state_drawable)
+        self.close_button.set_hint('Close debug info')
 
     def hide(self):
-        self.container_linearlayout.visibility = VISIBILITY_GONE
+        self.debug_textview.visibility = VISIBILITY_GONE
+
+        self.close_button.set_text('O')
+        self.close_button.set_background_drawable(self.is_hided_button_state_drawable)
+        self.close_button.set_hint('Open debug info')
     
     def flip(self):
         window = self.window
@@ -98,18 +110,10 @@ class DebugPanel(Flippable):
         # self.debug_textview.render_background_surface(True)
 
         if self.close_button.is_clicked or window.input.is_up(K_F2):
-            if self.debug_textview.visibility == VISIBILITY_GONE:
-                self.debug_textview.visibility = VISIBILITY_VISIBLE
-
-                self.close_button.set_text('X')
-                self.close_button.set_background_drawable(self.is_showed_button_state_drawable)
-                self.close_button.set_hint('Close debug info')
-            elif self.debug_textview.visibility == VISIBILITY_VISIBLE:
-                self.debug_textview.visibility = VISIBILITY_GONE
-
-                self.close_button.set_text('O')
-                self.close_button.set_background_drawable(self.is_hided_button_state_drawable)
-                self.close_button.set_hint('Open debug info')
+            if self.is_showing:
+                self.hide()
+            else:
+                self.show()
 
 
 __all__ = 'DebugPanel',
