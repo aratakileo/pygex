@@ -52,7 +52,8 @@ class DebugPanel(Flippable):
         )
         self.close_button.set_hint(
             'Close debug info',
-            hint_gravity=hint.GRAVITY_LEFT | hint.GRAVITY_UNDER_CENTER
+            gravity=hint.GRAVITY_RIGHT_OF_CENTER | hint.GRAVITY_CENTER_VERTICAL,
+            position_offset=(5, 0)
         )
 
         self.container_linearlayout = LinearLayout(
@@ -92,14 +93,14 @@ class DebugPanel(Flippable):
 
         self.close_button.set_text('X')
         self.close_button.set_background_drawable(self.is_showed_button_state_drawable)
-        self.close_button.set_hint('Close debug info')
+        self.close_button.hint.text = 'Close debug info'
 
     def hide(self):
         self.debug_textview.visibility = VISIBILITY_GONE
 
         self.close_button.set_text('O')
         self.close_button.set_background_drawable(self.is_hided_button_state_drawable)
-        self.close_button.set_hint('Open debug info')
+        self.close_button.hint.text = 'Open debug info'
     
     def flip(self):
         window = get_window()
