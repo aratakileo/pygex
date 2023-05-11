@@ -27,6 +27,7 @@ class Hint(Renderable):
             text_color: TYPE_COLOR = ...,
             bg_color: TYPE_COLOR = COLOR_BLACK | 0xaa000000,
             gravity=GRAVITY_CENTER_HORIZONTAL | GRAVITY_UNDER_CENTER,
+            position_offset: Sequence[float | int] = (0, 0),
             strict_fit_in_bounds=True
     ):
         self.text = text
@@ -38,6 +39,7 @@ class Hint(Renderable):
         self.padding = 3
         self.font_or_size: FontType | int = ...
         self.border_radius_or_radii: int | Sequence[int] = 5
+        self.position_offset = position_offset
 
         self._is_showing = False
         self._showing_pos: tuple[float | int, float | int] | None = None
@@ -54,7 +56,6 @@ class Hint(Renderable):
     def provide_show(
             self,
             anchor_rect_or_point: Sequence[float | int] | RectType,
-            position_offset: Sequence[float | int] = (0, 0),
             bounds_in: Sequence[float | int] | RectType = ...
     ):
         if len(anchor_rect_or_point) == 2:
@@ -119,7 +120,7 @@ class Hint(Renderable):
             elif box_y < bounds_in[1]:
                 box_y = bounds_in[1]
 
-        self._showing_pos = box_x + position_offset[0], box_y + position_offset[1]
+        self._showing_pos = box_x + self.position_offset[0], box_y + self.position_offset[1]
 
     def render(self, surface: SurfaceType):
         if self._showing_pos is None or self._text_surface_buffer is None or not self._is_showing:
