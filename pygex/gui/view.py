@@ -72,7 +72,6 @@ class View(Flippable, Renderable):
         self._visibility = VISIBILITY_VISIBLE
 
         self._hint: hint.Hint | None = None
-        self._hint_offset = 3
         self._hint_anchor_is_mouse = False
 
         self.x, self.y = pos
@@ -484,15 +483,14 @@ class View(Flippable, Renderable):
     def set_hint(
             self,
             text: str,
-            offset=3,
+            position_offset=(0, 5),
             anchor_is_mouse=False,
             hint_gravity: int = hint.GRAVITY_CENTER_HORIZONTAL | hint.GRAVITY_UNDER_CENTER
     ):
-        self._hint_offset = offset
         self._hint_anchor_is_mouse = anchor_is_mouse
 
         if self._hint is None:
-            self._hint = hint.Hint(text, gravity=hint_gravity)
+            self._hint = hint.Hint(text, gravity=hint_gravity, position_offset=position_offset)
 
             return
 
