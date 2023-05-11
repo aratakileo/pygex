@@ -23,14 +23,14 @@ GRAVITY_UNDER_CENTER = 1 << 7
 class Hint(Renderable):
     def __init__(
             self,
-            text: str = 'This is hint',
+            text: str = ...,
             text_color: TYPE_COLOR = ...,
             bg_color: TYPE_COLOR = COLOR_BLACK | 0xaa000000,
             gravity=GRAVITY_CENTER_HORIZONTAL | GRAVITY_UNDER_CENTER,
             position_offset: Sequence[float | int] = (0, 0),
             strict_fit_in_bounds=True
     ):
-        self.text = text
+        self.text = 'This is hint' if text is ... else text
         self.text_color = text_color
         self.bg_color = bg_color
         self.gravity = gravity
