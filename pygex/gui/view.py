@@ -5,7 +5,6 @@ from pygex.gui.drawable.interactiondrawable import INTERACTION_STATE_IN_INTERACT
 from pygex.gui.drawable.drawable import Drawable, ColorDrawable
 from pygame.display import get_window_size as pg_win_get_size
 from pygex.color import TYPE_COLOR, COLOR_TRANSPARENT
-from pygame.mouse import get_pos as pg_mouse_get_pos
 from pygex.interface import Flippable, Renderable
 from pygex.text import SIZE_WRAP_CONTENT
 from pygame.surface import SurfaceType
@@ -493,7 +492,7 @@ class View(Flippable, Renderable):
                 gravity=hint.GRAVITY_CENTER_HORIZONTAL | hint.GRAVITY_UNDER_CENTER,
                 position_offset=(0, 5)
             )
-        
+
         if gravity is not ...:
             self.hint.gravity = gravity
 
