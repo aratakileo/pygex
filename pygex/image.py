@@ -1,7 +1,7 @@
 from pygame.image import frombuffer as pg_image_frombuffer, tostring as pg_image_tostring
 from pygame.transform import smoothscale as pg_smoothscale
-from pygex.color import TYPE_COLOR, as_rgba
 from pygame.surface import Surface, SurfaceType
+from pygex.color import TYPE_COLOR, as_rgba
 from pygame.draw import rect as pg_draw_rect
 from pygame.constants import SRCALPHA
 from typing import Sequence
@@ -22,7 +22,7 @@ try:
         return PillowImage.frombytes('RGBA', source_surface.get_size(), pg_image_tostring(source_surface, 'RGBA'))
 
 
-    def blur(source_surface: SurfaceType, radius: int):
+    def gaussian_blur(source_surface: SurfaceType, radius: int):
         """
         Gaussian blur
         :param source_surface: source Surface
@@ -83,4 +83,4 @@ def gradient(size: Sequence[int], colors: Sequence[TYPE_COLOR], is_vertical=Fals
     return pg_smoothscale(colors_line_surface, size)
 
 
-__all__ = 'AlphaSurface', 'pillow_to_pygame', 'pygame_to_pillow', 'blur', 'cutout_by_mask', 'round_corners', 'gradient'
+__all__ = 'AlphaSurface', 'pillow_to_pygame', 'pygame_to_pillow', 'gaussian_blur', 'cutout_by_mask', 'round_corners', 'gradient'
