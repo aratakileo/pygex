@@ -3,16 +3,17 @@ from pygame.display import get_surface as pg_win_get_surface, get_window_size as
 from pygame.display import get_caption as pg_win_get_caption, init as pg_display_init
 from pygame.constants import QUIT, FULLSCREEN, RESIZABLE, WINDOWMOVED
 from pygame.display import get_desktop_sizes as pg_get_desktop_sizes
+from pygex.broker import set_active_window, get_mouse, get_input
 from pygex.gui.toast import Toast, render as render_toasts
 from pygame.mouse import get_pos as pg_mouse_get_pos
+from pygex.interface import Flippable, Renderable
 from pygame.image import save as pg_save_image
 from pygame.event import get as get_events
 from pygame.time import Clock as pg_Clock
-from pygex.input import get_input, Input
-from pygex.mouse import get_mouse, Mouse
-from pygex.interface import Flippable
 from pygex.color import TYPE_COLOR
 from pygame.event import Event
+from pygex.input import Input
+from pygex.mouse import Mouse
 from datetime import datetime
 from typing import Sequence
 from os.path import isdir
@@ -31,11 +32,8 @@ class Window(Flippable):
             vsync=False,
             flags=0
     ):
-        global _active_window
-        _active_window = self
-
+        set_active_window(self)
         pg_display_init()
-
         pg_win_set_mode(size, flags | RESIZABLE * resizable, vsync=vsync)
         pg_win_set_caption(title)
 
@@ -46,6 +44,7 @@ class Window(Flippable):
             Input()
 
         self._flippable_list: list[Flippable] = []
+        self._renderable_list: list[Renderable] = []
         self._view_list = []
         self._event_buffer = []
 
@@ -205,6 +204,17 @@ class Window(Flippable):
     def has_flippable(self, flippable: Flippable):
         return flippable in self._flippable_list
 
+    def add_renderable(self, renderable: Renderable):
+        if renderable not in self._renderable_list:
+            self._renderable_list.append(renderable)
+
+    def remove_renderable(self, renderable: Renderable):
+        if renderable in self._renderable_list:
+            self._renderable_list.remove(renderable)
+
+    def has_renderable(self, renderable: Renderable):
+        return renderable in self._renderable_list
+
     def take_screenshot(self, save_directory='./screenshots', show_successful_toast=True):
         if not isdir(save_directory):
             makedirs(save_directory)
@@ -252,6 +262,9 @@ class Window(Flippable):
             # ATTENTION: the peculiarity is that the flip method is called before the render method is used
             view.flip()
 
+        for renderable in self._renderable_list:
+            renderable.render(pg_win_get_surface())
+
         render_toasts(pg_win_get_surface())
 
         pg_display_flip()
@@ -276,11 +289,4 @@ class Window(Flippable):
                 self.process_event(e)
 
 
-_active_window: Window | None = None
-
-
-def get_window():
-    return _active_window
-
-
-__all__ = 'Window', 'get_window'
+__all__ = 'Window'

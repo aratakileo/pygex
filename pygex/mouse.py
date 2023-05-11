@@ -2,6 +2,7 @@ from pygame.display import get_window_size as pg_win_get_size, get_desktop_sizes
 from pygame.constants import MOUSEBUTTONDOWN, MOUSEBUTTONUP, MOUSEWHEEL, WINDOWMOVED
 from pygame.mouse import get_pos as pg_mouse_get_pos, set_pos as pg_mouse_set_pos
 from pygex.input import S_NOT_PRESSED, S_HOLD, S_DOWN, S_UP
+from pygex.broker import set_active_mouse
 from pygame.event import Event, set_grab
 from typing import Sequence
 
@@ -12,9 +13,7 @@ F_CAPTURED = 1 << 2
 
 class Mouse:
     def __init__(self):
-        global _active_mouse
-        _active_mouse = self
-
+        set_active_mouse(self)
         self._last_pos = pg_mouse_get_pos()
 
         # ATTENTION: The default value specified in this variable is such, because the default window appears in
@@ -164,6 +163,8 @@ class Mouse:
             # behaves differently. Calculating this safe zone for the mouse is necessary, because for example,
             # in full-screen mode, the mouse simply disappears off the screen without moving instantly to the other
             # side. However, this safe zone does not work correctly if the user has more than one screen.
+
+            # TeaCondemns from feature: wth is that?
             if self._win_pos[0] >= desktopw - winw - 5:
                 offset_x = 6
 
@@ -193,11 +194,4 @@ class Mouse:
             pg_mouse_set_pos(pg_win_get_size()[0] / 2, pg_win_get_size()[1] / 2)
 
 
-_active_mouse: Mouse | None = None
-
-
-def get_mouse():
-    return _active_mouse
-
-
-__all__ = 'Mouse', 'F_NO_BORDERS', 'F_CONFINED', 'F_CAPTURED', 'S_NOT_PRESSED', 'S_HOLD', 'S_DOWN', 'S_UP', 'get_mouse'
+__all__ = 'Mouse', 'F_NO_BORDERS', 'F_CONFINED', 'F_CAPTURED', 'S_NOT_PRESSED', 'S_HOLD', 'S_DOWN', 'S_UP'

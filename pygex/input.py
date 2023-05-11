@@ -1,5 +1,6 @@
 from pygame.constants import KEYDOWN, KEYUP, K_LCTRL, K_RCTRL, K_LALT, K_RALT, K_RETURN, K_KP_ENTER, K_KP_PERIOD
 from pygame.constants import K_PERIOD, K_LSHIFT, K_RSHIFT
+from pygex.broker import set_active_input
 from pygame.event import Event
 from time import time
 
@@ -38,8 +39,7 @@ HOLD_DURATION = 0.1
 
 class Input:
     def __init__(self):
-        global _active_input
-        _active_input = self
+        set_active_input(self)
 
         self._keys_data = {}
         self._generalized_keys = {}
@@ -246,13 +246,6 @@ class Input:
                 self.reset_data(key)
 
 
-_active_input: Input | None = None
-
-
-def get_input():
-    return _active_input
-
-
 __all__ = (
     'S_NOT_PRESSED',
     'S_HOLD',
@@ -279,6 +272,5 @@ __all__ = (
     'GK_ALT',
     'GK_SHIFT',
     'GK_ENTER',
-    'Input',
-    'get_input'
+    'Input'
 )

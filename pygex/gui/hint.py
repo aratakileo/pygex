@@ -1,8 +1,10 @@
 from pygex.color import TYPE_COLOR, as_rgba, to_readable_color, COLOR_BLACK
+from pygex.text import render_text, DEFAULT_FONT_SIZE
 from pygame.draw import rect as draw_rect
+from pygex.interface import Renderable
 from pygame.surface import SurfaceType
 from pygex.image import AlphaSurface
-from pygex.text import render_text
+from pygex.broker import get_window
 from pygame.rect import RectType
 from pygame.font import FontType
 from typing import Sequence
@@ -18,10 +20,10 @@ GRAVITY_RIGHT_OF_CENTER = 1 << 6
 GRAVITY_UNDER_CENTER = 1 << 7
 
 
-class Hint:
+class Hint(Renderable):
     def __init__(
             self,
-            text,
+            text: str,
             text_color: TYPE_COLOR = ...,
             bg_color: TYPE_COLOR = COLOR_BLACK | 0xaa000000,
             gravity=GRAVITY_CENTER_HORIZONTAL | GRAVITY_UNDER_CENTER,
@@ -37,23 +39,24 @@ class Hint:
         self.font_or_size: FontType | int = ...
         self.border_radius_or_radii: int | Sequence[int] = 5
 
-    def render(
+        self._showing_pos: tuple[float | int, float | int] | None = None
+        self._text_surface_buffer: SurfaceType | None = None
+
+    def provide_show(
             self,
-            surface: SurfaceType,
             anchor_rect_or_point: Sequence[float | int] | RectType,
             bounds_in: Sequence[float | int] | RectType
     ):
         if len(anchor_rect_or_point) == 2:
             anchor_rect_or_point = *anchor_rect_or_point, 0, 0
 
-        text_color = self.text_color if self.text_color is not ... else to_readable_color(self.bg_color)
+        self._text_surface_buffer = render_text(
+            self.text,
+            self.text_color if self.text_color is not ... else to_readable_color(self.bg_color),
+            DEFAULT_FONT_SIZE if self.font_or_size is ... else self.font_or_size
+        )
 
-        if self.font_or_size is not ...:
-            text_surface = render_text(self.text, text_color, self.font_or_size)
-        else:
-            text_surface = render_text(self.text, text_color)
-
-        textw, texth = text_surface.get_size()
+        textw, texth = self._text_surface_buffer.get_size()
         boxw, boxh = textw + self.padding * 2, texth + self.padding * 2
 
         box_x, box_y = anchor_rect_or_point[:2]
@@ -103,6 +106,17 @@ class Hint:
             elif box_y < bounds_in[1]:
                 box_y = bounds_in[1]
 
+        self._showing_pos = box_x, box_y
+
+        get_window().add_renderable(self)
+
+    def render(self, surface: SurfaceType):
+        if self._showing_pos is None or self._text_surface_buffer is None:
+            return
+
+        boxw = self._text_surface_buffer.get_width() + self.padding * 2
+        boxh = self._text_surface_buffer.get_height() + self.padding * 2
+
         box_surface = AlphaSurface((boxw, boxh))
 
         border_radii = (self.border_radius_or_radii,) if isinstance(self.border_radius_or_radii, int) \
@@ -110,8 +124,15 @@ class Hint:
 
         draw_rect(box_surface, as_rgba(self.bg_color), (0, 0, boxw, boxh), 0, *border_radii)
 
-        surface.blit(box_surface, (box_x, box_y))
-        surface.blit(text_surface, (box_x + self.padding, box_y + self.padding))
+        surface.blit(box_surface, self._showing_pos)
+        surface.blit(
+            self._text_surface_buffer,
+            (self._showing_pos[0] + self.padding, self._showing_pos[1] + self.padding)
+        )
+
+        self._showing_pos = self._text_surface_buffer = None
+
+        get_window().remove_renderable(self)
 
 
 __all__ = (

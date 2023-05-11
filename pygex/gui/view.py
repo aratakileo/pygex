@@ -6,10 +6,10 @@ from pygex.gui.drawable.drawable import Drawable, ColorDrawable
 from pygame.display import get_window_size as pg_win_get_size
 from pygex.color import TYPE_COLOR, COLOR_TRANSPARENT
 from pygame.mouse import get_pos as pg_mouse_get_pos
+from pygex.interface import Flippable, Renderable
 from pygex.text import SIZE_WRAP_CONTENT
 from pygame.surface import SurfaceType
 from functools import cached_property
-from pygex.interface import Flippable
 from pygame.event import Event
 from pygame.rect import Rect
 from typing import Sequence
@@ -37,7 +37,7 @@ DEFAULT_POSITION = (0,) * 2
 DEFAULT_GRAVITY = GRAVITY_TOP_LEFT
 
 
-class View(Flippable):
+class View(Flippable, Renderable):
     def __init__(
             self,
             size: Sequence[int],
@@ -96,7 +96,37 @@ class View(Flippable):
             self.apply_size_changes_to_parent()
 
     @property
-    def pos(self):
+    def abs_pos(self) -> tuple[float | int, float | int]:
+        """Getting absolute View position of render on screen
+        (additions to the value inside the parent container are not taken into account)"""
+        if self._parent is None or not isinstance(self._parent, View):
+            return self.x + self._margin_left, self.y + self._margin_top
+
+        return (
+            self._parent.abs_x + self.x + self._margin_left,
+            self._parent.abs_y + self.y + self._margin_top
+        )
+
+    @property
+    def abs_x(self) -> float | int:
+        """Getting absolute View position by x of render on screen
+        (additions to the value inside the parent container are not taken into account)"""
+        if self._parent is None or not isinstance(self._parent, View):
+            return self.x + self._margin_left
+
+        return self._parent.abs_x + self.x + self._margin_left
+
+    @property
+    def abs_y(self) -> float | int:
+        """Getting absolute View position by y of render on screen
+        (additions to the value inside the parent container are not taken into account)"""
+        if self._parent is None or not isinstance(self._parent, View):
+            return self.y + self._margin_top
+
+        return self._parent.abs_y + self.y + self._margin_top
+
+    @property
+    def pos(self) -> tuple[float | int, float | int]:
         return self.x, self.y
 
     @pos.setter
@@ -104,7 +134,7 @@ class View(Flippable):
         self.x, self.y = value
 
     @property
-    def size(self):
+    def size(self) -> tuple[int, int]:
         return self._width, self._height
 
     @size.setter
@@ -121,7 +151,7 @@ class View(Flippable):
         self.apply_size_changes_to_parent()
 
     @property
-    def width(self):
+    def width(self) -> int:
         return self._width
 
     @width.setter
@@ -138,7 +168,7 @@ class View(Flippable):
         self.apply_size_changes_to_parent()
 
     @property
-    def height(self):
+    def height(self) -> int:
         return self._height
 
     @height.setter
@@ -349,6 +379,14 @@ class View(Flippable):
             self.get_computed_background_height(),
         )
 
+    def get_abs_bounds(self):
+        return Rect(
+            self.abs_x,
+            self.abs_y,
+            self.get_computed_background_width(),
+            self.get_computed_background_height(),
+        )
+
     def get_computed_content_width(self):
         return self._width if self._width == SIZE_WRAP_CONTENT else (
                     self.get_computed_background_width() - self.padding_horizontal
@@ -409,7 +447,7 @@ class View(Flippable):
 
         return self._height + self.margin_vertical * apply_margin
 
-    def get_computed_background_size(self, apply_margin=False, apply_visibility=False):
+    def get_computed_background_size(self, apply_margin=False, apply_visibility=False) -> tuple[int, int]:
         if apply_visibility and self._visibility == VISIBILITY_GONE:
             return 0, 0
 
@@ -579,16 +617,12 @@ class View(Flippable):
             surface.blit(self.buffered_content_surface, (render_x + content_x, render_y + content_y))
 
         if self._is_focused and self._hint is not None:
-            hint_pos = pg_mouse_get_pos() if self._hint_anchor_is_mouse else (
-                render_x + (self.get_computed_background_width() / 2),
-                render_y + self.get_computed_background_height() + self._hint_offset
+            hint_anchor = pg_mouse_get_pos() if self._hint_anchor_is_mouse else self.get_abs_bounds().move(
+                render_x - self.x,
+                render_y - self.y
             )
 
-            self._hint.render(
-                surface,
-                hint_pos,
-                (0, 0, *parent_size)
-            )
+            self._hint.provide_show(hint_anchor, (0, 0, *parent_size))
 
 
 __all__ = (

@@ -9,7 +9,7 @@ from pygex.gui.textview import TextView
 from pygex.info import ver as pygex_ver
 from pygex.interface import Flippable
 from platform import python_version
-from pygex.window import get_window
+from pygex.broker import get_window
 from pygame.constants import K_F2
 from pygex.gui import hint
 
@@ -112,8 +112,6 @@ class DebugPanel(Flippable):
             self.is_demonstration_mode.__str__().lower(),
             '\n[f5] - start/stop window record' if self.is_demonstration_mode else ''
         ))
-
-        # self.debug_textview.render_background_surface(True)
 
         if self.close_button.is_clicked or window.input.is_up(K_F2):
             if self.is_showing:
