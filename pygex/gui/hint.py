@@ -54,6 +54,7 @@ class Hint(Renderable):
     def provide_show(
             self,
             anchor_rect_or_point: Sequence[float | int] | RectType,
+            position_offset: Sequence[float | int] = (0, 0),
             bounds_in: Sequence[float | int] | RectType = ...
     ):
         if len(anchor_rect_or_point) == 2:
@@ -118,7 +119,7 @@ class Hint(Renderable):
             elif box_y < bounds_in[1]:
                 box_y = bounds_in[1]
 
-        self._showing_pos = box_x, box_y
+        self._showing_pos = box_x + position_offset[0], box_y + position_offset[1]
 
     def render(self, surface: SurfaceType):
         if self._showing_pos is None or self._text_surface_buffer is None or not self._is_showing:
