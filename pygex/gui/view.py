@@ -635,13 +635,19 @@ class View(Flippable, Renderable):
 
             surface.blit(self.buffered_content_surface, (render_x + content_x, render_y + content_y))
 
-        if self._is_focused and self._hint is not None:
+        if self._hint is None:
+            return
+
+        if self._is_focused:
             hint_anchor = pg_mouse_get_pos() if self._hint_anchor_is_mouse else self.get_abs_bounds().move(
-                render_x - self.x,
-                render_y - self.y
+                x_off,
+                y_off
             )
 
-            self._hint.provide_show(hint_anchor, (0, 0, *parent_size))
+            self._hint.provide_show(hint_anchor)
+            self._hint.show()
+        else:
+            self._hint.hide()
 
 
 __all__ = (

@@ -39,16 +39,28 @@ class Hint(Renderable):
         self.font_or_size: FontType | int = ...
         self.border_radius_or_radii: int | Sequence[int] = 5
 
+        self._is_showing = False
         self._showing_pos: tuple[float | int, float | int] | None = None
         self._text_surface_buffer: SurfaceType | None = None
+
+        get_window().add_renderable(self)
+
+    def show(self):
+        self._is_showing = True
+
+    def hide(self):
+        self._is_showing = False
 
     def provide_show(
             self,
             anchor_rect_or_point: Sequence[float | int] | RectType,
-            bounds_in: Sequence[float | int] | RectType
+            bounds_in: Sequence[float | int] | RectType = ...
     ):
         if len(anchor_rect_or_point) == 2:
             anchor_rect_or_point = *anchor_rect_or_point, 0, 0
+
+        if bounds_in is ...:
+            bounds_in = get_window().surface.get_bounding_rect()
 
         self._text_surface_buffer = render_text(
             self.text,
@@ -108,10 +120,8 @@ class Hint(Renderable):
 
         self._showing_pos = box_x, box_y
 
-        get_window().add_renderable(self)
-
     def render(self, surface: SurfaceType):
-        if self._showing_pos is None or self._text_surface_buffer is None:
+        if self._showing_pos is None or self._text_surface_buffer is None or not self._is_showing:
             return
 
         boxw = self._text_surface_buffer.get_width() + self.padding * 2
@@ -129,10 +139,6 @@ class Hint(Renderable):
             self._text_surface_buffer,
             (self._showing_pos[0] + self.padding, self._showing_pos[1] + self.padding)
         )
-
-        self._showing_pos = self._text_surface_buffer = None
-
-        get_window().remove_renderable(self)
 
 
 __all__ = (
