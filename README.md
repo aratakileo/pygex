@@ -1,4 +1,4 @@
-# PygEx (Pygame Extended)
+# pygex (<ins>pyg</ins>ame <ins>ex</ins>tended)
 Extended library for pygame users
 
 ##### Navigation
