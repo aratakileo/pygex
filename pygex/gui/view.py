@@ -71,8 +71,8 @@ class View(Flippable, Renderable):
         self._is_focused = False
         self._visibility = VISIBILITY_VISIBLE
 
-        self._hint: hint.Hint | None = None
-        self._hint_anchor_is_mouse = False
+        self.hint: hint.Hint | None = None
+        self.forcibly_pin_hint_to_mouse_position = False
 
         self.x, self.y = pos
         self.content_gravity = content_gravity
@@ -482,20 +482,26 @@ class View(Flippable, Renderable):
 
     def set_hint(
             self,
-            text: str,
-            position_offset=(0, 5),
-            anchor_is_mouse=False,
-            hint_gravity: int = hint.GRAVITY_CENTER_HORIZONTAL | hint.GRAVITY_UNDER_CENTER
+            text: str = ...,
+            gravity: int = ...,
+            position_offset: Sequence[int] = ...,
+            forcibly_pin_to_mouse_position: bool = ...
     ):
-        self._hint_anchor_is_mouse = anchor_is_mouse
+        if self.hint is None:
+            self.hint = hint.Hint(
+                text,
+                gravity=hint.GRAVITY_CENTER_HORIZONTAL | hint.GRAVITY_UNDER_CENTER,
+                position_offset=(0, 5)
+            )
+        
+        if gravity is not ...:
+            self.hint.gravity = gravity
 
-        if self._hint is None:
-            self._hint = hint.Hint(text, gravity=hint_gravity, position_offset=position_offset)
+        if position_offset is not ...:
+            self.hint.position_offset = position_offset
 
-            return
-
-        self._hint.text = text
-        self._hint.gravity = hint_gravity
+        if forcibly_pin_to_mouse_position is not ...:
+            self.forcibly_pin_hint_to_mouse_position = True
 
     def apply_size_changes_to_parent(self):
         if 'rebufferize_sizes_for_view' in self._parent.__dir__():
@@ -633,19 +639,19 @@ class View(Flippable, Renderable):
 
             surface.blit(self.buffered_content_surface, (render_x + content_x, render_y + content_y))
 
-        if self._hint is None:
+        if self.hint is None:
             return
 
         if self._is_focused:
-            hint_anchor = pg_mouse_get_pos() if self._hint_anchor_is_mouse else self.get_abs_bounds().move(
+            hint_anchor = ... if self.forcibly_pin_hint_to_mouse_position else self.get_abs_bounds().move(
                 x_off,
                 y_off
             )
 
-            self._hint.provide_show(hint_anchor)
-            self._hint.show()
+            self.hint.provide_show(hint_anchor)
+            self.hint.show()
         else:
-            self._hint.hide()
+            self.hint.hide()
 
 
 __all__ = (
