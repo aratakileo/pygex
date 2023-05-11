@@ -58,8 +58,11 @@ class InteractionDrawable(Drawable, Flippable):
         self._content_buffered_size = (-1, -1)
 
     def set_interaction_state(self, interaction_status: int, animate=True):
-        if interaction_status == INTERACTION_STATE_NO_INTERACTION \
-                and self._interaction_state != INTERACTION_STATE_NO_INTERACTION and animate:
+        if (
+                interaction_status == INTERACTION_STATE_NO_INTERACTION
+                and self._interaction_state != INTERACTION_STATE_NO_INTERACTION
+                and animate
+        ):
             self._is_in_process = True
 
         self._interaction_state = interaction_status
@@ -115,8 +118,11 @@ class FadingDrawable(InteractionDrawable):
         self._effect_color_rgba = ahex_to_rgba(as_ahex(new_effect_color))
 
     def set_interaction_state(self, interaction_state: int, animate=True):
-        if interaction_state == INTERACTION_STATE_NO_INTERACTION \
-                and self._interaction_state != INTERACTION_STATE_NO_INTERACTION and animate:
+        if (
+                interaction_state == INTERACTION_STATE_NO_INTERACTION
+                and self._interaction_state != INTERACTION_STATE_NO_INTERACTION
+                and animate
+        ):
             self._is_in_process = True
 
         self._interaction_state = interaction_state
@@ -129,8 +135,10 @@ class FadingDrawable(InteractionDrawable):
             if self._in_process_alpha_of_background > 0:
                 self._in_process_alpha_of_background -= self.effect_alpha_decreasing_per_frame
 
-            if self._in_process_alpha_of_background <= self._effect_color_rgba[-1] \
-                    - self.effect_alpha_value_difference_for_start_decreasing_effect_border_alpha_value:
+            if self._in_process_alpha_of_background <= (
+                    self._effect_color_rgba[-1]
+                    - self.effect_alpha_value_difference_for_start_decreasing_effect_border_alpha_value
+            ):
                 self._in_process_alpha_of_border -= self.effect_alpha_decreasing_per_frame
 
         if self._in_process_alpha_of_border <= 0:

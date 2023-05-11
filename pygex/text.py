@@ -264,8 +264,10 @@ class TextRenderer:
             if char == ' ':
                 last_space_index = char_index
 
-            if self._width != SIZE_WRAP_CONTENT \
-                    and font.size(text_piece + char)[0] > self._width - self._paragraph_space * has_paragraph_space:
+            if (
+                    self._width != SIZE_WRAP_CONTENT
+                    and font.size(text_piece + char)[0] > self._width - self._paragraph_space * has_paragraph_space
+            ):
                 if last_space_index > char_index - len(text_piece):
                     expected_piece_len = len(text_piece)
                     text_piece = text_piece[:last_space_index - char_index + len(text_piece) + 1]
@@ -307,8 +309,9 @@ class TextRenderer:
             self.text_surface = None
             return
 
-        if self._lines_number == 1 or len(self._parsed_queue) == 2 \
-                or len(self._parsed_queue) == 3 and isinstance(self._parsed_queue[-1], int):
+        if self._lines_number == 1 or len(self._parsed_queue) == 2 or (
+                len(self._parsed_queue) == 3 and isinstance(self._parsed_queue[-1], int)
+        ):
             self.render_as_singleline_content()
             return
 

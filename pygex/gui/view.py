@@ -412,15 +412,21 @@ class View(Flippable, Renderable):
                 # ATTENTION: if there is no such condition, there will be an infinite recursion
                 return self.min_width + self.margin_horizontal
 
-            return self._parent.get_computed_background_width() - self._parent.padding_horizontal \
-                - self.margin_horizontal
+            return (
+                    self._parent.get_computed_background_width()
+                    - self._parent.padding_horizontal
+                    - self.margin_horizontal
+            )
 
         if self._width == SIZE_WRAP_CONTENT:
             if self.buffered_content_surface is None:
                 return self.min_width + self.margin_horizontal * apply_margin
 
-            return self.buffered_content_surface.get_width() + self.padding_horizontal \
-                + self.margin_horizontal * apply_margin
+            return (
+                    self.buffered_content_surface.get_width()
+                    + self.padding_horizontal
+                    + self.margin_horizontal * apply_margin
+            )
 
         return self._width + self.margin_horizontal * apply_margin
 
@@ -442,8 +448,11 @@ class View(Flippable, Renderable):
             if self.buffered_content_surface is None:
                 return self.min_height + self.margin_vertical * apply_margin
 
-            return self.buffered_content_surface.get_height() + self.padding_vertical \
-                + self.margin_vertical * apply_margin
+            return (
+                    self.buffered_content_surface.get_height()
+                    + self.padding_vertical
+                    + self.margin_vertical * apply_margin
+            )
 
         return self._height + self.margin_vertical * apply_margin
 
@@ -514,8 +523,10 @@ class View(Flippable, Renderable):
             self._interaction_state = INTERACTION_STATE_IN_INTERACTION
             interaction_status_is_changed = True
         elif e.type == MOUSEBUTTONUP and self._interaction_state == INTERACTION_STATE_IN_INTERACTION:
-            self._interaction_state = INTERACTION_STATE_END_OF_INTERACTION if self._is_focused \
+            self._interaction_state = (
+                INTERACTION_STATE_END_OF_INTERACTION if self._is_focused
                 else INTERACTION_STATE_NO_INTERACTION
+            )
             interaction_status_is_changed = True
 
         if interaction_status_is_changed:
@@ -542,8 +553,10 @@ class View(Flippable, Renderable):
             self._interaction_state = INTERACTION_STATE_NO_INTERACTION
             self._is_focused = False
 
-            if self._background_drawable_is_interaction_drawable \
-                    and self._background_drawable._interaction_state != INTERACTION_STATE_NO_INTERACTION:
+            if (
+                    self._background_drawable_is_interaction_drawable
+                    and self._background_drawable._interaction_state != INTERACTION_STATE_NO_INTERACTION
+            ):
 
                 self._background_drawable.set_interaction_state(INTERACTION_STATE_NO_INTERACTION, animate=False)
                 self._background_surface_buffer = self._background_drawable.render(self.get_computed_background_size())
@@ -566,8 +579,11 @@ class View(Flippable, Renderable):
         pass
 
     def render_background_surface(self, force_render=False):
-        if self._background_drawable is None or not force_render and self._background_surface_buffer is not None \
-                and self._background_surface_buffer.get_size() == self.get_computed_background_size():
+        if self._background_drawable is None or (
+                not force_render
+                and self._background_surface_buffer is not None
+                and self._background_surface_buffer.get_size() == self.get_computed_background_size()
+        ):
             return
 
         self._background_surface_buffer = self._background_drawable.render(self.get_computed_background_size())
@@ -595,8 +611,11 @@ class View(Flippable, Renderable):
 
         bg_width, bg_height = self.get_computed_background_width(), self.get_computed_background_height()
 
-        if self._width == SIZE_MATCH_PARENT and self._background_surface_buffer.get_width() != bg_width \
-                or self._height == SIZE_MATCH_PARENT and self._background_surface_buffer.get_height() != bg_height:
+        if (
+                self._width == SIZE_MATCH_PARENT and self._background_surface_buffer.get_width() != bg_width
+        ) or (
+                self._height == SIZE_MATCH_PARENT and self._background_surface_buffer.get_height() != bg_height
+        ):
             self.render_content_surface()
             self.render_background_surface()
 

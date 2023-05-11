@@ -65,8 +65,9 @@ class TextView(View):
         if not self.text_renderer.set_text(text):
             return
 
-        if (self.text_renderer.text_surface is None or old_size != self.text_renderer.text_surface.get_size()) \
-                and 'rebufferize_sizes_for_view' in self._parent.__dir__():
+        if (
+                self.text_renderer.text_surface is None or old_size != self.text_renderer.text_surface.get_size()
+        ) and 'rebufferize_sizes_for_view' in self._parent.__dir__():
             self._parent.rebufferize_sizes_for_view(self)
 
         if isinstance(self._parent, View):
