@@ -64,7 +64,7 @@ try:
 
             self._recorded_content_frames += 1
 
-        def stop_record(self):
+        def pause_record(self):
             self._is_recording = False
 
         def save(self, save_directory='./screenshots'):
