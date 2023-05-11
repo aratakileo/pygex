@@ -23,7 +23,7 @@ GRAVITY_UNDER_CENTER = 1 << 7
 class Hint(Renderable):
     def __init__(
             self,
-            text: str,
+            text: str = 'This is hint',
             text_color: TYPE_COLOR = ...,
             bg_color: TYPE_COLOR = COLOR_BLACK | 0xaa000000,
             gravity=GRAVITY_CENTER_HORIZONTAL | GRAVITY_UNDER_CENTER,
@@ -60,7 +60,7 @@ class Hint(Renderable):
     ):
         if anchor_rect_or_pos is ...:
             anchor_rect_or_pos = get_mouse()
-        
+
         if len(anchor_rect_or_pos) == 2:
             anchor_rect_or_pos = *anchor_rect_or_pos, 0, 0
 
