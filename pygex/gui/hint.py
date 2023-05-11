@@ -1,10 +1,11 @@
 from pygex.color import TYPE_COLOR, as_rgba, to_readable_color, COLOR_BLACK
 from pygex.text import render_text, DEFAULT_FONT_SIZE
-from pygex.broker import get_window, get_mouse
+from pygame.mouse import get_pos as pg_mouse_get_pos
 from pygame.draw import rect as draw_rect
 from pygex.interface import Renderable
 from pygame.surface import SurfaceType
 from pygex.image import AlphaSurface
+from pygex.broker import get_window
 from pygame.rect import RectType
 from pygame.font import FontType
 from typing import Sequence
@@ -59,7 +60,7 @@ class Hint(Renderable):
             bounds_in: Sequence[float | int] | RectType = ...
     ):
         if anchor_rect_or_pos is ...:
-            anchor_rect_or_pos = get_mouse()
+            anchor_rect_or_pos = pg_mouse_get_pos()
 
         if len(anchor_rect_or_pos) == 2:
             anchor_rect_or_pos = *anchor_rect_or_pos, 0, 0
