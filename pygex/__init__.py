@@ -1,4 +1,5 @@
 from pygex.broker import get_input, get_mouse, get_window
+from pygex.debugpanel import DebugPanel
 from pygex.gui.toast import Toast
 from pygex.window import Window
 from pygex.input import Input
