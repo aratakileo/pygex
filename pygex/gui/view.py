@@ -273,7 +273,6 @@ class View(Flippable, Renderable):
     def padding_vertical(self) -> int:
         return self._padding_top + self._padding_bottom
 
-
     @property
     def margin_left(self) -> int:
         return self._margin_left
@@ -549,8 +548,7 @@ class View(Flippable, Renderable):
         return True
 
     def flip(self):
-        # ATTENTION: if the View like a ButtonView will be added to the Window view list,
-        # then this method will call earlier than the render method
+        """This method call earlier than the render method"""
 
         if self._visibility == VISIBILITY_GONE or not self.enabled:
             self._interaction_state = INTERACTION_STATE_NO_INTERACTION
@@ -595,6 +593,8 @@ class View(Flippable, Renderable):
             self._parent.render_content_surface()
 
     def render(self, surface: SurfaceType, x_off: float | int, y_off: float | int, parent_size: Sequence[int]):
+        """This method call later than the flip method"""
+
         if self._visibility != VISIBILITY_VISIBLE:
             return
 
@@ -614,9 +614,9 @@ class View(Flippable, Renderable):
 
         bg_width, bg_height = self.get_computed_background_width(), self.get_computed_background_height()
 
-        if (
+        if self._background_drawable is not None and (
                 self._width == SIZE_MATCH_PARENT and self._background_surface_buffer.get_width() != bg_width
-        ) or (
+                or
                 self._height == SIZE_MATCH_PARENT and self._background_surface_buffer.get_height() != bg_height
         ):
             self.render_content_surface()
