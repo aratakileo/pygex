@@ -22,9 +22,9 @@ try:
         return PillowImage.frombytes('RGBA', source_surface.get_size(), pg_image_tostring(source_surface, 'RGBA'))
 
 
-    def gaussian_blur(source_surface: SurfaceType, radius: int):
+    def fast_gaussian_blur(source_surface: SurfaceType, radius: int):
         """
-        Gaussian blur
+        Fast gaussian blur [faster than `pygame-ce`.transform.gaussian_blur(...)]
         :param source_surface: source Surface
         :param radius: blur radius
         """
@@ -87,7 +87,7 @@ __all__ = (
     'AlphaSurface',
     'pillow_to_pygame',
     'pygame_to_pillow',
-    'gaussian_blur',
+    'fast_gaussian_blur',
     'cutout_by_mask',
     'round_corners',
     'gradient'
