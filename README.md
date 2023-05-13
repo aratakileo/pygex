@@ -10,7 +10,7 @@ An extensive module of various tools and tools for creating a modern graphical i
 
 ![](https://github.com/TeaCondemns/pygex/releases/download/v0.3.3/preview.gif)
 
-[[Run this demo project]](https://github.com/teacondemns/pygex/releases/tag/v0.3.3)
+[[Run this demonstration code]](https://github.com/teacondemns/pygex/releases/tag/v0.3.3)
 
 Current development version: `0.3.4` (the same version will be [installed](#how-to-install-pygex))
 
