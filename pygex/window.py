@@ -161,6 +161,14 @@ class Window(Flippable):
 
         new_size = pg_get_desktop_sizes()[0] if value and not self.fullscreen else self._size
 
+        # ATTENTION: this segment is necessary because its absence will lead to such glitches as:
+        # - froze of window content rendering
+        # - graphical artifacts
+        #
+        # ALSO: this problem is detected for `pygame-ce==2.2.1`
+        if self.fullscreen != value:
+            self.vsync = False
+
         pg_win_set_mode(new_size, (self.flags | FULLSCREEN) if value else (self.flags & ~FULLSCREEN), vsync=self._vsync)
 
     @property
