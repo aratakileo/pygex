@@ -45,7 +45,7 @@ window = pygex.Window(
 )
 window.bg_color = pygex.color.COLOR_WHITE  # setting the color that will erase everything that remains of the last frame
 
-while True:
+while window.is_running:
     # DESCRIBE YOUR GAME'S RENDERING CODE HERE
 
     # the flip() method is needed to display your work on the screen, as well as for Window to handle various events 
@@ -70,7 +70,7 @@ window.bg_color = pygex.color.COLOR_WHITE  # setting the color that will erase e
 player_pos = pygame.Vector2(window.surface.get_rect().center)
 player_speed = 300
 
-while True:
+while window.is_running:
     pygame.draw.circle(window.surface, pygex.color.COLOR_DEEP_PURPLE, player_pos, 40)
 
     if window.input.is_applying(pygame.K_w):
@@ -90,6 +90,47 @@ while True:
     window.flip()
 ```
 [[Take a look at a `pygame-ce` version of the example]](https://pyga.me/docs/#:~:text=%23%20Example%20file%20showing%20a%20circle%20moving%20on%20screen)
+
+Here is another example, which shows you how to use `pygex.gui` on screen
+```py
+import pygex
+
+# initializing the window
+window = pygex.Window(
+    size=(1280, 720),
+    title='My first game with pygex!',
+    fps_limit=60,
+    resizable=True,
+)
+window.bg_color = pygex.color.COLOR_WHITE  # setting the color that will erase everything that remains of the last frame
+
+helloworld_drawable = pygex.gui.drawable.GradientDrawable(
+    pygex.color.GRADIENT_WITCHING_HOUR[::-1],
+    is_vertical=True,
+    border_radius_or_radii=30
+)
+helloworld_textview = pygex.gui.TextView(
+    'Hello World!',
+    text_color=pygex.color.COLOR_WHITE,
+    size=(pygex.gui.SIZE_MATCH_PARENT,) * 2,
+    margin=(10,) * 4,
+    content_gravity=pygex.gui.GRAVITY_CENTER,
+    font_or_font_size=500,
+    background_drawable_or_color=helloworld_drawable
+)
+
+window.add_view(helloworld_textview)
+
+while window.is_running:
+    window.render_views()  # render all views
+
+    # the flip() method is needed to display your work on the screen, as well as for Window to handle various events
+    # and internal logic
+    window.flip()
+```
+
+Result of the code execution:
+![](preview-1.png)
 
 For more in depth reference, check out [`pygame-ce` docs](https://pyga.me/docs/), or reference the API documentation by module section below.
 
