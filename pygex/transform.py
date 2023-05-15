@@ -1,7 +1,8 @@
 from pygame.image import frombuffer as pg_image_frombuffer, tostring as pg_image_tostring
+from pygame.draw import rect as pg_draw_rect, ellipse as pg_draw_ellipse
 from pygame.transform import smoothscale as pg_smoothscale
+from pygex.color import COLOR_BLACK, COLOR_WHITE
 from pygame.surface import Surface, SurfaceType
-from pygame.draw import rect as pg_draw_rect
 from pygex.color import TYPE_COLOR, as_rgba
 from pygame.constants import SRCALPHA
 from typing import Sequence
@@ -53,19 +54,27 @@ def round_corners(
         border_bottom_right_radius: int
 ):
     mask_surface = Surface(source_surface.get_size())
-    mask_surface.fill(0x000000)
+    mask_surface.fill(COLOR_BLACK)
 
-    pg_draw_rect(
-        mask_surface,
-        0xffffff,
-        (0, 0, *source_surface.get_size()),
-        0,
-        -1,
-        border_top_left_radius,
-        border_top_right_radius,
-        border_bottom_left_radius,
-        border_bottom_right_radius
-    )
+    if (
+            border_top_left_radius,
+            border_top_right_radius,
+            border_bottom_left_radius,
+            border_bottom_right_radius
+    ) == (-1, -1, -1, -1):
+        pg_draw_ellipse(mask_surface, COLOR_WHITE, mask_surface.get_rect())
+    else:
+        pg_draw_rect(
+            mask_surface,
+            COLOR_WHITE,
+            mask_surface.get_rect(),
+            0,
+            -1,
+            border_top_left_radius,
+            border_top_right_radius,
+            border_bottom_left_radius,
+            border_bottom_right_radius
+        )
 
     return cutout_by_mask(source_surface, mask_surface)
 
