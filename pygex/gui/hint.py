@@ -4,7 +4,7 @@ from pygame.mouse import get_pos as pg_mouse_get_pos
 from pygex.core import Renderable, get_window
 from pygame.draw import rect as draw_rect
 from pygame.surface import SurfaceType
-from pygex.image import AlphaSurface
+from pygex.surface import AlphaSurface
 from pygame.rect import RectType
 from pygame.font import FontType
 from typing import Sequence

@@ -2,7 +2,7 @@ from pygame.draw import line as pg_draw_line, rect as pg_draw_rect, ellipse as p
 from pygex.color import TYPE_COLOR, COLOR_TRANSPARENT, as_rgba
 from pygame.rect import Rect as pg_Rect
 from pygame.surface import SurfaceType
-from pygex.image import AlphaSurface
+from pygex.surface import AlphaSurface
 from typing import Sequence
 from math import ceil
 

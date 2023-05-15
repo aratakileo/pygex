@@ -1,7 +1,7 @@
 from pygex.color import TYPE_COLOR, as_rgba
 from pygame.font import FontType, get_init, init, Font
 from pygame.surface import SurfaceType
-from pygex.image import AlphaSurface
+from pygex.surface import AlphaSurface
 from typing import Sequence
 
 DEFAULT_FONT_SIZE = 20

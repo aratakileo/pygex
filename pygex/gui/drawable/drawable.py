@@ -1,4 +1,4 @@
-from pygex.image import AlphaSurface, gradient, round_corners
+from pygex.transform import AlphaSurface, gradient, round_corners
 from pygex.color import TYPE_COLOR, COLOR_TRANSPARENT
 from pygex.draw import rect as draw_rect
 from pygame.surface import SurfaceType

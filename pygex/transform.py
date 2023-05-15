@@ -1,14 +1,10 @@
 from pygame.image import frombuffer as pg_image_frombuffer, tostring as pg_image_tostring
 from pygame.transform import smoothscale as pg_smoothscale
 from pygame.surface import Surface, SurfaceType
-from pygex.color import TYPE_COLOR, as_rgba
 from pygame.draw import rect as pg_draw_rect
+from pygex.color import TYPE_COLOR, as_rgba
 from pygame.constants import SRCALPHA
 from typing import Sequence
-
-
-def AlphaSurface(size: Sequence[int], flags: int = 0):
-    return Surface(size, flags | SRCALPHA, 32)
 
 
 try:
@@ -84,7 +80,6 @@ def gradient(size: Sequence[int], colors: Sequence[TYPE_COLOR], is_vertical=Fals
 
 
 __all__ = (
-    'AlphaSurface',
     'pillow_to_pygame',
     'pygame_to_pillow',
     'fast_gaussian_blur',

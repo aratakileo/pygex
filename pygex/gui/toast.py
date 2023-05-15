@@ -2,7 +2,7 @@ from pygex.color import TYPE_COLOR, as_rgba, to_readable_color, COLOR_BLACK
 from pygame.display import get_window_size as pg_win_get_size
 from pygame.draw import rect as pg_draw_rect
 from pygame.surface import SurfaceType
-from pygex.image import AlphaSurface
+from pygex.surface import AlphaSurface
 from pygex.text import render_text
 from typing import Sequence
 from time import time

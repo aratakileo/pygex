@@ -4,7 +4,7 @@ from pygex.gui.view import VISIBILITY_GONE, DEFAULT_MARGIN
 from pygex.color import TYPE_COLOR, COLOR_TRANSPARENT
 from pygex.gui.drawable.drawable import Drawable
 from pygame.surface import SurfaceType
-from pygex.image import AlphaSurface
+from pygex.surface import AlphaSurface
 from pygame.event import Event
 from typing import Sequence
 
