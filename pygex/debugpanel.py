@@ -4,6 +4,7 @@ from pygex.gui.linearlayout import LinearLayout, ORIENTATION_HORIZONTAL
 from pygex.gui.drawable.interactiondrawable import FadingDrawable
 from pygex.core import ver as pygex_ver, get_window, Flippable
 from pygex.gui.drawable.drawable import ColorDrawable
+from pygex.core.constants import MAX_BORDER_RADIUS
 from pygame.version import ver as pygame_ver
 from pygex.gui.buttonview import ButtonView
 from pygex.gui.textview import TextView
@@ -27,8 +28,8 @@ DEBUG_TEXT = 'DEBUG INFO:' \
 
 class DebugPanel(Flippable):
     def __init__(self, hide=True, is_demonstration_mode=False):
-        self.is_showed_button_state_drawable = FadingDrawable.from_color_content(COLOR_RED, 90)
-        self.is_hided_button_state_drawable = FadingDrawable.from_color_content(COLOR_GREEN, 90)
+        self.is_showed_button_state_drawable = FadingDrawable.from_color_content(COLOR_RED, MAX_BORDER_RADIUS)
+        self.is_hided_button_state_drawable = FadingDrawable.from_color_content(COLOR_GREEN, MAX_BORDER_RADIUS)
 
         self.debug_textview = TextView(
             DEBUG_TEXT,
