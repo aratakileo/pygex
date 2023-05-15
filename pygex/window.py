@@ -260,7 +260,7 @@ class Window(Flippable):
         if self.hold_event_buffer:
             self._event_buffer.append(e)
 
-    def flip(self, read_events=True):
+    def flip(self, read_events=True, render_views=False):
         self._event_buffer = []
 
         for flippable in self._flippable_list:
@@ -269,6 +269,8 @@ class Window(Flippable):
         for view in self._view_list:
             # ATTENTION: the peculiarity is that the flip method is called before the render method is used
             view.flip()
+
+        self.render_views()
 
         for renderable in self._renderable_list:
             renderable.render(pg_win_get_surface())
