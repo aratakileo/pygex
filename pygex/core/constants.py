@@ -1,0 +1,1 @@
+MAX_BORDER_RADIUS = -1
