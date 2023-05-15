@@ -56,12 +56,7 @@ def round_corners(
     mask_surface = Surface(source_surface.get_size())
     mask_surface.fill(COLOR_BLACK)
 
-    if (
-            border_top_left_radius,
-            border_top_right_radius,
-            border_bottom_left_radius,
-            border_bottom_right_radius
-    ) == (-1, -1, -1, -1):
+    if -1 in (border_top_left_radius, border_top_right_radius, border_bottom_left_radius, border_bottom_right_radius):
         pg_draw_ellipse(mask_surface, COLOR_WHITE, mask_surface.get_rect())
     else:
         pg_draw_rect(
