@@ -52,6 +52,8 @@ while True:
     # and internal logic
     window.flip()
 ```
+[[Take a look at a `pygame-ce` version of the example]](https://pyga.me/docs/#:~:text=%23%20Example%20file%20showing%20a%20basic%20pygame%20%22game%20loop%22)
+
 Here is a slightly more fleshed out example, which shows you how to move something (a circle in this case) around on screen
 ```py
 import pygame
@@ -87,3 +89,9 @@ while True:
     # and internal logic
     window.flip()
 ```
+[[Take a look at a `pygame-ce` version of the example]](https://pyga.me/docs/#:~:text=%23%20Example%20file%20showing%20a%20circle%20moving%20on%20screen)
+
+For more in depth reference, check out [`pygame-ce` docs](https://pyga.me/docs/), or reference the API documentation by module section below.
+
+### References
+- [pygex.Window](window.md)
