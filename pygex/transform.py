@@ -1,9 +1,8 @@
 from pygame.image import frombuffer as pg_image_frombuffer, tostring as pg_image_tostring
 from pygame.draw import rect as pg_draw_rect, ellipse as pg_draw_ellipse
+from pygex.color import COLOR_BLACK, COLOR_WHITE, TYPE_COLOR, as_rgba
 from pygame.transform import smoothscale as pg_smoothscale
-from pygex.color import COLOR_BLACK, COLOR_WHITE
 from pygame.surface import Surface, SurfaceType
-from pygex.color import TYPE_COLOR, as_rgba
 from pygame.constants import SRCALPHA
 from typing import Sequence
 
