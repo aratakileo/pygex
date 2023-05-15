@@ -49,7 +49,7 @@ class Window(Flippable):
         self._event_buffer = []
 
         self._clock = pg_Clock()
-        self._fps_counter_start_time = time()
+        self._fps_counter_start_time = self._last_frame_time = time()
         self._fps_counter_num = 0
         self._fps_num = 60
         self._dt = 0
@@ -266,6 +266,8 @@ class Window(Flippable):
             self._event_buffer.append(e)
 
     def flip(self, read_events=True, render_views=False):
+        current_time = time()
+
         self._event_buffer = []
 
         for flippable in self._flippable_list:
@@ -288,20 +290,24 @@ class Window(Flippable):
 
         self._fps_counter_num += 1
 
-        if time() - self._fps_counter_start_time >= 1:
-            self._fps_counter_start_time = time()
+        if current_time - self._fps_counter_start_time >= 1:
+            self._fps_counter_start_time = current_time
             self._fps_num = self._fps_counter_num
             self._fps_counter_num = 0
 
         if self.bg_color is not None:
             pg_win_get_surface().fill(self.bg_color)
 
-        if self.fps_limit is not None:
+        if self.fps_limit is None:
+            self._dt = current_time - self._last_frame_time
+        else:
             self._dt = self._clock.tick(self.fps_limit) / 1000
 
         if read_events:
             for e in get_events():
                 self.process_event(e)
 
+        self._last_frame_time = current_time
 
-__all__ = 'Window'
+
+__all__ = 'Window',
