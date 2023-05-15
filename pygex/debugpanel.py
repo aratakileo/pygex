@@ -1,10 +1,9 @@
 from pygex.color import COLOR_RED, COLOR_WHITE, COLOR_BLACK, COLOR_GREEN, set_alpha
+from pygex.core import ver as pygex_ver, get_window, Flippable, MAX_BORDER_RADIUS
 from pygex.gui.view import NO_PADDING, VISIBILITY_VISIBLE, VISIBILITY_GONE
 from pygex.gui.linearlayout import LinearLayout, ORIENTATION_HORIZONTAL
 from pygex.gui.drawable.interactiondrawable import FadingDrawable
-from pygex.core import ver as pygex_ver, get_window, Flippable
 from pygex.gui.drawable.drawable import ColorDrawable
-from pygex.core.constants import MAX_BORDER_RADIUS
 from pygame.version import ver as pygame_ver
 from pygex.gui.buttonview import ButtonView
 from pygex.gui.textview import TextView

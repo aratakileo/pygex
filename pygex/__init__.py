@@ -1,4 +1,4 @@
-from pygex.core import get_input, get_mouse, get_window, ver
+from pygex.core import get_input, get_mouse, get_window, ver, MAX_BORDER_RADIUS
 from pygex.debugpanel import DebugPanel
 from pygex.gui.toast import Toast
 from pygex.window import Window
