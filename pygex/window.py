@@ -10,6 +10,7 @@ from pygex.interface import Flippable, Renderable
 from pygame.image import save as pg_save_image
 from pygame.event import get as get_events
 from pygame.time import Clock as pg_Clock
+from pygame.base import quit as pg_quit
 from pygex.color import TYPE_COLOR
 from pygame.event import Event
 from pygex.input import Input
@@ -59,6 +60,8 @@ class Window(Flippable):
 
         self._pos = pg_get_desktop_sizes()[0]
         self._pos = (self._pos[0] - self._size[0]) // 2, (self._pos[1] - self._size[1]) // 2
+
+        self._is_running = True
 
         self.hold_event_buffer = False
         self.default_quit = True
@@ -184,6 +187,10 @@ class Window(Flippable):
     def dt(self):
         return self._dt
 
+    @property
+    def is_running(self):
+        return self._is_running
+
     def add_flags(self, flags: int):
         self.flags |= flags
 
@@ -252,7 +259,7 @@ class Window(Flippable):
 
     def process_event(self, e: Event):
         if self.default_quit and e.type == QUIT:
-            exit()
+            self.quit()
         elif e.type == WINDOWMOVED:
             self._pos = e.x, e.y
 
@@ -308,6 +315,11 @@ class Window(Flippable):
                 self.process_event(e)
 
         self._last_frame_time = current_time
+
+    def quit(self):
+        self._is_running = False
+
+        pg_quit()
 
 
 __all__ = 'Window',
