@@ -263,6 +263,9 @@ class Window(Flippable):
         elif e.type == WINDOWMOVED:
             self._pos = e.x, e.y
 
+        if not self._is_running:  # ATTENTION: this check is needed to avoid crashes after calling `quit()`
+            return
+
         for view in self._view_list:
             view.process_event(e, *pg_mouse_get_pos())
 
