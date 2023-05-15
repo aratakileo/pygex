@@ -103,7 +103,7 @@ class Window(Flippable):
         self.size = self.size[0], value
 
     @property
-    def pos(self):
+    def pos(self) -> tuple[int, int]:
         return (0, 0) if pg_win_get_surface().get_flags() & FULLSCREEN else self._pos
 
     @property
