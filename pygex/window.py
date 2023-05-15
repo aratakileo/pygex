@@ -52,6 +52,7 @@ class Window(Flippable):
         self._fps_counter_start_time = time()
         self._fps_counter_num = 0
         self._fps_num = 60
+        self._dt = 0
 
         self._size = *size,
         self._vsync = vsync
@@ -179,6 +180,10 @@ class Window(Flippable):
     def resizable(self, value: bool):
         self.flags = (self.flags | RESIZABLE) if value else (self.flags & ~RESIZABLE)
 
+    @property
+    def dt(self):
+        return self._dt
+
     def add_flags(self, flags: int):
         self.flags |= flags
 
@@ -292,7 +297,7 @@ class Window(Flippable):
             pg_win_get_surface().fill(self.bg_color)
 
         if self.fps_limit is not None:
-            self._clock.tick(self.fps_limit)
+            self._dt = self._clock.tick(self.fps_limit) / 1000
 
         if read_events:
             for e in get_events():
