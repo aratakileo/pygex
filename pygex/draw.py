@@ -1,5 +1,6 @@
 from pygame.draw import line as pg_draw_line, rect as pg_draw_rect, ellipse as pg_draw_ellipse
 from pygex.color import TYPE_COLOR, COLOR_TRANSPARENT, as_rgba
+from pygex.core.constants import MAX_BORDER_RADIUS
 from pygame.rect import Rect as pg_Rect
 from pygame.surface import SurfaceType
 from pygex.surface import AlphaSurface
@@ -57,7 +58,7 @@ def rect(
     - allows to draw the border together with the main part
     - with a radius value of -1 for any of the corners, draws all corners rounded as far as possible
     """
-    draw_like_ellipse = -1 in border_radii
+    draw_like_ellipse = MAX_BORDER_RADIUS in border_radii
 
     if apply_alpha_color_over_surface:
         surface_for_render = AlphaSurface(_rect[2:])
