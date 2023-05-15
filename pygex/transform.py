@@ -2,6 +2,7 @@ from pygame.image import frombuffer as pg_image_frombuffer, tostring as pg_image
 from pygame.draw import rect as pg_draw_rect, ellipse as pg_draw_ellipse
 from pygex.color import COLOR_BLACK, COLOR_WHITE, TYPE_COLOR, as_rgba
 from pygame.transform import smoothscale as pg_smoothscale
+from pygex.core.constants import MAX_BORDER_RADIUS
 from pygame.surface import Surface, SurfaceType
 from pygame.constants import SRCALPHA
 from typing import Sequence
@@ -55,7 +56,12 @@ def round_corners(
     mask_surface = Surface(source_surface.get_size())
     mask_surface.fill(COLOR_BLACK)
 
-    if -1 in (border_top_left_radius, border_top_right_radius, border_bottom_left_radius, border_bottom_right_radius):
+    if MAX_BORDER_RADIUS in (
+            border_top_left_radius,
+            border_top_right_radius,
+            border_bottom_left_radius,
+            border_bottom_right_radius
+    ):
         pg_draw_ellipse(mask_surface, COLOR_WHITE, mask_surface.get_rect())
     else:
         pg_draw_rect(
