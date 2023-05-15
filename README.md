@@ -5,6 +5,7 @@ An extensive module of various tools and tools for creating a modern graphical i
 - [Preview](#preview)
 - [Requirements](#requirements)
 - [How to install `pygex`](#how-to-install-pygex)
+- [Documentation](docs/README.md)
 
 ### Preview
 
