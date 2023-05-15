@@ -4,7 +4,7 @@ from pygex.image import round_corners, AlphaSurface
 from pygex.draw import rect as draw_rect
 from pygame.surface import SurfaceType
 from pygex.color import replace_alpha
-from pygex.interface import Flippable
+from pygex.core.interface import Flippable
 from typing import Sequence
 
 

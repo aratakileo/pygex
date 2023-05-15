@@ -1,6 +1,6 @@
+from pygex.window import Window
 from pygex.input import Input
 from pygex.mouse import Mouse
-from pygex.window import Window
 
 
 def set_active_input(active_input: Input): ...

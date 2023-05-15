@@ -1,11 +1,10 @@
 from pygex.color import TYPE_COLOR, as_rgba, to_readable_color, COLOR_BLACK
 from pygex.text import render_text, DEFAULT_FONT_SIZE
 from pygame.mouse import get_pos as pg_mouse_get_pos
+from pygex.core import Renderable, get_window
 from pygame.draw import rect as draw_rect
-from pygex.interface import Renderable
 from pygame.surface import SurfaceType
 from pygex.image import AlphaSurface
-from pygex.broker import get_window
 from pygame.rect import RectType
 from pygame.font import FontType
 from typing import Sequence

@@ -6,8 +6,8 @@ except ImportError:
 setup(
     name='pygex',
     version='0.3.4',
-    packages=['pygex', 'pygex.gui', 'pygex.gui.drawable'],
-    package_data={'pygex': ['broker.pyi']},
+    packages=['pygex', 'pygex.gui', 'pygex.gui.drawable', 'pygex.core'],
+    package_data={'pygex.core': ['broker.pyi']},
     url='https://github.com/teacondemns/pygex',
     install_requires=['pygame-ce>=2.2.1'],
     license='MIT',

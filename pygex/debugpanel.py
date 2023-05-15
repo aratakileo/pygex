@@ -2,14 +2,12 @@ from pygex.color import COLOR_RED, COLOR_WHITE, COLOR_BLACK, COLOR_GREEN, set_al
 from pygex.gui.view import NO_PADDING, VISIBILITY_VISIBLE, VISIBILITY_GONE
 from pygex.gui.linearlayout import LinearLayout, ORIENTATION_HORIZONTAL
 from pygex.gui.drawable.interactiondrawable import FadingDrawable
+from pygex.core import ver as pygex_ver, get_window, Flippable
 from pygex.gui.drawable.drawable import ColorDrawable
 from pygame.version import ver as pygame_ver
 from pygex.gui.buttonview import ButtonView
 from pygex.gui.textview import TextView
-from pygex.info import ver as pygex_ver
-from pygex.interface import Flippable
 from platform import python_version
-from pygex.broker import get_window
 from pygame.constants import K_F2
 from pygex.gui import hint
 

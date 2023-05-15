@@ -5,7 +5,7 @@ from pygex.gui.drawable.interactiondrawable import INTERACTION_STATE_IN_INTERACT
 from pygex.gui.drawable.drawable import Drawable, ColorDrawable
 from pygame.display import get_window_size as pg_win_get_size
 from pygex.color import TYPE_COLOR, COLOR_TRANSPARENT
-from pygex.interface import Flippable, Renderable
+from pygex.core.interface import Flippable, Renderable
 from pygex.text import SIZE_WRAP_CONTENT
 from pygame.surface import SurfaceType
 from functools import cached_property

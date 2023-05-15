@@ -2,11 +2,11 @@ from pygame.display import set_mode as pg_win_set_mode, set_caption as pg_win_se
 from pygame.display import get_surface as pg_win_get_surface, get_window_size as pg_win_get_size
 from pygame.display import get_caption as pg_win_get_caption, init as pg_display_init
 from pygame.constants import QUIT, FULLSCREEN, RESIZABLE, WINDOWMOVED
+from pygex.core.broker import set_active_window, get_mouse, get_input
 from pygame.display import get_desktop_sizes as pg_get_desktop_sizes
-from pygex.broker import set_active_window, get_mouse, get_input
 from pygex.gui.toast import Toast, render as render_toasts
+from pygex.core.interface import Flippable, Renderable
 from pygame.mouse import get_pos as pg_mouse_get_pos
-from pygex.interface import Flippable, Renderable
 from pygame.image import save as pg_save_image
 from pygame.event import get as get_events
 from pygame.time import Clock as pg_Clock

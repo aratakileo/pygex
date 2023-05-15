@@ -2,8 +2,8 @@ from pygame.display import get_window_size as pg_win_get_size, get_desktop_sizes
 from pygame.constants import MOUSEBUTTONDOWN, MOUSEBUTTONUP, MOUSEWHEEL, WINDOWMOVED
 from pygame.mouse import get_pos as pg_mouse_get_pos, set_pos as pg_mouse_set_pos
 from pygex.input import S_NOT_PRESSED, S_HOLD, S_DOWN, S_UP
-from pygex.broker import set_active_mouse
-from pygame.event import Event, set_grab
+from pygame.event import Event, set_grab as pg_set_grab
+from pygex.core.broker import set_active_mouse
 from typing import Sequence
 
 F_NO_BORDERS = 1 << 0
@@ -149,7 +149,7 @@ class Mouse:
             self._win_pos = e.x, e.y
 
     def flip(self):
-        set_grab(bool(self.flags & F_CONFINED))
+        pg_set_grab(bool(self.flags & F_CONFINED))
 
         if self.flags & F_NO_BORDERS:
             winw, winh = pg_win_get_size()
