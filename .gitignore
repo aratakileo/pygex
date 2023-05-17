@@ -4,3 +4,4 @@ pygex.egg-info/
 build/
 
 failed_pyproject.toml
+test.py
