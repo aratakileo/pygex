@@ -230,12 +230,19 @@ class TextRenderer:
         if self._lines_number is ... and self._height != SIZE_WRAP_CONTENT:
             max_lines_number = int(self._height / (char_height + self._line_spacing)) + 2
 
+        # ATTENTION: the list is made up of integers and strings, where each number in the list indicates the number
+        # of empty lines when drawing. So '\n' will be converted to the number 0, and '\n\n\n' will be converted
+        # to the number 2, and 'a\n\nb' will be converted to the list ['a', 1, 'b']
+        #
+        # ALSO: such a system is necessary so that at the stage of text rendering, if the value `_paragraph_space`
+        # is specified, this value can be applied in those places where a number is indicated in the list
         parsed_queue = [0]
+
         char_index = 0
         line_number = 1
-        text_piece = ''
-        last_space_index = -1
-        reserved_width = 0
+        text_fragment = ''  # the fragment of text for parsing for one iteration
+        last_space_index = -1  # index of last space char in `text_fragment`
+        reserved_width = 0  # max width of a rendered text representation
 
         has_paragraph_space = True
 
@@ -246,18 +253,18 @@ class TextRenderer:
             char = self._text[char_index]
 
             if char == '\n':
-                if text_piece:
+                if text_fragment:
                     reserved_width = max(reserved_width,
-                                         font.size(text_piece)[0] + self._paragraph_space * has_paragraph_space)
+                                         font.size(text_fragment)[0] + self._paragraph_space * has_paragraph_space)
 
-                    parsed_queue.append(text_piece)
+                    parsed_queue.append(text_fragment)
                     parsed_queue.append(0)
                 elif isinstance(parsed_queue[-1], int):
                     parsed_queue[-1] += 1
 
                 line_number += 1
                 char_index += 1
-                text_piece = ''
+                text_fragment = ''
                 has_paragraph_space = True
                 continue
 
@@ -266,39 +273,39 @@ class TextRenderer:
 
             if (
                     self._width != SIZE_WRAP_CONTENT
-                    and font.size(text_piece + char)[0] > self._width - self._paragraph_space * has_paragraph_space
+                    and font.size(text_fragment + char)[0] > self._width - self._paragraph_space * has_paragraph_space
             ):
-                if last_space_index > char_index - len(text_piece):
-                    expected_piece_len = len(text_piece)
-                    text_piece = text_piece[:last_space_index - char_index + len(text_piece) + 1]
-                    char_index -= expected_piece_len - len(text_piece)
+                if last_space_index > char_index - len(text_fragment):
+                    expected_piece_len = len(text_fragment)
+                    text_fragment = text_fragment[:last_space_index - char_index + len(text_fragment) + 1]
+                    char_index -= expected_piece_len - len(text_fragment)
 
-                parsed_queue.append(text_piece)
+                parsed_queue.append(text_fragment)
 
                 reserved_width = max(
                     reserved_width,
-                    font.size(text_piece)[0] + self._paragraph_space * has_paragraph_space
+                    font.size(text_fragment)[0] + self._paragraph_space * has_paragraph_space
                 )
                 has_paragraph_space = False
-                text_piece = ''
+                text_fragment = ''
                 line_number += 1
                 continue
 
-            text_piece += char
+            text_fragment += char
 
             if char_index == len(self._text) - 1:
-                parsed_queue.append(text_piece)
+                parsed_queue.append(text_fragment)
 
                 reserved_width = max(
                     reserved_width,
-                    font.size(text_piece)[0] + self._paragraph_space * has_paragraph_space
+                    font.size(text_fragment)[0] + self._paragraph_space * has_paragraph_space
                 )
                 break
 
             char_index += 1
 
         if reserved_width == -1:
-            reserved_width = font.size(text_piece)[0]
+            reserved_width = font.size(text_fragment)[0]
 
         self._parsed_queue = *parsed_queue,
         self._parsed_text_width = reserved_width
