@@ -20,6 +20,7 @@ def add_package(package_name: str):
 add_package('gui')
 add_package('gui.drawable')
 add_package('core')
+add_package('resource')
 
 
 setup(
