@@ -1,11 +1,11 @@
-from pygex.gui.drawable.interactiondrawable import InteractionDrawable, INTERACTION_STATE_NO_INTERACTION
+from pygex.gui.drawable import InteractionDrawable, INTERACTION_STATE_NO_INTERACTION
 from pygame.constants import MOUSEMOTION, MOUSEBUTTONDOWN, MOUSEBUTTONUP, WINDOWLEAVE
-from pygex.gui.drawable.interactiondrawable import INTERACTION_STATE_END_OF_INTERACTION
-from pygex.gui.drawable.interactiondrawable import INTERACTION_STATE_IN_INTERACTION
-from pygex.gui.drawable.drawable import Drawable, ColorDrawable
+from pygex.gui.drawable import INTERACTION_STATE_END_OF_INTERACTION
+from pygex.gui.drawable import INTERACTION_STATE_IN_INTERACTION
 from pygame.display import get_window_size as pg_win_get_size
-from pygex.color import TYPE_COLOR, COLOR_TRANSPARENT
+from pygex.gui.drawable import Drawable, ColorDrawable
 from pygex.core.interface import Flippable, Renderable
+from pygex.color import TYPE_COLOR, COLOR_TRANSPARENT
 from pygex.text import SIZE_WRAP_CONTENT
 from pygame.surface import SurfaceType
 from functools import cached_property

@@ -1,5 +1,5 @@
 from pygex.color import TYPE_COLOR, COLOR_TRANSPARENT, COLOR_WHITE, ahex_to_rgba, as_ahex, as_rgba, to_readable_color
-from pygex.gui.drawable.drawable import Drawable, ColorDrawable
+from pygex.gui.drawable import Drawable, ColorDrawable
 from pygex.core.interface import Flippable
 from pygex.transform import round_corners
 from pygex.draw import rect as draw_rect

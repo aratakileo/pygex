@@ -2,7 +2,7 @@ from pygex.gui.view import View, DEFAULT_SIZE, DEFAULT_PADDING, DEFAULT_POSITION
 from pygex.text import ALIGN_LEFT, ALIGN_RIGHT, ALIGN_CENTER, ALIGN_BLOCK, TextRenderer
 from pygex.color import TYPE_COLOR, COLOR_BLACK, COLOR_TRANSPARENT
 from pygex.font import TYPE_FONT, DEFAULT_FONT_SIZE
-from pygex.gui.drawable.drawable import Drawable
+from pygex.gui.drawable import Drawable
 from pygame.surface import SurfaceType
 from typing import Sequence
 
