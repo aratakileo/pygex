@@ -3,7 +3,8 @@ from typing import Sequence
 
 def generate_curve(
         vertexes: Sequence[Sequence[float | int]],
-        density: int, fixed_ends=False
+        density: int,
+        fixed_ends=False
 ) -> tuple | tuple[Sequence[float | int]]:
     """
     Fast Bézier curve generating
