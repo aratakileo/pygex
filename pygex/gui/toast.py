@@ -1,8 +1,7 @@
 from pygex.color import TYPE_COLOR, as_rgba, to_readable_color, COLOR_BLACK
 from pygame.display import get_window_size as pg_win_get_size
+from pygex.surface import AlphaSurface, TYPE_SURFACE
 from pygame.draw import rect as pg_draw_rect
-from pygame.surface import SurfaceType
-from pygex.surface import AlphaSurface
 from pygex.text import render_text
 from typing import Sequence
 from time import time
@@ -46,7 +45,7 @@ _toast_start_time = -1
 _toast_queue: list[Toast] = []
 
 
-def render(surface: SurfaceType):
+def render(surface: TYPE_SURFACE):
     if not _toast_queue:
         return
 

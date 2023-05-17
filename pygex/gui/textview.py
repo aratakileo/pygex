@@ -3,7 +3,7 @@ from pygex.text import ALIGN_LEFT, ALIGN_RIGHT, ALIGN_CENTER, ALIGN_BLOCK, TextR
 from pygex.color import TYPE_COLOR, COLOR_BLACK, COLOR_TRANSPARENT
 from pygex.font import TYPE_FONT, DEFAULT_FONT_SIZE
 from pygex.gui.drawable import Drawable
-from pygame.surface import SurfaceType
+from pygex.surface import TYPE_SURFACE
 from typing import Sequence
 
 
@@ -76,7 +76,7 @@ class TextView(View):
         self.render_background_surface()
 
     @property
-    def buffered_content_surface(self) -> SurfaceType | None:
+    def buffered_content_surface(self) -> TYPE_SURFACE | None:
         return self.text_renderer.text_surface
 
     def render_content_surface(self):

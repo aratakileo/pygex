@@ -1,10 +1,9 @@
 from pygex.color import TYPE_COLOR, as_rgba, to_readable_color, COLOR_BLACK
+from pygex.surface import AlphaSurface, TYPE_SURFACE
 from pygame.mouse import get_pos as pg_mouse_get_pos
 from pygex.font import TYPE_FONT, DEFAULT_FONT_SIZE
 from pygex.core import Renderable, get_window
 from pygame.draw import rect as draw_rect
-from pygame.surface import SurfaceType
-from pygex.surface import AlphaSurface
 from pygex.text import render_text
 from pygame.rect import RectType
 from typing import Sequence
@@ -43,7 +42,7 @@ class Hint(Renderable):
 
         self._is_showing = False
         self._showing_pos: tuple[float | int, float | int] | None = None
-        self._text_surface_buffer: SurfaceType | None = None
+        self._text_surface_buffer: TYPE_SURFACE | None = None
 
         get_window().add_renderable(self)
 
@@ -125,7 +124,7 @@ class Hint(Renderable):
 
         self._showing_pos = box_x + self.position_offset[0], box_y + self.position_offset[1]
 
-    def render(self, surface: SurfaceType):
+    def render(self, surface: TYPE_SURFACE):
         if self._showing_pos is None or self._text_surface_buffer is None or not self._is_showing:
             return
 

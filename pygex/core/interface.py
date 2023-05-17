@@ -1,4 +1,4 @@
-from pygame.surface import SurfaceType
+from pygex.surface import TYPE_SURFACE
 
 
 class Flippable:
@@ -13,7 +13,7 @@ class Renderable:
     # ATTENTION: render layer system is not support for child views
     render_layer = 0
 
-    def render(self, surface: SurfaceType): ...
+    def render(self, surface: TYPE_SURFACE): ...
 
 
 __all__ = (

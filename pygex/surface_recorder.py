@@ -4,7 +4,7 @@ try:
     from pygame.surfarray import pixels3d as np_to_pixels3d_array
     from pygame.display import get_caption as pg_win_get_caption
     from cv2 import cvtColor as cv_set_colorspace
-    from pygame.surface import SurfaceType
+    from pygex.surface import TYPE_SURFACE
     from os import makedirs, rename
     from datetime import datetime
     from typing import Sequence
@@ -45,7 +45,7 @@ try:
                 self._video_size
             )
 
-        def process_frame(self, surface: SurfaceType):
+        def process_frame(self, surface: TYPE_SURFACE):
             if not self._is_recording:
                 return
 

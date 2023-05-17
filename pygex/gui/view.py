@@ -7,7 +7,7 @@ from pygex.gui.drawable import Drawable, ColorDrawable
 from pygex.core.interface import Flippable, Renderable
 from pygex.color import TYPE_COLOR, COLOR_TRANSPARENT
 from pygex.text import SIZE_WRAP_CONTENT
-from pygame.surface import SurfaceType
+from pygex.surface import TYPE_SURFACE
 from functools import cached_property
 from pygame.event import Event
 from pygame.rect import Rect
@@ -52,7 +52,7 @@ class View(Flippable, Renderable):
         self._margin_left, self._margin_top, self._margin_right, self._margin_bottom = margin
 
         self._background_drawable_is_interaction_drawable = False
-        self._background_surface_buffer: SurfaceType | None = None
+        self._background_surface_buffer: TYPE_SURFACE | None = None
         self._parent: View | None = None
 
         if background_drawable_or_color is None or background_drawable_or_color == COLOR_TRANSPARENT:
@@ -365,7 +365,7 @@ class View(Flippable, Renderable):
         return self._is_focused
 
     @property
-    def buffered_content_surface(self) -> SurfaceType | None:
+    def buffered_content_surface(self) -> TYPE_SURFACE | None:
         return
 
     def get_bounds(self):
@@ -592,7 +592,7 @@ class View(Flippable, Renderable):
         if isinstance(self._parent, View):
             self._parent.render_content_surface()
 
-    def render(self, surface: SurfaceType, x_off: float | int, y_off: float | int, parent_size: Sequence[int]):
+    def render(self, surface: TYPE_SURFACE, x_off: float | int, y_off: float | int, parent_size: Sequence[int]):
         """This method call later than the flip method"""
 
         if self._visibility != VISIBILITY_VISIBLE:

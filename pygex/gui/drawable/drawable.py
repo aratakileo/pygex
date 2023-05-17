@@ -1,8 +1,7 @@
 from pygex.color import TYPE_COLOR, COLOR_TRANSPARENT
+from pygex.surface import AlphaSurface, TYPE_SURFACE
 from pygex.transform import gradient, round_corners
 from pygex.draw import rect as draw_rect
-from pygame.surface import SurfaceType
-from pygex.surface import AlphaSurface
 from typing import Sequence
 
 
@@ -49,7 +48,7 @@ class Drawable:
         self.border_bottom_left_radius = radius
         self.border_bottom_right_radius = radius
 
-    def render(self, size: Sequence[int]) -> SurfaceType:
+    def render(self, size: Sequence[int]) -> TYPE_SURFACE:
         raise RuntimeError('Function `Drawable.render()` is not initialized!')
 
 
@@ -64,7 +63,7 @@ class LayerDrawable(Drawable):
         super().__init__(border_radius_or_radii, border_width, border_color)
         self.layers = layers
 
-    def render(self, size: Sequence[int]) -> SurfaceType | None:
+    def render(self, size: Sequence[int]) -> TYPE_SURFACE | None:
         if not self.layers:
             return
 
@@ -106,7 +105,7 @@ class ColorDrawable(Drawable):
 
         self.color = color
 
-    def render(self, size: Sequence[int]) -> SurfaceType:
+    def render(self, size: Sequence[int]) -> TYPE_SURFACE:
         output_surface = AlphaSurface(size)
 
         draw_rect(
@@ -138,7 +137,7 @@ class GradientDrawable(Drawable):
         self.colors = colors
         self.is_vertical = is_vertical
 
-    def render(self, size: Sequence[int]) -> SurfaceType:
+    def render(self, size: Sequence[int]) -> TYPE_SURFACE:
         output_surface = gradient(size, self.colors, self.is_vertical)
 
         if self.has_border_radii:

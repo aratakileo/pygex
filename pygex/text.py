@@ -1,7 +1,6 @@
 from pygex.font import TYPE_FONT, DEFAULT_FONT_SIZE, get_pygame_font
+from pygex.surface import AlphaSurface, TYPE_SURFACE
 from pygex.color import TYPE_COLOR, as_rgba
-from pygame.surface import SurfaceType
-from pygex.surface import AlphaSurface
 from typing import Sequence
 
 ALIGN_LEFT = 0
@@ -43,7 +42,7 @@ class TextRenderer:
         self._parsed_queue = ()
         self._parsed_text_width = self._parsed_text_height = 0
 
-        self.text_surface: SurfaceType | None = None
+        self.text_surface: TYPE_SURFACE | None = None
 
         self.parse_text()
         self.render()

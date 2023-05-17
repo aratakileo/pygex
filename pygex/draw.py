@@ -1,15 +1,14 @@
 from pygame.draw import line as pg_draw_line, rect as pg_draw_rect, ellipse as pg_draw_ellipse
 from pygex.color import TYPE_COLOR, COLOR_TRANSPARENT, as_rgba
+from pygex.surface import AlphaSurface, TYPE_SURFACE
 from pygex.core.constants import MAX_BORDER_RADIUS
 from pygame.rect import Rect as pg_Rect
-from pygame.surface import SurfaceType
-from pygex.surface import AlphaSurface
 from typing import Sequence
 from math import ceil
 
 
 def grid(
-        surface: SurfaceType,
+        surface: TYPE_SURFACE,
         line_color: TYPE_COLOR,
         scale_interval: float | int,
         bounds: Sequence[float | int] | pg_Rect,
@@ -43,7 +42,7 @@ def grid(
 
 
 def rect(
-        surface: SurfaceType,
+        surface: TYPE_SURFACE,
         color: TYPE_COLOR,
         _rect: Sequence[float | int] | pg_Rect,
         border_color: TYPE_COLOR = COLOR_TRANSPARENT,

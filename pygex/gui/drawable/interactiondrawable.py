@@ -1,10 +1,9 @@
 from pygex.color import TYPE_COLOR, COLOR_TRANSPARENT, COLOR_WHITE, ahex_to_rgba, as_ahex, as_rgba, to_readable_color
-from pygex.gui.drawable import Drawable, ColorDrawable
+from pygex.gui.drawable.drawable import Drawable, ColorDrawable
+from pygex.surface import AlphaSurface, TYPE_SURFACE
 from pygex.core.interface import Flippable
 from pygex.transform import round_corners
 from pygex.draw import rect as draw_rect
-from pygame.surface import SurfaceType
-from pygex.surface import AlphaSurface
 from pygex.color import replace_alpha
 from typing import Sequence
 
@@ -35,7 +34,7 @@ class InteractionDrawable(Drawable, Flippable):
 
         self._content_drawable = content
         self._content_buffered_size = (-1, -1)
-        self._content_buffered_surface: SurfaceType | None = None
+        self._content_buffered_surface: TYPE_SURFACE | None = None
 
     @staticmethod
     def from_color_content(
@@ -145,7 +144,7 @@ class FadingDrawable(InteractionDrawable):
         if self._in_process_alpha_of_border <= 0:
             self._is_in_process = False
 
-    def render(self, size: Sequence[int]) -> SurfaceType | None:
+    def render(self, size: Sequence[int]) -> TYPE_SURFACE | None:
         # STEP 1: rendering or getting content from buffer for the output surface
         if size != self._content_buffered_size:
             self._content_buffered_size = size

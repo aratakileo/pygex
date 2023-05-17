@@ -2,9 +2,8 @@ from pygex.gui.view import View, DEFAULT_PADDING, DEFAULT_SIZE, DEFAULT_POSITION
 from pygex.gui.view import GRAVITY_RIGHT, GRAVITY_BOTTOM, GRAVITY_CENTER_HORIZONTAL, GRAVITY_CENTER_VERTICAL
 from pygex.gui.view import VISIBILITY_GONE, DEFAULT_MARGIN
 from pygex.color import TYPE_COLOR, COLOR_TRANSPARENT
+from pygex.surface import AlphaSurface, TYPE_SURFACE
 from pygex.gui.drawable import Drawable
-from pygame.surface import SurfaceType
-from pygex.surface import AlphaSurface
 from pygame.event import Event
 from typing import Sequence
 
@@ -36,7 +35,7 @@ class LinearLayout(View):
             prerender_during_initialization=False
         )
 
-        self._buffered_content_surface: SurfaceType | None = None
+        self._buffered_content_surface: TYPE_SURFACE | None = None
 
         self._orientation = orientation
         self._views: list[View] = [*views]
@@ -83,7 +82,7 @@ class LinearLayout(View):
             self.render_content_surface()
 
     @property
-    def buffered_content_surface(self) -> SurfaceType | None:
+    def buffered_content_surface(self) -> TYPE_SURFACE | None:
         return self._buffered_content_surface
 
     def rebufferize_not_oriented_view_sizes(self):
