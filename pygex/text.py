@@ -1,10 +1,26 @@
-from pygex.color import TYPE_COLOR, as_rgba
 from pygame.font import FontType, get_init, init, Font
+from pygex.color import TYPE_COLOR, as_rgba
+from pygex.resource import RESOURCES_PATH
 from pygame.surface import SurfaceType
 from pygex.surface import AlphaSurface
 from typing import Sequence
 
-DEFAULT_FONT_SIZE = 20
+
+def __get_font_resource_path(font_resource_name: str):
+    return RESOURCES_PATH + 'font/' + font_resource_name
+
+
+FONT_FIRA_CODE_BOLD = __get_font_resource_path('FiraCode-Bold.ttf')
+FONT_FIRA_CODE_REGULAR = __get_font_resource_path('FiraCode-Regular.ttf')
+FONT_FIRA_MONO_BOLD_ITALIC = __get_font_resource_path('FiraMono-BoldItalic.ttf')
+FONT_FIRA_MONO_REGULAR_ITALIC = __get_font_resource_path('FiraMono-RegularItalic.ttf')
+FONT_NOTO_SANS_JP_BOLD = __get_font_resource_path('NotoSansJP-Bold.otf')
+FONT_NOTO_SANS_JP_REGULAR = __get_font_resource_path('NotoSansJP-Regular.otf')
+FONT_NOTO_SANS_SC_BOLD = __get_font_resource_path('NotoSansSC-Bold.otf')
+FONT_NOTO_SANS_SC_REGULAR = __get_font_resource_path('NotoSansSC-Regular.otf')
+
+DEFAULT_FONT = FONT_FIRA_CODE_REGULAR
+DEFAULT_FONT_SIZE = 15
 
 ALIGN_LEFT = 0
 ALIGN_RIGHT = 1
@@ -438,7 +454,7 @@ def get_pygame_font(font_or_font_size: FontType | int = DEFAULT_FONT_SIZE):
         font_or_font_size = max(font_or_font_size, 1)
 
         if font_or_font_size not in _font_buffer:
-            _font_buffer[font_or_font_size] = Font(None, font_or_font_size)
+            _font_buffer[font_or_font_size] = Font(DEFAULT_FONT, font_or_font_size)
 
         return _font_buffer[font_or_font_size]
 
