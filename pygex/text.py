@@ -1,26 +1,8 @@
-from pygame.font import FontType, get_init, init, Font
+from pygex.font import TYPE_FONT, DEFAULT_FONT_SIZE, get_pygame_font
 from pygex.color import TYPE_COLOR, as_rgba
-from pygex.resource import RESOURCES_PATH
 from pygame.surface import SurfaceType
 from pygex.surface import AlphaSurface
 from typing import Sequence
-
-
-def __get_font_resource_path(font_resource_name: str):
-    return RESOURCES_PATH + 'font/' + font_resource_name
-
-
-FONT_FIRA_CODE_BOLD = __get_font_resource_path('FiraCode-Bold.ttf')
-FONT_FIRA_CODE_REGULAR = __get_font_resource_path('FiraCode-Regular.ttf')
-FONT_FIRA_MONO_BOLD_ITALIC = __get_font_resource_path('FiraMono-BoldItalic.ttf')
-FONT_FIRA_MONO_REGULAR_ITALIC = __get_font_resource_path('FiraMono-RegularItalic.ttf')
-FONT_NOTO_SANS_JP_BOLD = __get_font_resource_path('NotoSansJP-Bold.otf')
-FONT_NOTO_SANS_JP_REGULAR = __get_font_resource_path('NotoSansJP-Regular.otf')
-FONT_NOTO_SANS_SC_BOLD = __get_font_resource_path('NotoSansSC-Bold.otf')
-FONT_NOTO_SANS_SC_REGULAR = __get_font_resource_path('NotoSansSC-Regular.otf')
-
-DEFAULT_FONT = FONT_FIRA_CODE_REGULAR
-DEFAULT_FONT_SIZE = 15
 
 ALIGN_LEFT = 0
 ALIGN_RIGHT = 1
@@ -29,8 +11,6 @@ ALIGN_BLOCK = 3
 
 SIZE_WRAP_CONTENT = -2
 
-_font_buffer = {}
-
 
 class TextRenderer:
     def __init__(
@@ -38,7 +18,7 @@ class TextRenderer:
             text: str,
             color: TYPE_COLOR,
             size: Sequence[int] = (SIZE_WRAP_CONTENT,) * 2,
-            font_or_font_size: FontType | int = DEFAULT_FONT_SIZE,
+            font_or_font_size: TYPE_FONT = DEFAULT_FONT_SIZE,
             align=ALIGN_LEFT,
             line_spacing: float | int = 0,
             lines_number: int = ...,
@@ -131,7 +111,7 @@ class TextRenderer:
     def get_height(self) -> int:
         return self._height
 
-    def set_font_or_font_size(self, font_or_font_size: FontType | int):
+    def set_font_or_font_size(self, font_or_font_size: TYPE_FONT):
         old_font = self._font
         self._font_or_font_size = font_or_font_size
         self._font = get_pygame_font(font_or_font_size)
@@ -446,33 +426,16 @@ class TextRenderer:
             line_index += 1
 
 
-def get_pygame_font(font_or_font_size: FontType | int = DEFAULT_FONT_SIZE):
-    if not get_init():
-        init()
-
-    if isinstance(font_or_font_size, int):
-        font_or_font_size = max(font_or_font_size, 1)
-
-        if font_or_font_size not in _font_buffer:
-            _font_buffer[font_or_font_size] = Font(DEFAULT_FONT, font_or_font_size)
-
-        return _font_buffer[font_or_font_size]
-
-    return font_or_font_size
-
-
-def render_text(text: str, color: TYPE_COLOR, font_or_font_size: FontType | int = DEFAULT_FONT_SIZE, antialiasing=True):
+def render_text(text: str, color: TYPE_COLOR, font_or_font_size: TYPE_FONT = DEFAULT_FONT_SIZE, antialiasing=True):
     return get_pygame_font(font_or_font_size).render(text, antialiasing, as_rgba(color))
 
 
 __all__ = (
-    'DEFAULT_FONT_SIZE',
     'ALIGN_LEFT',
     'ALIGN_RIGHT',
     'ALIGN_CENTER',
     'ALIGN_BLOCK',
     'SIZE_WRAP_CONTENT',
     'TextRenderer',
-    'get_pygame_font',
     'render_text'
 )

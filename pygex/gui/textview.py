@@ -1,9 +1,9 @@
 from pygex.gui.view import View, DEFAULT_SIZE, DEFAULT_PADDING, DEFAULT_POSITION, DEFAULT_GRAVITY, DEFAULT_MARGIN
-from pygex.text import ALIGN_LEFT, ALIGN_RIGHT, ALIGN_CENTER, ALIGN_BLOCK, DEFAULT_FONT_SIZE, TextRenderer
+from pygex.text import ALIGN_LEFT, ALIGN_RIGHT, ALIGN_CENTER, ALIGN_BLOCK, TextRenderer
 from pygex.color import TYPE_COLOR, COLOR_BLACK, COLOR_TRANSPARENT
+from pygex.font import TYPE_FONT, DEFAULT_FONT_SIZE
 from pygex.gui.drawable.drawable import Drawable
 from pygame.surface import SurfaceType
-from pygame.font import FontType
 from typing import Sequence
 
 
@@ -21,7 +21,7 @@ class TextView(View):
             text_line_spacing: float | int = 0,
             text_lines_number: int = ...,
             text_paragraph_space: float | int = 0,
-            font_or_font_size: FontType | int = DEFAULT_FONT_SIZE,
+            font_or_font_size: TYPE_FONT = DEFAULT_FONT_SIZE,
             background_drawable_or_color: Drawable | TYPE_COLOR = COLOR_TRANSPARENT,
             font_antialiasing=True,
             prerender_during_initialization=True
@@ -34,7 +34,7 @@ class TextView(View):
             content_gravity,
             background_drawable_or_color,
 
-            # ATTENTION: If True, the Surface content is rendered here before all the attributes of the class
+            # ATTENTION: if True, the Surface content is rendered here before all the attributes of the class
             # are initialized, which is why the crash occurs
             prerender_during_initialization=False
         )

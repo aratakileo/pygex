@@ -1,12 +1,12 @@
 from pygex.color import TYPE_COLOR, as_rgba, to_readable_color, COLOR_BLACK
-from pygex.text import render_text, DEFAULT_FONT_SIZE
 from pygame.mouse import get_pos as pg_mouse_get_pos
+from pygex.font import TYPE_FONT, DEFAULT_FONT_SIZE
 from pygex.core import Renderable, get_window
 from pygame.draw import rect as draw_rect
 from pygame.surface import SurfaceType
 from pygex.surface import AlphaSurface
+from pygex.text import render_text
 from pygame.rect import RectType
-from pygame.font import FontType
 from typing import Sequence
 
 GRAVITY_LEFT = GRAVITY_TOP = 0
@@ -37,7 +37,7 @@ class Hint(Renderable):
         self.strict_fit_in_bounds = strict_fit_in_bounds
 
         self.padding = 3
-        self.font_or_size: FontType | int = ...
+        self.font_or_size: TYPE_FONT = ...
         self.border_radius_or_radii: int | Sequence[int] = 5
         self.position_offset = position_offset
 
