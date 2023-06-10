@@ -28,11 +28,11 @@ setup(
     version=PACKAGE_VER,
     packages=packages,
     package_data=package_data,
-    url=f'https://github.com/teacondemns/{PACKAGE_NAME}',
+    url=f'https://github.com/aratakileo/{PACKAGE_NAME}',
     install_requires=['pygame-ce>=2.2.1'],
     license='MIT',
-    author='Tea Condemns',
-    author_email='tea.condemns@gmail.com',
+    author='Arataki Leo',
+    author_email='aratakileo@gmail.com',
     description='An extensive module of various tools and tools for creating a modern graphical interface '
                 'for pygame-ce users.'
 )

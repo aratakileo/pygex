@@ -9,15 +9,15 @@ An extensive module of various tools and tools for creating a modern graphical i
 
 ### Preview
 
-![](https://github.com/TeaCondemns/pygex/releases/download/v0.3.3/preview.gif)
+![](https://github.com/aratakileo/pygex/releases/download/v0.3.3/preview.gif)
 
-[[Run this demonstration code]](https://github.com/teacondemns/pygex/releases/tag/v0.3.3)
+[[Run this demonstration code]](https://github.com/aratakileo/pygex/releases/tag/v0.3.3)
 
 Current development version: `0.3.4` (the same version will be [installed](#how-to-install-pygex))
 
 Use examples:
-- [Drawing application](https://github.com/teacondemns/vector-paint)
-- [Bezier curve editor](https://github.com/teacondemns/bezier-curve)
+- [Drawing application](https://github.com/aratakileo/vector-paint)
+- [Bezier curve editor](https://github.com/aratakileo/bezier-curve)
 
 ### Requirements
 - `python >= 3.10`
@@ -30,7 +30,7 @@ Optional:
 ### How to install `pygex`
 To install `pygex` of [current development version](#preview) just use this command
 ```
-pip install git+https://github.com/teacondemns/pygex.git
+pip install git+https://github.com/aratakileo/pygex.git
 ```
 
 <details>
@@ -38,7 +38,7 @@ pip install git+https://github.com/teacondemns/pygex.git
   
 
 ```
-py -m pip install git+https://github.com/teacondemns/pygex.git
+py -m pip install git+https://github.com/aratakileo/pygex.git
 ```
 </details>
 
@@ -47,10 +47,10 @@ py -m pip install git+https://github.com/teacondemns/pygex.git
   
 
 ```
-python3 -m pip install git+https://github.com/teacondemns/pygex.git
+python3 -m pip install git+https://github.com/aratakileo/pygex.git
 ```
 </details>
 
-[[Look for last release]](https://github.com/teacondemns/pygex/releases/tag/v0.3.3)
+[[Look for last release]](https://github.com/aratakileo/pygex/releases/tag/v0.3.3)
 
-[[Look for other releases]](https://github.com/teacondemns/pygex/releases)
+[[Look for other releases]](https://github.com/aratakileo/pygex/releases)
