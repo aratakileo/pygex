@@ -1,13 +1,14 @@
 from pygame.display import set_mode as pg_win_set_mode, set_caption as pg_win_set_caption, flip as pg_display_flip
 from pygame.display import get_surface as pg_win_get_surface, get_window_size as pg_win_get_size
 from pygame.display import get_caption as pg_win_get_caption, init as pg_display_init
-from pygame.constants import QUIT, FULLSCREEN, RESIZABLE, WINDOWMOVED
+from pygame.constants import QUIT, FULLSCREEN, RESIZABLE, WINDOWMOVED, WINDOWRESIZED
 from pygex.core.broker import set_active_window, get_mouse, get_input
 from pygame.display import get_desktop_sizes as pg_get_desktop_sizes
 from pygex.gui.toast import Toast, render as render_toasts
 from pygex.core.interface import Flippable, Renderable
 from pygame.mouse import get_pos as pg_mouse_get_pos
 from pygame.image import save as pg_save_image
+from pygex.gui.view import SIZE_MATCH_PARENT
 from pygame.event import get as get_events
 from pygame.time import Clock as pg_Clock
 from pygame.base import quit as pg_quit
@@ -267,6 +268,10 @@ class Window(Flippable):
             return
 
         for view in self._view_list:
+            if e.type == WINDOWRESIZED and (view.width == SIZE_MATCH_PARENT or view.height == SIZE_MATCH_PARENT):
+                view.render_content_surface()
+                view.render_background_surface()
+
             view.process_event(e, *pg_mouse_get_pos())
 
         get_mouse().process_event(e)
