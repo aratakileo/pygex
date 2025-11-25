@@ -24,6 +24,8 @@ def grid(
     :param offset: offset of drawing inside grid bounds
     :param line_width: grid line width
     """
+    line_color = as_rgba(line_color)
+
     for ix in range(1, ceil(bounds[2] / scale_interval + 1)):
         x = bounds[0] + ix * scale_interval - offset[0] % scale_interval
 

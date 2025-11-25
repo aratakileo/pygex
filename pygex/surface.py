@@ -1,9 +1,9 @@
-from pygame.surface import Surface, SurfaceType
 from pygame.constants import SRCALPHA
+from pygame.surface import Surface
 from typing import Sequence
 
 
-TYPE_SURFACE = SurfaceType
+TYPE_SURFACE = Surface
 
 
 def AlphaSurface(size: Sequence[int], flags: int = 0):
