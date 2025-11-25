@@ -1,5 +1,5 @@
 from pygame.constants import KEYDOWN, KEYUP, K_LCTRL, K_RCTRL, K_LALT, K_RALT, K_RETURN, K_KP_ENTER, K_KP_PERIOD
-from pygame.constants import K_PERIOD, K_LSHIFT, K_RSHIFT
+from pygame.constants import K_PERIOD, K_LSHIFT, K_RSHIFT, K_BACKSPACE, K_DELETE
 from pygex.core.broker import set_active_input
 from pygame.event import Event
 from time import time
@@ -31,6 +31,7 @@ GK_CTRL = 'CTRL'
 GK_ALT = 'ALT'
 GK_SHIFT = 'SHIFT'
 GK_ENTER = 'ENTER'
+GK_REMOVE = 'REMOVE'
 
 # Hold duration
 FIRST_HOLD_DURATION = 0.5
@@ -48,6 +49,7 @@ class Input:
         self.generalize_keys(GK_ALT, K_LALT, K_RALT)
         self.generalize_keys(GK_SHIFT, K_LSHIFT, K_RSHIFT)
         self.generalize_keys(GK_ENTER, K_RETURN, K_KP_ENTER)
+        self.generalize_keys(GK_REMOVE, K_BACKSPACE, K_DELETE)
 
     def __get_time(self, key: int | str) -> float | int:
         if isinstance(key, int):
@@ -232,6 +234,57 @@ class Input:
 
         return False
 
+    def get_applying(self, *expected_keys: int | str, reset_data=True) -> tuple[int | str]:
+        """
+        Checks if any of specified keys is up or hold for first 0.5s and after that every 0.1s
+        :param expected_keys: generic keys or just keys
+        :param reset_data: if true, the timer will reset after the time expires for key for which this condition was met
+        :return: the key from the specified keys, which satisfies the condition first
+        """
+        keys = []
+
+        for key in expected_keys:
+            if self.is_applying(key, reset_data):
+                keys.append(key)
+
+        return tuple(keys)
+
+    def get_movement_keys_applying(
+            self,
+            left_key: int | str,
+            up_key: int | str,
+            right_key: int | str,
+            down_key: int | str,
+            reset_data=True
+    ) -> tuple[int, int]:
+        """
+        Checks if any of specified keys is up or hold for first 0.5s and after that every 0.1s and returns movement direction
+        :param left_key: if applying then the x direction value is -1
+        :param up_key: if applying then the y direction value is -1
+        :param right_key: if applying then the x direction value is 1
+        :param down_key: if applying then the y direction value is 1
+        :param reset_data: if true, the timer will reset after the time expires for key for which this condition was met
+        :return: movement direction
+        """
+        keys = self.get_applying(left_key, up_key, right_key, down_key, reset_data=reset_data)
+
+        if not keys:
+            return 0, 0
+
+        x = y = 0
+
+        if left_key in keys:
+            x = -1
+        elif right_key in keys:
+            x = 1
+
+        if up_key in keys:
+            y = -1
+        elif down_key in keys:
+            y = 1
+
+        return x, y
+
     def process_event(self, e: Event):
         if e.type == KEYDOWN and e.key in self._keys_data:
             self._keys_data[e.key][0] = S_DOWN
@@ -272,5 +325,6 @@ __all__ = (
     'GK_ALT',
     'GK_SHIFT',
     'GK_ENTER',
+    'GK_REMOVE',
     'Input'
 )
