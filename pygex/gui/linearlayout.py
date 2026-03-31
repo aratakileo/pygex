@@ -193,7 +193,7 @@ class LinearLayout(View):
         if self._height == SIZE_WRAP_CONTENT:
             return self.get_computed_content_height() + self.padding_vertical
 
-        return super().get_computed_background_width(apply_margin)
+        return super().get_computed_background_height(apply_margin)
 
     def process_event(self, e: Event, offsetted_mouse_x: int, offsetted_mouse_y: int) -> bool:
         if self._visibility == VISIBILITY_GONE or not self.enabled:
@@ -265,26 +265,26 @@ class LinearLayout(View):
         next_children_x_off = next_children_y_off = 0
 
         if self._orientation == ORIENTATION_HORIZONTAL:
-            if self.content_gravity == GRAVITY_RIGHT:
+            if (self.content_gravity & GRAVITY_RIGHT) != 0:
                 next_children_x_off += max(content_width - self._buffered_views_oriented_total_width, 0)
-            elif self.content_gravity == GRAVITY_CENTER_HORIZONTAL:
+            if (self.content_gravity & GRAVITY_CENTER_HORIZONTAL) != 0:
                 next_children_x_off += max(content_width - self._buffered_views_oriented_total_width, 0) / 2
         else:
-            if self.content_gravity == GRAVITY_BOTTOM:
+            if (self.content_gravity & GRAVITY_BOTTOM) != 0:
                 next_children_y_off += max(content_height - self._buffered_views_oriented_total_height, 0)
-            elif self.content_gravity == GRAVITY_CENTER_VERTICAL:
+            if (self.content_gravity & GRAVITY_CENTER_VERTICAL) != 0:
                 next_children_y_off += max(content_height - self._buffered_views_oriented_total_height, 0) / 2
 
         for view, view_size in zip(self._views, self._buffered_view_sizes):
             if self._orientation == ORIENTATION_VERTICAL:
-                if self.content_gravity == GRAVITY_RIGHT:
+                if (self.content_gravity & GRAVITY_RIGHT) != 0:
                     next_children_x_off = max(content_width - view_size[0], 0)
-                elif self.content_gravity == GRAVITY_CENTER_HORIZONTAL:
+                if (self.content_gravity & GRAVITY_CENTER_HORIZONTAL) != 0:
                     next_children_x_off = max(content_width - view_size[0], 0) / 2
             else:
-                if self.content_gravity == GRAVITY_BOTTOM:
+                if (self.content_gravity & GRAVITY_BOTTOM) != 0:
                     next_children_y_off = max(content_height - view_size[1], 0)
-                elif self.content_gravity == GRAVITY_CENTER_VERTICAL:
+                if (self.content_gravity & GRAVITY_CENTER_VERTICAL) != 0:
                     next_children_y_off = max(content_height - view_size[1], 0) / 2
 
             view.render(self._buffered_content_surface, next_children_x_off, next_children_y_off, (bg_width, bg_height))
