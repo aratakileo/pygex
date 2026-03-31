@@ -1,4 +1,4 @@
-from pygex.font import TYPE_FONT, DEFAULT_FONT_SIZE, get_pygame_font
+from pygex.font import TYPE_FONT, DEFAULT_FONT_SIZE, get_font
 from pygex.surface import AlphaSurface, TYPE_SURFACE
 from pygex.color import TYPE_COLOR, as_rgba
 from typing import Sequence
@@ -31,7 +31,7 @@ class TextRenderer:
         self._width = SIZE_WRAP_CONTENT if size[0] == SIZE_WRAP_CONTENT else max(size[0], 0)
         self._height = SIZE_WRAP_CONTENT if size[1] == SIZE_WRAP_CONTENT else max(size[1], 0)
         self._font_or_font_size = font_or_font_size
-        self._font = get_pygame_font(font_or_font_size)
+        self._font = get_font(font_or_font_size)
         self._align = min(ALIGN_BLOCK, max(align, ALIGN_LEFT))
         self._line_spacing = line_spacing
         self._lines_number = lines_number if lines_number is ... else max(lines_number, 0)
@@ -113,7 +113,7 @@ class TextRenderer:
     def set_font_or_font_size(self, font_or_font_size: TYPE_FONT):
         old_font = self._font
         self._font_or_font_size = font_or_font_size
-        self._font = get_pygame_font(font_or_font_size)
+        self._font = get_font(font_or_font_size)
 
         if old_font != self._font:
             self.parse_text()
@@ -217,7 +217,7 @@ class TextRenderer:
             self._parsed_text_width = self._parsed_text_height = 0
             return
 
-        font = get_pygame_font(self._font_or_font_size)
+        font = get_font(self._font_or_font_size)
         char_height = font.get_height()
 
         max_lines_number = self._lines_number
@@ -426,7 +426,7 @@ class TextRenderer:
 
 
 def render_text(text: str, color: TYPE_COLOR, font_or_font_size: TYPE_FONT = DEFAULT_FONT_SIZE, antialiasing=True):
-    return get_pygame_font(font_or_font_size).render(text, antialiasing, as_rgba(color))
+    return get_font(font_or_font_size).render(text, antialiasing, as_rgba(color))
 
 
 __all__ = (

@@ -23,9 +23,12 @@ DEFAULT_FONT_SIZE = 15
 _font_buffer = {}
 
 
-def get_pygame_font(font_or_font_size: FontType | int = DEFAULT_FONT_SIZE):
+def get_font(font_or_font_size: FontType | int | str = DEFAULT_FONT_SIZE, font_size: int = ...):
     if not get_init():
         init()
+
+    if not isinstance(font_or_font_size, str) and font_size is not ...:
+        raise ValueError()
 
     if isinstance(font_or_font_size, int):
         font_or_font_size = max(font_or_font_size, 1)
@@ -34,6 +37,9 @@ def get_pygame_font(font_or_font_size: FontType | int = DEFAULT_FONT_SIZE):
             _font_buffer[font_or_font_size] = Font(DEFAULT_FONT_NAME, font_or_font_size)
 
         return _font_buffer[font_or_font_size]
+
+    if isinstance(font_or_font_size, str):
+        return Font(font_or_font_size, font_size)
 
     return font_or_font_size
 
@@ -50,5 +56,5 @@ __all__ = (
     'FONT_NOTO_SANS_SC_REGULAR',
     'DEFAULT_FONT_NAME',
     'DEFAULT_FONT_SIZE',
-    'get_pygame_font',
+    'get_font',
 )
