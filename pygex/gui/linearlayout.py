@@ -235,9 +235,9 @@ class LinearLayout(View):
             ) or process_event_for_self
 
             if self._orientation == ORIENTATION_HORIZONTAL:
-                next_children_x_off += view_size[0]
+                next_children_x_off += view_size[0] + view._margin_right
             else:
-                next_children_y_off += view_size[1]
+                next_children_y_off += view_size[1] + view._margin_bottom
 
         if process_event_for_self:
             return super().process_event(e, offsetted_mouse_x, offsetted_mouse_y)
@@ -259,8 +259,6 @@ class LinearLayout(View):
         if not self._views:
             self._buffered_content_surface = None
             return
-
-        print('rerender content')
 
         self._buffered_content_surface = AlphaSurface(self.get_computed_content_size())
 
