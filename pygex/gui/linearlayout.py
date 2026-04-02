@@ -1,6 +1,6 @@
 from pygex.gui.view import View, DEFAULT_PADDING, DEFAULT_SIZE, DEFAULT_POSITION, DEFAULT_GRAVITY, SIZE_WRAP_CONTENT
 from pygex.gui.view import GRAVITY_RIGHT, GRAVITY_BOTTOM, GRAVITY_CENTER_HORIZONTAL, GRAVITY_CENTER_VERTICAL
-from pygex.gui.view import VISIBILITY_GONE, DEFAULT_MARGIN
+from pygex.gui.view import VISIBILITY_GONE, DEFAULT_MARGIN, VISIBILITY_VISIBLE
 from pygex.color import TYPE_COLOR, COLOR_TRANSPARENT
 from pygex.surface import AlphaSurface, TYPE_SURFACE
 from pygex.gui.drawable import Drawable
@@ -39,6 +39,7 @@ class LinearLayout(View):
 
         self._orientation = orientation
         self._views: list[View] = [*views]
+        self._contains_rerenderable_content = False
 
         self._buffered_views_oriented_total_width = self._buffered_views_oriented_total_height = 0
         self._buffered_views_not_oriented_total_width = self._buffered_views_not_oriented_total_height = 0
@@ -140,7 +141,6 @@ class LinearLayout(View):
         self._buffered_views_oriented_total_height += view_background_computed_size[1]
 
         self.rebufferize_not_oriented_view_sizes()
-
         self.render_content_surface()
 
     def remove_view(self, view: View):
@@ -156,7 +156,6 @@ class LinearLayout(View):
         del self._buffered_view_sizes[view_index], self._views[view_index]
 
         self.rebufferize_not_oriented_view_sizes()
-
         self.render_content_surface()
 
     def get_computed_content_width(self):
@@ -204,26 +203,29 @@ class LinearLayout(View):
         computed_content_width, computed_content_height = self.get_computed_content_size()
 
         if self._orientation == ORIENTATION_HORIZONTAL:
-            if self.content_gravity == GRAVITY_RIGHT:
+            if (self.content_gravity & GRAVITY_RIGHT) != 0:
                 next_children_x_off += max(computed_content_width - self._buffered_views_oriented_total_width, 0)
-            elif self.content_gravity == GRAVITY_CENTER_HORIZONTAL:
+            if (self.content_gravity & GRAVITY_CENTER_HORIZONTAL) != 0:
                 next_children_x_off += max(computed_content_width - self._buffered_views_oriented_total_width, 0) / 2
         else:
-            if self.content_gravity == GRAVITY_BOTTOM:
+            if (self.content_gravity & GRAVITY_BOTTOM) != 0:
                 next_children_y_off += max(computed_content_height - self._buffered_views_oriented_total_height, 0)
-            elif self.content_gravity == GRAVITY_CENTER_VERTICAL:
+            if (self.content_gravity & GRAVITY_CENTER_VERTICAL) != 0:
                 next_children_y_off += max(computed_content_height - self._buffered_views_oriented_total_height, 0) / 2
 
         for view, view_size in zip(self._views, self._buffered_view_sizes):
+            if view.visibility == VISIBILITY_GONE:
+                continue
+
             if self._orientation == ORIENTATION_VERTICAL:
-                if self.content_gravity == GRAVITY_RIGHT:
+                if (self.content_gravity & GRAVITY_RIGHT) != 0:
                     next_children_x_off = max(computed_content_width - view_size[0], 0)
-                elif self.content_gravity == GRAVITY_CENTER_HORIZONTAL:
+                if (self.content_gravity & GRAVITY_CENTER_HORIZONTAL) != 0:
                     next_children_x_off = max(computed_content_width - view_size[0], 0) / 2
             else:
-                if self.content_gravity == GRAVITY_BOTTOM:
+                if (self.content_gravity & GRAVITY_BOTTOM) != 0:
                     next_children_y_off = max(computed_content_height - view_size[1], 0)
-                elif self.content_gravity == GRAVITY_CENTER_VERTICAL:
+                if (self.content_gravity & GRAVITY_CENTER_VERTICAL) != 0:
                     next_children_y_off = max(computed_content_height - view_size[1], 0) / 2
 
             process_event_for_self = view.process_event(
@@ -231,9 +233,6 @@ class LinearLayout(View):
                 offsetted_mouse_x - next_children_x_off,
                 offsetted_mouse_y - next_children_y_off
             ) or process_event_for_self
-
-            if view.visibility == VISIBILITY_GONE:
-                continue
 
             if self._orientation == ORIENTATION_HORIZONTAL:
                 next_children_x_off += view_size[0]
@@ -246,8 +245,13 @@ class LinearLayout(View):
         return True
 
     def flip(self):
+        self._contains_rerenderable_content = False
+
         for view in self._views:
             view.flip()
+
+            if view._background_drawable_is_interaction_drawable and view._background_drawable.is_need_to_be_rendered:
+                self._contains_rerenderable_content = True
 
         super().flip()
 
@@ -255,6 +259,8 @@ class LinearLayout(View):
         if not self._views:
             self._buffered_content_surface = None
             return
+
+        print('rerender content')
 
         self._buffered_content_surface = AlphaSurface(self.get_computed_content_size())
 
@@ -296,6 +302,15 @@ class LinearLayout(View):
                 next_children_x_off += view_size[0] + view._margin_right
             else:
                 next_children_y_off += view_size[1] + view._margin_bottom
+
+    def render(self, surface: TYPE_SURFACE, x_off: float | int, y_off: float | int, parent_size: Sequence[int]):
+        if self._visibility != VISIBILITY_VISIBLE:
+            return
+
+        if self._contains_rerenderable_content:
+            self.render_content_surface()
+
+        super().render(surface, x_off, y_off, parent_size)
 
 
 __all__ = 'LinearLayout', 'ORIENTATION_HORIZONTAL', 'ORIENTATION_VERTICAL'

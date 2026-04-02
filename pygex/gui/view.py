@@ -536,12 +536,7 @@ class View(Flippable, Renderable):
                 self._background_drawable.set_interaction_state(self._interaction_state)
 
                 if self._interaction_state == INTERACTION_STATE_IN_INTERACTION:
-                    self._background_surface_buffer = self._background_drawable.render(
-                        self.get_computed_background_size()
-                    )
-
-                    if isinstance(self._parent, View):
-                        self._parent.render_content_surface()
+                    self.render_background_surface(True)
 
             return False
 
@@ -560,10 +555,8 @@ class View(Flippable, Renderable):
             ):
 
                 self._background_drawable.set_interaction_state(INTERACTION_STATE_NO_INTERACTION, animate=False)
-                self._background_surface_buffer = self._background_drawable.render(self.get_computed_background_size())
 
-                if isinstance(self._parent, View):
-                    self._parent.render_content_surface()
+                self.render_background_surface(True)
 
             return
 
