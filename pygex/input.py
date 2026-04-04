@@ -239,13 +239,41 @@ class Input:
         Checks if any of specified keys is up or hold for first 0.5s and after that every 0.1s
         :param expected_keys: generic keys or just keys
         :param reset_data: if true, the timer will reset after the time expires for key for which this condition was met
-        :return: the key from the specified keys, which satisfies the condition first
+        :return: the keys from the specified keys, which satisfies the condition
         """
         keys = []
 
         for key in expected_keys:
             if self.is_applying(key, reset_data):
                 keys.append(key)
+
+        return tuple(keys)
+
+    def get_downing(self, *expected_keys: int | str) -> tuple[int | str]:
+        """
+        Checks if any of specified keys is down
+        :param expected_keys: generic keys or just keys
+        :return: the keys from the specified keys, which satisfies the condition
+        """
+        keys = []
+
+        for key in expected_keys:
+            if self.is_down(key):
+                keys.append(keys)
+
+        return tuple(keys)
+
+    def get_uping(self, *expected_keys: int | str) -> tuple[int | str]:
+        """
+        Checks if any of specified keys is up
+        :param expected_keys: generic keys or just keys
+        :return: the keys from the specified keys, which satisfies the condition
+        """
+        keys = []
+
+        for key in expected_keys:
+            if self.is_down(key):
+                keys.append(keys)
 
         return tuple(keys)
 
