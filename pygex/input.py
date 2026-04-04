@@ -259,7 +259,7 @@ class Input:
 
         for key in expected_keys:
             if self.is_down(key):
-                keys.append(keys)
+                keys.append(key)
 
         return tuple(keys)
 
@@ -273,7 +273,7 @@ class Input:
 
         for key in expected_keys:
             if self.is_down(key):
-                keys.append(keys)
+                keys.append(key)
 
         return tuple(keys)
 
