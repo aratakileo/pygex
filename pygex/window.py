@@ -48,7 +48,7 @@ class Window(Flippable):
         self._flippable_list: list[Flippable] = []
         self._renderable_list: list[Renderable] = []
         self._view_list = []
-        self._event_buffer = []
+        self._resized = False
 
         self._clock = pg_Clock()
         self._fps_counter_start_time = self._last_frame_time = time()
@@ -59,12 +59,11 @@ class Window(Flippable):
         self._size = *size,
         self._vsync = vsync
 
-        self._pos = pg_get_desktop_sizes()[0]
+        self._pos = self.desktop_size
         self._pos = (self._pos[0] - self._size[0]) // 2, (self._pos[1] - self._size[1]) // 2
 
         self._is_running = True
 
-        self.hold_event_buffer = False
         self.default_quit = True
         self.fps_limit = fps_limit
         self.bg_color: TYPE_COLOR | None = None
@@ -82,7 +81,7 @@ class Window(Flippable):
 
     @property
     def size(self):
-        return pg_win_get_size() if not self.fullscreen else pg_get_desktop_sizes()[0]
+        return pg_win_get_size() if not self.fullscreen else self.desktop_size
 
     @size.setter
     def size(self, value: Sequence):
@@ -164,7 +163,7 @@ class Window(Flippable):
         if not self.fullscreen and self.resizable:
             self._size = pg_win_get_size()
 
-        new_size = pg_get_desktop_sizes()[0] if value and not self.fullscreen else self._size
+        new_size = self.desktop_size if value and not self.fullscreen else self._size
 
         # ATTENTION: this segment is necessary because its absence will lead to such glitches as:
         # - froze of window content rendering
@@ -173,6 +172,7 @@ class Window(Flippable):
         # ALSO: this problem is detected for `pygame-ce==2.2.1`
         if self.fullscreen != value:
             self.vsync = False
+            self._resized = True
 
         pg_win_set_mode(new_size, (self.flags | FULLSCREEN) if value else (self.flags & ~FULLSCREEN), vsync=self._vsync)
 
@@ -192,14 +192,19 @@ class Window(Flippable):
     def is_running(self):
         return self._is_running
 
+    @property
+    def resized(self):
+        return self._resized
+
+    @property
+    def desktop_size(self):
+        return pg_get_desktop_sizes()[0]
+
     def add_flags(self, flags: int):
         self.flags |= flags
 
     def remove_flags(self, flags: int):
         self.flags &= ~flags
-
-    def get_buffered_events(self) -> tuple[Event]:
-        return *self._event_buffer,
 
     def add_view(self, view):
         if view not in self._view_list:
@@ -258,32 +263,8 @@ class Window(Flippable):
         for view in self._view_list:
             view.render(pg_win_get_surface(), 0, 0, pg_win_get_size())
 
-    def process_event(self, e: Event):
-        if self.default_quit and e.type == QUIT:
-            self.quit()
-        elif e.type == WINDOWMOVED:
-            self._pos = e.x, e.y
-
-        if not self._is_running:  # ATTENTION: this check is needed to avoid crashes after calling `quit()`
-            return
-
-        for view in self._view_list:
-            if e.type == WINDOWRESIZED and (view.width == SIZE_MATCH_PARENT or view.height == SIZE_MATCH_PARENT):
-                view.render_content_surface()
-                view.render_background_surface()
-
-            view.process_event(e, *pg_mouse_get_pos())
-
-        get_mouse().process_event(e)
-        get_input().process_event(e)
-
-        if self.hold_event_buffer:
-            self._event_buffer.append(e)
-
-    def flip(self, read_events=True, render_views=False):
+    def flip(self, read_events=True, render_views=True):
         current_time = time()
-
-        self._event_buffer = []
 
         for flippable in self._flippable_list:
             flippable.flip()
@@ -292,7 +273,8 @@ class Window(Flippable):
             # ATTENTION: the peculiarity is that the flip method is called before the render method is used
             view.flip()
 
-        self.render_views()
+        if render_views:
+            self.render_views()
 
         for renderable in self._renderable_list:
             renderable.render(pg_win_get_surface())
@@ -318,16 +300,41 @@ class Window(Flippable):
         else:
             self._dt = self._clock.tick(self.fps_limit) / 1000
 
-        if read_events:
-            for e in get_events():
-                self.process_event(e)
+        self._resized = False
+
+        for e in get_events(pump=read_events):
+            self.__process_event(e)
 
         self._last_frame_time = current_time
 
-    def quit(self):
+    def quit(self, initiate_exit=True):
         self._is_running = False
 
         pg_quit()
+
+        if initiate_exit:
+            exit()
+
+    def __process_event(self, e: Event):
+        if self.default_quit and e.type == QUIT:
+            self.quit()
+        elif e.type == WINDOWMOVED:
+            self._pos = e.x, e.y
+        elif e.type == WINDOWRESIZED:
+            self._resized = True
+
+        if not self._is_running:  # ATTENTION: this check is needed to avoid crashes after calling `quit()`
+            return
+
+        for view in self._view_list:
+            if e.type == WINDOWRESIZED and (view.width == SIZE_MATCH_PARENT or view.height == SIZE_MATCH_PARENT):
+                view.render_content_surface()
+                view.render_background_surface()
+
+            view.process_event(e, *pg_mouse_get_pos())
+
+        get_mouse().process_event(e)
+        get_input().process_event(e)
 
 
 __all__ = 'Window',
