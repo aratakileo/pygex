@@ -82,8 +82,5 @@ class TextView(View):
     def render_content_surface(self):
         self.text_renderer.set_size(self.get_computed_content_size())
 
-        if isinstance(self._parent, View):
-            self._parent.render_content_surface()
-
 
 __all__ = 'ALIGN_LEFT', 'ALIGN_RIGHT', 'ALIGN_CENTER', 'ALIGN_BLOCK', 'TextView',
